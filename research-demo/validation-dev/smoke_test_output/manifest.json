@@ -1,0 +1,132 @@
+[
+  {
+    "run_id": "normal-1001",
+    "archetype": "normal",
+    "seed": 1001,
+    "file": "normal-1001.json",
+    "shift_minutes": 720,
+    "n_workers": 1,
+    "n_truth_events": 0,
+    "n_fault_events": 0
+  },
+  {
+    "run_id": "gradual_increase-1002",
+    "archetype": "gradual_increase",
+    "seed": 1002,
+    "file": "gradual_increase-1002.json",
+    "shift_minutes": 240,
+    "n_workers": 1,
+    "n_truth_events": 1,
+    "n_fault_events": 0
+  },
+  {
+    "run_id": "sudden_increase-1003",
+    "archetype": "sudden_increase",
+    "seed": 1003,
+    "file": "sudden_increase-1003.json",
+    "shift_minutes": 60,
+    "n_workers": 1,
+    "n_truth_events": 1,
+    "n_fault_events": 0
+  },
+  {
+    "run_id": "transient_spike-1004",
+    "archetype": "transient_spike",
+    "seed": 1004,
+    "file": "transient_spike-1004.json",
+    "shift_minutes": 480,
+    "n_workers": 1,
+    "n_truth_events": 0,
+    "n_fault_events": 0
+  },
+  {
+    "run_id": "area_relocation-1005",
+    "archetype": "area_relocation",
+    "seed": 1005,
+    "file": "area_relocation-1005.json",
+    "shift_minutes": 60,
+    "n_workers": 1,
+    "n_truth_events": 1,
+    "n_fault_events": 0
+  },
+  {
+    "run_id": "multi_worker_mixed-1006",
+    "archetype": "multi_worker_mixed",
+    "seed": 1006,
+    "file": "multi_worker_mixed-1006.json",
+    "shift_minutes": 720,
+    "n_workers": 3,
+    "n_truth_events": 2,
+    "n_fault_events": 0
+  },
+  {
+    "run_id": "fault_missing-1007",
+    "archetype": "fault_missing",
+    "seed": 1007,
+    "file": "fault_missing-1007.json",
+    "shift_minutes": 240,
+    "n_workers": 1,
+    "n_truth_events": 0,
+    "n_fault_events": 1
+  },
+  {
+    "run_id": "fault_invalid-1008",
+    "archetype": "fault_invalid",
+    "seed": 1008,
+    "file": "fault_invalid-1008.json",
+    "shift_minutes": 720,
+    "n_workers": 1,
+    "n_truth_events": 0,
+    "n_fault_events": 1
+  },
+  {
+    "run_id": "fault_frozen-1009",
+    "archetype": "fault_frozen",
+    "seed": 1009,
+    "file": "fault_frozen-1009.json",
+    "shift_minutes": 720,
+    "n_workers": 1,
+    "n_truth_events": 0,
+    "n_fault_events": 1
+  },
+  {
+    "run_id": "fault_delayed-1010",
+    "archetype": "fault_delayed",
+    "seed": 1010,
+    "file": "fault_delayed-1010.json",
+    "shift_minutes": 720,
+    "n_workers": 1,
+    "n_truth_events": 0,
+    "n_fault_events": 1
+  },
+  {
+    "run_id": "fault_during_event-1011",
+    "archetype": "fault_during_event",
+    "seed": 1011,
+    "file": "fault_during_event-1011.json",
+    "shift_minutes": 480,
+    "n_workers": 1,
+    "n_truth_events": 1,
+    "n_fault_events": 1
+  },
+  {
+    "run_id": "multi_worker_faults-1012",
+    "archetype": "multi_worker_faults",
+    "seed": 1012,
+    "file": "multi_worker_faults-1012.json",
+    "shift_minutes": 480,
+    "n_workers": 3,
+    "n_truth_events": 1,
+    "n_fault_events": 3
+  },
+  {
+    "run_id": "concurrent_alert_and_fault-1013",
+    "archetype": "concurrent_alert_and_fault",
+    "seed": 1013,
+    "file": "concurrent_alert_and_fault-1013.json",
+    "shift_minutes": 60,
+    "n_workers": 1,
+    "n_truth_events": 1,
+    "n_fault_events": 1
+  }
+]
