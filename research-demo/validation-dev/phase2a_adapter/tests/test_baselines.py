@@ -88,6 +88,43 @@ class TestBaselines(unittest.TestCase):
         self.assertEqual(block["status"], "PROVISIONAL")
         self.assertNotIn("conventional", block["description"].lower())
 
+    def test_validity_gate_matches_real_engine_on_a_negative_non_nan_value(self):
+        """Phase 2C item 2 regression: a negative, non-NaN rescaled value
+        is accepted by the OLD narrow check (`v is None or v != v`) --
+        the engine's own SimLab.pure.validReading correctly rejects it
+        (frozen release: a reading is valid only if >= 0). This proves
+        the fix (PHASE2B_INTEGRATION_AUDIT.md section 5, Finding 1)
+        actually changes behavior, not just that it runs without error."""
+        from phase2a_adapter.detection_adapter import valid_mask
+        series = [50.0, -12.0, 60.0, float("nan"), None, 45.0]
+        mask = valid_mask(self.bridge, series)
+        self.assertEqual(mask, [True, False, True, False, False, True])
+        # The old check would have scored index 1 as valid (-12 == -12,
+        # not NaN, not None) -- confirm that premise directly.
+        old_check_would_accept = [v is not None and v == v for v in series]
+        self.assertTrue(old_check_would_accept[1])
+        self.assertFalse(mask[1])
+
+    def test_baseline_2_excludes_a_negative_value_the_old_check_would_have_flagged(self):
+        """End-to-end version of the above: baseline_2's flagged output
+        must never flag an engine-invalid (here: negative) reading, even
+        though it clears the fixed-multiple threshold numerically."""
+        d = _run_dict("sudden_increase", 9105, self.p1_config)
+        worker = d["workers"][0]
+        engine_baseline = self.engine_baselines[worker["room"]] * worker["proc_mult"]
+        # Inject a large negative value early in the series -- numerically
+        # it would clear any sane fixed_multiple*baseline threshold if
+        # compared naively, but must never be flagged, since it is not a
+        # physically valid reading.
+        worker = dict(worker)
+        worker["series"] = dict(worker["series"])
+        tampered = list(worker["series"]["observed_rate_uSv_h"])
+        tampered[0] = -9999.0
+        worker["series"]["observed_rate_uSv_h"] = tampered
+        result = baselines.baseline_2_fixed_threshold(
+            self.bridge, worker, self.p1_config, self.engine_baselines, self.p2a_config)
+        self.assertEqual(result["FP"], 0, msg=f"a negative reading must never be flagged: {result}")
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,0 +1,40 @@
+{
+  "_disclaimer": "PROVISIONAL -- NOT CLINICALLY VALIDATED. These values are copied, read-only, from the frozen ALARAD v1.2.3 release's own source comments and constants. They are the ENGINE's own illustrative placeholders, not independently chosen by this research project, and are registered here (Phase 2C item 6, per ICAIRE_Simulation_Validation_Methodology.md section 9 rows 14-15) because this project's adapter now depends on them directly (via rescale_to_engine_baseline) without having previously tracked them as a scientific assumption requiring review.",
+  "schema_version": "1.0.0",
+  "methodology_reference": "ICAIRE_Simulation_Validation_Methodology.md (Revision 3), section 9, rows 14-15",
+  "source": "ALARAD_Prototype_Research_Demo_v1.2.3.html, SHA-256 92e897dd0ff1738f083df829b53f7f46377e042b7019bb9776232792261182ee",
+  "baselineRates": {
+    "values_uSv_h": {
+      "Cath Lab 1": 90, "Cath Lab 2": 85, "Cath Lab 3": 92,
+      "Fluoroscopy Suite": 70, "Nuclear Medicine": 35, "PET/CT Suite": 45,
+      "CT Suite": 55
+    },
+    "source_comment": "uSv/h expected dose rate at the worker by room, before procedure multiplier -- CONFIGURABLE, ILLUSTRATIVE placeholder values (not derived from real data)",
+    "source_line": 1497,
+    "status": "PROVISIONAL",
+    "registry_row": 14
+  },
+  "CONFIG": {
+    "values": {
+      "devElevated": 0.5, "devCritical": 1.5,
+      "doseElevated": 0.15, "doseCritical": 0.35,
+      "refAnnual": 20, "warnFracElevated": 0.5, "warnFracCritical": 0.9
+    },
+    "source_comment": "PROTOTYPE warning thresholds -- configurable placeholders, NOT regulatory limits",
+    "source_line": 1501,
+    "status": "PROVISIONAL",
+    "registry_row": 15
+  },
+  "dur_minutes_horizon": {
+    "value": 30,
+    "source_comment": "Fixed projection horizon used by both evaluateExposure callers (SimLab/SafetyLab's own HORIZON_MIN) and this adapter's classify_series -- matched deliberately, not independently chosen, but still provisional since its clinical appropriateness has not been reviewed.",
+    "status": "PROVISIONAL",
+    "registry_row": 15
+  },
+  "immediate_alert_policy_default": {
+    "value": {"mode": "dose", "doseMsv": null},
+    "source_comment": "AlaradSafety's own default global policy (IMM), confirmed live via AlaradSafety.policy() on a freshly loaded page -- enabled by default, bypassing confirmation window K when projected dose reaches CONFIG.doseCritical.",
+    "status": "PROVISIONAL",
+    "registry_row": 17
+  }
+}

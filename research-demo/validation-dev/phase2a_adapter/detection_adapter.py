@@ -3,38 +3,55 @@ Radiation-anomaly detection evaluation adapter.
 
 This module feeds Phase 1 synthetic observations into the frozen engine's
 own, real, unmodified functions -- `evaluateExposure` for per-minute
-classification, `SimLab.pure.buildEpisodes` for confirmation-window episode
-detection, `SimLab.pure.matchEvents` for ground-truth matching, and
-`SimLab.pure.metrics` for precision/recall/F1 -- and nothing else computes
-or approximates that logic. Task 8's requirement ("confirm the adapter
-reproduces the frozen detector's outputs on reference scenarios") is
-checked in tests/test_reference_reproduction.py by running this exact
-call sequence against the engine's own built-in S1-S6 scenarios and
-diffing against `SimLab.run()`'s own output.
+classification, `AlaradSafety.immediateAlert` for the dose-based
+confirmation-window bypass (Phase 2C item 1 -- see below),
+`SimLab.pure.buildEpisodes` for episode detection, `SimLab.pure.matchEvents`
+for ground-truth matching, and `SimLab.pure.metrics` for precision/recall/
+F1 -- and nothing else computes or approximates that logic. Task 8's
+requirement ("confirm the adapter reproduces the frozen detector's
+outputs on reference scenarios") is checked in
+tests/test_reference_reproduction.py by running this exact call sequence
+against the engine's own built-in reference scenarios and diffing against
+`SimLab.run()`/`SafetyLab.run()`'s own output.
 
-**Scope limitation (see PHASE2A_LIMITATIONS.md item 1): personal-mode
-workers only.** Phase 1's output schema (phase1_simulator/output.py) does
-not currently carry the area-monitoring geometry (distance-over-time,
-shielding, reference distance) needed to call `evaluateExposure` correctly
-for area-mode workers. Calling it with invented geometry would be exactly
-the kind of silent approximation Phase 2A is required not to do, so
-area-mode radiation-anomaly evaluation is not implemented here; attempting
-it raises NotImplementedError rather than guessing.
+**Immediate-alert bypass (Phase 2C item 1, PHASE2B_INTEGRATION_AUDIT.md
+section 4):** the frozen engine's own default policy
+(`AlaradSafety.policy()` = `{mode:'dose', doseMsv:null}`) lets a
+sufficiently high projected dose raise an alert immediately, bypassing
+the K-minute confirmation window. Phase 2A's adapter always called
+`buildEpisodes(flagged, K, null)`, ignoring this -- which the audit found
+never actually mattered for S1-S6 (the bypass never fires there at any
+tested K) but DOES matter for S8 at K=3/K=5 (live-checked:
+`episode.immediate` is `true` there). `evaluate_radiation_detection` now
+defaults to `use_immediate_alert=True`, reading the engine's own live
+policy exactly as `SimLab.runWorker`/`SafetyLab.runWorker` do, so this
+adapter's default behavior matches the engine's own default behavior.
+Passing `use_immediate_alert=False` recovers the confirmation-only
+comparison mode Phase 2A originally (and Baselines 2/3 by definition,
+per the methodology, still) use.
 
-**The rescaling problem (see PHASE2A_LIMITATIONS.md item 2):** Phase 1's
-provisional procedure-class baselines (phase1_simulator/config/
-simulation_config.json) and the frozen engine's own `baselineRates`/
+**Area-mode evaluation (Phase 2C item 4, PHASE2B_INTEGRATION_AUDIT.md
+section 3):** now implemented, using Phase 1's additive
+`series.area_monitor_raw_rate_uSv_h` and `area_params` fields (the raw,
+pre-inverse-square-conversion area-monitor reading and geometry) so the
+frozen engine performs its own exponent-2 conversion via
+`evaluateExposure(mode:'area', dist, refDist, shield)`, rather than this
+adapter receiving an already-converted value.
+
+**The rescaling problem (see PHASE2A_LIMITATIONS.md item 2,
+PHASE2B_INTEGRATION_AUDIT.md sections 1-2):** Phase 1's provisional
+procedure-class baselines and the frozen engine's own `baselineRates`/
 `CONFIG` thresholds are two independently-chosen provisional parameter
-sets, not calibrated to each other. Feeding Phase 1's raw µSv/h values
-into the engine as-is would produce near-meaningless classifications (a
-"step to 4x Phase-1-baseline" event can still be far below the engine's
-own, much larger, baseline). `rescale_to_engine_baseline` preserves the
-*ratio* of each reading to Phase 1's own baseline exactly, while mapping
-that ratio onto the engine's own baseline for the same room/procMult --
-so the engine classifies the data using its own real thresholds, against
-an injected pattern whose *shape* is exactly what Phase 1 generated. This
-is a disclosed, documented input transformation performed by the adapter,
-not a change to either Phase 1's or the frozen engine's own logic.
+sets, not calibrated to each other. `rescale_to_engine_baseline` preserves
+the *ratio* of each reading to Phase 1's own baseline exactly, while
+mapping that ratio onto the engine's own baseline for the same
+room/procMult. The audit found this is severity-neutral for the
+deviation-based classification term (provably scale-invariant) but not
+for the dose-based term in general, though it does not change outcomes
+for the engine's current CONFIG/baselineRates/dur combination -- see
+PHASE2B_INTEGRATION_AUDIT.md section 1 and PHASE2C's own re-audit
+(section 7 of PHASE2C_CORRECTIVE_IMPLEMENTATION.md) for why this
+approach is retained rather than eliminated in this phase.
 """
 
 from __future__ import annotations
@@ -67,7 +84,8 @@ def phase1_baseline_rate(worker: Dict[str, Any], phase1_config) -> float:
     worker, by reapplying phase1_simulator.scenario._make_worker's own
     formula (baseline = procedure's configured rate * proc_mult) against
     Phase 1's own shipped config -- not a new or independently guessed
-    number."""
+    number. Mode-independent: the formula is the same for personal- and
+    area-mode workers."""
     proc_cfg = phase1_config.procedure_classes()[worker["procedure_class"]]
     return proc_cfg["baseline_rate_uSv_h"] * worker["proc_mult"]
 
@@ -96,54 +114,96 @@ def rescale_to_engine_baseline(observed_series: List[Optional[float]],
     return out
 
 
+def _nan_safe(series: List[Optional[float]]) -> List[Optional[float]]:
+    """NaN/Infinity cannot cross JSON (page.evaluate serializes args as
+    JSON); encode as None, which the engine's own validReading already
+    rejects -- semantically correct (an invalid/non-physical reading),
+    not a loss of information for any call this is used in."""
+    return [None if (isinstance(v, float) and (math.isnan(v) or math.isinf(v))) else v
+            for v in series]
+
+
+def valid_mask(bridge: EngineBridge, series: List[Optional[float]]) -> List[bool]:
+    """Returns, per minute, whether the engine's own `SimLab.pure.validReading`
+    accepts the (already rescaled) reading. Shared by the candidate
+    detector's classify_series and, per Phase 2C item 2, by baselines.py's
+    independently-defined comparator algorithms -- so every method in
+    this package gates on the SAME real validity rule, even though the
+    classification logic that follows differs between methods."""
+    return bridge.evaluate(
+        "(series) => series.map(r => r !== null && SimLab.pure.validReading(r))",
+        _nan_safe(series),
+    )
+
+
 def classify_series(bridge: EngineBridge, rescaled_series: List[Optional[float]],
-                     room: str, proc_mult: float, dur_min: int = HORIZON_MIN) -> List[Dict[str, Any]]:
+                     room: str, proc_mult: float, dur_min: int = HORIZON_MIN,
+                     mode: str = "personal",
+                     dist_per_minute: Optional[List[float]] = None,
+                     ref_dist: float = 1.0, shield: float = 1.0) -> List[Dict[str, Any]]:
     """Calls the engine's own evaluateExposure once per minute, exactly as
-    the engine's own SimLab.runWorker does: a reading is only passed to
-    evaluateExposure if SimLab.pure.validReading accepts it (the engine's
-    own validity gate, reused here rather than re-derived); otherwise the
-    minute is recorded as the engine's own 'invalid'/not-flagged outcome,
-    matching the real app's own call pattern.
+    the engine's own SimLab.runWorker/SafetyLab.runWorker do: a reading is
+    only passed to evaluateExposure if SimLab.pure.validReading accepts it
+    (the engine's own validity gate, reused here rather than re-derived);
+    otherwise the minute is recorded as the engine's own 'invalid'/not-
+    flagged outcome. Also computes, per minute, exactly what
+    SimLab.runWorker computes for the immediate-alert bypass (line 2964
+    of the frozen release): `valid && AlaradSafety.immediateAlert({cumulativeDose}, {mode:'dose', doseMsv: AlaradSafety.policy().doseMsv})`,
+    reading the engine's own live policy rather than a hardcoded value.
+
+    For mode='area', `dist_per_minute` (one entry per minute, from Phase 1's
+    `area_params`) is required; the engine performs its own exponent-2
+    inverse-square conversion internally from the raw `rate` passed in.
     """
+    if mode == "area" and dist_per_minute is None:
+        raise ValueError("dist_per_minute is required when mode='area'")
+
     js = """
     (args) => {
-      const { series, room, procMult, dur } = args;
-      return series.map(r => {
+      const { series, room, procMult, dur, mode, distPerMinute, refDist, shield } = args;
+      const pol = { mode: 'dose', doseMsv: AlaradSafety.policy().doseMsv };
+      return series.map((r, t) => {
         if (r === null || !SimLab.pure.validReading(r)) {
-          return { valid: false, riskClass: 'invalid', flagged: false };
+          return { valid: false, riskClass: 'invalid', flagged: false, cumulativeDose: null, immediate: false };
         }
-        const ev = evaluateExposure({ room, procMult, rate: r, dur, dist: 1, refDist: 1, shield: 1, mode: 'personal' });
-        return { valid: true, riskClass: ev.riskClass, flagged: ev.riskClass !== 'low', deviation: ev.deviation, workerRate: ev.workerRate };
+        const dist = mode === 'area' ? distPerMinute[t] : 1;
+        const ev = evaluateExposure({ room, procMult, rate: r, dur, dist, refDist, shield, mode });
+        const immediate = AlaradSafety.immediateAlert({ cumulativeDose: ev.cumulativeDose }, pol);
+        return {
+          valid: true, riskClass: ev.riskClass, flagged: ev.riskClass !== 'low',
+          deviation: ev.deviation, workerRate: ev.workerRate,
+          cumulativeDose: ev.cumulativeDose, immediate,
+        };
       });
     }
     """
-    # NaN cannot cross JSON (page.evaluate serializes args as JSON); encode
-    # as null, which validReading already rejects -- semantically correct
-    # (an invalid/non-physical reading), not a loss of information for
-    # this call's purpose.
-    safe_series = [None if (isinstance(v, float) and (math.isnan(v) or math.isinf(v))) else v
-                   for v in rescaled_series]
-    return bridge.evaluate(js, {"series": safe_series, "room": room, "procMult": proc_mult, "dur": dur_min})
+    return bridge.evaluate(js, {
+        "series": _nan_safe(rescaled_series), "room": room, "procMult": proc_mult,
+        "dur": dur_min, "mode": mode, "distPerMinute": dist_per_minute,
+        "refDist": ref_dist, "shield": shield,
+    })
+
+
+def _dist_per_minute(area_params: Dict[str, Any], n_minutes: int) -> List[float]:
+    move_at = area_params["move_at"]
+    before = area_params["distance_before_m"]
+    after = area_params["distance_after_m"]
+    return [before if t < move_at else after for t in range(n_minutes)]
 
 
 def evaluate_radiation_detection(bridge: EngineBridge, worker: Dict[str, Any],
                                   phase1_config, engine_baselines: Dict[str, float],
-                                  K: int = 1, grace: int = 2) -> Dict[str, Any]:
+                                  K: int = 1, grace: int = 2,
+                                  use_immediate_alert: bool = True) -> Dict[str, Any]:
     """Full radiation-anomaly evaluation for one Phase 1 worker record
     (as produced by phase1_simulator.output.run_to_dict), against the real
-    frozen engine. Personal mode only -- see module docstring.
+    frozen engine. Handles both personal- and area-mode workers.
 
     Returns a dict with: per-minute classification, episodes (from the
-    real engine), TP/FP/FN, precision/recall/F1 (from the real engine),
-    and per-matched-event detection delay.
+    real engine, including the real `immediate` flag per episode),
+    TP/FP/FN, precision/recall/F1 (from the real engine), and per-matched-
+    event detection delay.
     """
-    if worker["mode"] != "personal":
-        raise NotImplementedError(
-            "Area-mode radiation-anomaly evaluation is out of scope for "
-            "Phase 2A -- see PHASE2A_LIMITATIONS.md item 1. "
-            f"worker_id={worker.get('worker_id')!r} mode={worker['mode']!r}"
-        )
-
     room = worker["room"]
     if room not in engine_baselines:
         raise ValueError(
@@ -154,15 +214,34 @@ def evaluate_radiation_detection(bridge: EngineBridge, worker: Dict[str, Any],
     p1_baseline = phase1_baseline_rate(worker, phase1_config)
     engine_baseline = engine_baselines[room] * worker["proc_mult"]
 
-    observed = [decode_observed_value(v) for v in worker["series"]["observed_rate_uSv_h"]]
-    rescaled = rescale_to_engine_baseline(observed, p1_baseline, engine_baseline)
+    if worker["mode"] == "personal":
+        observed = [decode_observed_value(v) for v in worker["series"]["observed_rate_uSv_h"]]
+        rescaled = rescale_to_engine_baseline(observed, p1_baseline, engine_baseline)
+        per_minute = classify_series(bridge, rescaled, room, worker["proc_mult"], mode="personal")
+    elif worker["mode"] == "area":
+        if worker.get("area_params") is None or worker["series"].get("area_monitor_raw_rate_uSv_h") is None:
+            raise ValueError(
+                f"worker_id={worker.get('worker_id')!r} is area-mode but is missing "
+                f"area_params / series.area_monitor_raw_rate_uSv_h -- regenerate it "
+                f"with the current phase1_simulator.output schema (Phase 2C item 3)."
+            )
+        ap = worker["area_params"]
+        raw = [decode_observed_value(v) for v in worker["series"]["area_monitor_raw_rate_uSv_h"]]
+        rescaled = rescale_to_engine_baseline(raw, p1_baseline, engine_baseline)
+        dist_pm = _dist_per_minute(ap, len(rescaled))
+        per_minute = classify_series(
+            bridge, rescaled, room, worker["proc_mult"], mode="area",
+            dist_per_minute=dist_pm, ref_dist=ap["reference_distance_m"],
+            shield=ap["shielding"])
+    else:
+        raise ValueError(f"Unknown worker mode {worker['mode']!r}")
 
-    per_minute = classify_series(bridge, rescaled, room, worker["proc_mult"])
     flagged = [m["flagged"] for m in per_minute]
+    imm = [m["immediate"] for m in per_minute] if use_immediate_alert else None
 
     episodes_result = bridge.evaluate(
-        "(args) => SimLab.pure.buildEpisodes(args.flagged, args.K, null)",
-        {"flagged": flagged, "K": K},
+        "(args) => SimLab.pure.buildEpisodes(args.flagged, args.K, args.imm)",
+        {"flagged": flagged, "K": K, "imm": imm},
     )
     episodes = episodes_result["episodes"]
 
@@ -189,14 +268,17 @@ def evaluate_radiation_detection(bridge: EngineBridge, worker: Dict[str, Any],
     return {
         "worker_id": worker["worker_id"],
         "room": room,
+        "mode": worker["mode"],
         "proc_mult": worker["proc_mult"],
         "phase1_baseline_uSv_h": p1_baseline,
         "engine_baseline_uSv_h": engine_baseline,
         "rescale_ratio": engine_baseline / p1_baseline,
         "K": K,
         "grace": grace,
+        "use_immediate_alert": use_immediate_alert,
         "n_minutes": len(flagged),
         "episodes": episodes,
+        "n_immediate_episodes": sum(1 for e in episodes if e.get("immediate")),
         "TP": TP, "FP": FP, "FN": FN,
         "precision": mm["precision"], "recall": mm["recall"], "f1": mm["f1"],
         "detection_delays_minutes": detection_delays,

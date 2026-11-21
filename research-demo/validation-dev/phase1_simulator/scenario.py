@@ -373,6 +373,14 @@ def simulate_run(run: RunSpec, config) -> Dict[str, Any]:
             "worker": w,
             "true_series": true_series,
             "observed_series": observed_series,
+            # Additive (Phase 2C item 3): the raw, pre-inverse-square-
+            # conversion area-monitor reading (post-noise, post-fault),
+            # None for personal-mode workers. observed_series above is
+            # already Phase 1's own converted MODELED estimate; this is
+            # the separate raw input a faithful area-mode adapter needs
+            # so the frozen engine can perform its own conversion rather
+            # than receiving an already-converted value.
+            "area_monitor_raw_rate_uSv_h": observed_area_raw if w.mode == "area" else None,
             "true_dose_mSv": true_dose,
             "dose_account": dose_account,
             "dose_label": dose_label,

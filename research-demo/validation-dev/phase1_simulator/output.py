@@ -60,6 +60,11 @@ def run_to_dict(simulated: Dict[str, Any], config) -> Dict[str, Any]:
             "proc_mult": w.proc_mult,
             "mode": w.mode,
             "dose_label": wr["dose_label"],
+            # Additive (Phase 2C item 3): area-monitoring geometry, None
+            # for personal-mode workers. Previously computed internally
+            # by scenario.py but not serialized -- see
+            # PHASE2B_INTEGRATION_AUDIT.md section 3.
+            "area_params": dict(w.area_params) if w.area_params is not None else None,
             "truth_events": [
                 {"start": e.start, "end": e.end, "label": e.label}
                 for e in w.truth_events
@@ -77,6 +82,12 @@ def run_to_dict(simulated: Dict[str, Any], config) -> Dict[str, Any]:
                 "true_rate_uSv_h": [_json_safe(v) for v in wr["true_series"]],
                 "observed_rate_uSv_h": [_json_safe(v) for v in wr["observed_series"]],
                 "observed_status_per_minute": list(da.per_minute_status),
+                # Additive (Phase 2C item 3): raw, pre-conversion area-
+                # monitor reading; None for personal-mode workers.
+                "area_monitor_raw_rate_uSv_h": (
+                    [_json_safe(v) for v in wr["area_monitor_raw_rate_uSv_h"]]
+                    if wr.get("area_monitor_raw_rate_uSv_h") is not None else None
+                ),
             },
         })
     return {

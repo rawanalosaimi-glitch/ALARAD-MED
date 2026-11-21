@@ -1,12 +1,17 @@
 """
-Phase 2A small integration smoke test -- NOT the statistical evaluation
-campaign described in ICAIRE_Simulation_Validation_Methodology.md section
-7 (>=30 independent seeds per scenario class, baselines, significance
-testing). That campaign is explicitly out of scope for Phase 2A. This
-script runs one seed per personal-mode archetype through the real engine
-via this adapter (candidate detector + both new baselines, radiation and
-DQ layers) and prints a small results table, to demonstrate the pipeline
-works end-to-end on real Phase 1 output.
+Phase 2A/2C small integration smoke test -- NOT the statistical
+evaluation campaign described in ICAIRE_Simulation_Validation_Methodology.md
+section 7 (>=30 independent seeds per scenario class, baselines,
+significance testing). That campaign is explicitly out of scope. This
+script runs one seed per archetype (including, as of Phase 2C item 4,
+the area-mode `area_relocation` archetype) through the real engine via
+this adapter (candidate detector, with the immediate-alert bypass now
+enabled by default -- Phase 2C item 1 -- both new baselines for
+personal-mode workers, and the data-quality layer for every worker) and
+prints a small results table, to demonstrate the pipeline works end-to-
+end on real Phase 1 output. Baselines 2/3 remain personal-mode-only
+(methodology section 4a never specified an area-mode variant, and this
+phase does not add one).
 
 Usage (from the research-demo/validation-dev directory):
     python3 -m phase2a_adapter.run_phase2a_smoke
@@ -45,6 +50,7 @@ SMOKE_ARCHETYPE_SEEDS = {
     "fault_delayed": 2008,
     "fault_during_event": 2009,
     "concurrent_alert_and_fault": 2010,
+    "area_relocation": 2011,
 }
 
 
@@ -66,34 +72,44 @@ def main() -> None:
 
             for worker in d["workers"]:
                 cand = evaluate_radiation_detection(bridge, worker, p1_cfg, engine_baselines, K=1)
-                b0 = baselines.baseline_0_always_normal(bridge, worker)
-                b2 = baselines.baseline_2_fixed_threshold(bridge, worker, p1_cfg, engine_baselines, p2a_cfg)
-                b3 = baselines.baseline_3_moving_average(bridge, worker, p1_cfg, engine_baselines, p2a_cfg)
                 dq = evaluate_dq_detection(bridge, worker, p1_cfg, engine_baselines)
-
                 candidate_results.append(cand)
-                b0_results.append(b0)
-                b2_results.append(b2)
-                b3_results.append(b3)
                 dq_results.append(dq)
 
-                rows.append({
-                    "archetype": archetype, "worker_id": worker["worker_id"],
+                row = {
+                    "archetype": archetype, "worker_id": worker["worker_id"], "mode": worker["mode"],
                     "n_truth_events": len(worker["truth_events"]),
                     "n_fault_events": len(worker["fault_events"]),
-                    "candidate": {"TP": cand["TP"], "FP": cand["FP"], "FN": cand["FN"]},
-                    "baseline_0": {"TP": b0["TP"], "FP": b0["FP"], "FN": b0["FN"]},
-                    "baseline_2": {"TP": b2["TP"], "FP": b2["FP"], "FN": b2["FN"]},
-                    "baseline_3": {"TP": b3["TP"], "FP": b3["FP"], "FN": b3["FN"]},
+                    "candidate": {"TP": cand["TP"], "FP": cand["FP"], "FN": cand["FN"],
+                                  "n_immediate_episodes": cand["n_immediate_episodes"]},
                     "dq": {"TP": dq["TP"], "FP": dq["FP"], "FN": dq["FN"]},
-                })
-                print(f"  {archetype:28s} {worker['worker_id']:6s} "
-                      f"truth={len(worker['truth_events'])} faults={len(worker['fault_events'])}  "
-                      f"candidate TP/FP/FN={cand['TP']}/{cand['FP']}/{cand['FN']}  "
-                      f"b0={b0['TP']}/{b0['FP']}/{b0['FN']}  "
-                      f"b2={b2['TP']}/{b2['FP']}/{b2['FN']}  "
-                      f"b3={b3['TP']}/{b3['FP']}/{b3['FN']}  "
-                      f"dq={dq['TP']}/{dq['FP']}/{dq['FN']}")
+                }
+                line = (f"  {archetype:28s} {worker['worker_id']:6s} mode={worker['mode']:8s} "
+                        f"truth={len(worker['truth_events'])} faults={len(worker['fault_events'])}  "
+                        f"candidate TP/FP/FN={cand['TP']}/{cand['FP']}/{cand['FN']} "
+                        f"(immediate_eps={cand['n_immediate_episodes']})  "
+                        f"dq={dq['TP']}/{dq['FP']}/{dq['FN']}")
+
+                if worker["mode"] == "personal":
+                    b0 = baselines.baseline_0_always_normal(bridge, worker)
+                    b2 = baselines.baseline_2_fixed_threshold(bridge, worker, p1_cfg, engine_baselines, p2a_cfg)
+                    b3 = baselines.baseline_3_moving_average(bridge, worker, p1_cfg, engine_baselines, p2a_cfg)
+                    b0_results.append(b0)
+                    b2_results.append(b2)
+                    b3_results.append(b3)
+                    row.update({
+                        "baseline_0": {"TP": b0["TP"], "FP": b0["FP"], "FN": b0["FN"]},
+                        "baseline_2": {"TP": b2["TP"], "FP": b2["FP"], "FN": b2["FN"]},
+                        "baseline_3": {"TP": b3["TP"], "FP": b3["FP"], "FN": b3["FN"]},
+                    })
+                    line += (f"  b0={b0['TP']}/{b0['FP']}/{b0['FN']}  "
+                             f"b2={b2['TP']}/{b2['FP']}/{b2['FN']}  "
+                             f"b3={b3['TP']}/{b3['FP']}/{b3['FN']}")
+                else:
+                    line += "  (baselines 2/3 are personal-mode-only, not run for this worker)"
+
+                rows.append(row)
+                print(line)
 
         summary = {
             "candidate": summarize(candidate_results),

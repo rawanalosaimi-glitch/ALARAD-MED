@@ -6,10 +6,16 @@ required by Phase 2A's restrictions.
 
 from __future__ import annotations
 
+import json
 import unittest
+from pathlib import Path
 
 from phase2a_adapter.engine_bridge import EngineBridge, verify_frozen_release_hash, FROZEN_RELEASE_PATH
 from phase2a_adapter.engine_contract import verify_contract, snapshot_engine_constants, EngineContractError
+
+ENGINE_PARAMS_PATH = (
+    Path(__file__).resolve().parents[1] / "config" / "engine_provisional_parameters.json"
+)
 
 
 class TestEngineContract(unittest.TestCase):
@@ -42,6 +48,21 @@ class TestEngineContract(unittest.TestCase):
         self.assertEqual(snap["baselineRates"]["Fluoroscopy Suite"], 70)
         self.assertEqual(snap["CONFIG"]["devElevated"], 0.5)
         self.assertEqual(snap["CONFIG"]["devCritical"], 1.5)
+
+    def test_registered_engine_parameters_match_the_live_engine(self):
+        """Phase 2C item 6: engine_provisional_parameters.json is a
+        registered snapshot (methodology section 9, rows 14-15), not a
+        one-time note. This guards against silent drift between that
+        registered snapshot and what the live engine actually reports."""
+        registered = json.loads(ENGINE_PARAMS_PATH.read_text())
+        self.assertIn("PROVISIONAL", registered["_disclaimer"].upper())
+        live = snapshot_engine_constants(self.bridge)
+        self.assertEqual(registered["baselineRates"]["values_uSv_h"], live["baselineRates"])
+        self.assertEqual(registered["CONFIG"]["values"], live["CONFIG"])
+        self.assertEqual(registered["baselineRates"]["status"], "PROVISIONAL")
+        self.assertEqual(registered["CONFIG"]["status"], "PROVISIONAL")
+        live_policy = self.bridge.evaluate("AlaradSafety.policy()")
+        self.assertEqual(registered["immediate_alert_policy_default"]["value"], live_policy)
 
     def test_contract_failure_is_reported_not_swallowed(self):
         # A deliberately wrong expectation must raise, not pass silently.

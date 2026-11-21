@@ -2,9 +2,16 @@
   {
     "archetype": "normal",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 0,
     "n_fault_events": 0,
     "candidate": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
       "TP": 0,
       "FP": 0,
       "FN": 0
@@ -20,11 +27,6 @@
       "FN": 0
     },
     "baseline_3": {
-      "TP": 0,
-      "FP": 0,
-      "FN": 0
-    },
-    "dq": {
       "TP": 0,
       "FP": 0,
       "FN": 0
@@ -33,10 +35,17 @@
   {
     "archetype": "gradual_increase",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 1,
     "n_fault_events": 0,
     "candidate": {
       "TP": 1,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
+      "TP": 0,
       "FP": 0,
       "FN": 0
     },
@@ -52,11 +61,6 @@
     },
     "baseline_3": {
       "TP": 1,
-      "FP": 0,
-      "FN": 0
-    },
-    "dq": {
-      "TP": 0,
       "FP": 0,
       "FN": 0
     }
@@ -64,10 +68,17 @@
   {
     "archetype": "sudden_increase",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 1,
     "n_fault_events": 0,
     "candidate": {
       "TP": 1,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
+      "TP": 0,
       "FP": 0,
       "FN": 0
     },
@@ -85,21 +96,23 @@
       "TP": 1,
       "FP": 0,
       "FN": 0
-    },
-    "dq": {
-      "TP": 0,
-      "FP": 0,
-      "FN": 0
     }
   },
   {
     "archetype": "transient_spike",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 0,
     "n_fault_events": 0,
     "candidate": {
       "TP": 0,
       "FP": 1,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
+      "TP": 0,
+      "FP": 0,
       "FN": 0
     },
     "baseline_0": {
@@ -113,11 +126,6 @@
       "FN": 0
     },
     "baseline_3": {
-      "TP": 0,
-      "FP": 0,
-      "FN": 0
-    },
-    "dq": {
       "TP": 0,
       "FP": 0,
       "FN": 0
@@ -126,10 +134,17 @@
   {
     "archetype": "fault_missing",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 0,
     "n_fault_events": 1,
     "candidate": {
       "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
+      "TP": 1,
       "FP": 0,
       "FN": 0
     },
@@ -145,11 +160,6 @@
     },
     "baseline_3": {
       "TP": 0,
-      "FP": 0,
-      "FN": 0
-    },
-    "dq": {
-      "TP": 1,
       "FP": 0,
       "FN": 0
     }
@@ -157,10 +167,17 @@
   {
     "archetype": "fault_invalid",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 0,
     "n_fault_events": 1,
     "candidate": {
       "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
+      "TP": 1,
       "FP": 0,
       "FN": 0
     },
@@ -176,11 +193,6 @@
     },
     "baseline_3": {
       "TP": 0,
-      "FP": 0,
-      "FN": 0
-    },
-    "dq": {
-      "TP": 1,
       "FP": 0,
       "FN": 0
     }
@@ -188,10 +200,17 @@
   {
     "archetype": "fault_frozen",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 0,
     "n_fault_events": 1,
     "candidate": {
       "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
+      "TP": 1,
       "FP": 0,
       "FN": 0
     },
@@ -207,11 +226,6 @@
     },
     "baseline_3": {
       "TP": 0,
-      "FP": 0,
-      "FN": 0
-    },
-    "dq": {
-      "TP": 1,
       "FP": 0,
       "FN": 0
     }
@@ -219,10 +233,17 @@
   {
     "archetype": "fault_delayed",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 0,
     "n_fault_events": 1,
     "candidate": {
       "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
+      "TP": 1,
       "FP": 0,
       "FN": 0
     },
@@ -240,19 +261,21 @@
       "TP": 0,
       "FP": 0,
       "FN": 0
-    },
-    "dq": {
-      "TP": 1,
-      "FP": 0,
-      "FN": 0
     }
   },
   {
     "archetype": "fault_during_event",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 1,
     "n_fault_events": 1,
     "candidate": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
       "TP": 1,
       "FP": 0,
       "FN": 0
@@ -268,11 +291,6 @@
       "FN": 0
     },
     "baseline_3": {
-      "TP": 1,
-      "FP": 0,
-      "FN": 0
-    },
-    "dq": {
       "TP": 1,
       "FP": 0,
       "FN": 0
@@ -281,9 +299,16 @@
   {
     "archetype": "concurrent_alert_and_fault",
     "worker_id": "W-00",
+    "mode": "personal",
     "n_truth_events": 1,
     "n_fault_events": 1,
     "candidate": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
+    },
+    "dq": {
       "TP": 1,
       "FP": 0,
       "FN": 0
@@ -302,9 +327,22 @@
       "TP": 1,
       "FP": 0,
       "FN": 0
+    }
+  },
+  {
+    "archetype": "area_relocation",
+    "worker_id": "W-00",
+    "mode": "area",
+    "n_truth_events": 1,
+    "n_fault_events": 0,
+    "candidate": {
+      "TP": 1,
+      "FP": 0,
+      "FN": 0,
+      "n_immediate_episodes": 0
     },
     "dq": {
-      "TP": 1,
+      "TP": 0,
       "FP": 0,
       "FN": 0
     }

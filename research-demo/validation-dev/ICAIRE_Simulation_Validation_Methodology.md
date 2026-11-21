@@ -18,6 +18,17 @@ handling of correlated observations within a simulated shift for
 uncertainty/CI purposes (§7a). Revision 1's content is otherwise preserved,
 renumbered as noted inline.
 
+**Revision 3 (Phase 2C item 6).** Adds Parameter Registry rows 14–18
+(§9), registering the frozen engine's own `baselineRates` and `CONFIG`
+thresholds, its default immediate-alert policy, the physical coherence of
+rescaling Phase 1's procedure-class framing onto the engine's room-based
+framing, and the realism of scenario dynamics (S10/S11) not yet
+reproducible against the engine — all found during
+`PHASE2B_INTEGRATION_AUDIT.md` and `PHASE2C_CORRECTIVE_IMPLEMENTATION.md`,
+none previously tracked as scientific assumptions despite being load-
+bearing for Phase 2A/2C's adapter. No other section is changed in this
+revision; everything else from Revision 2 is preserved as-is.
+
 **Branch:** `research/icaire-v123-validation` (this file). No other branch
 was touched. The frozen `research-demo/releases/html/ALARAD_Prototype_Research_Demo_v1.2.3.html`
 (SHA-256 `92e897dd0ff1738f083df829b53f7f46377e042b7019bb9776232792261182ee`)
@@ -516,6 +527,11 @@ fixed later without the review this table calls for.
 | 11 | Synthetic noise model realism (±5% baseline noise, as implemented in v1.2.3) | §1 / existing engine | Inherited from v1.2.3, unverified against real dosimeter noise | A real wearable-dosimeter noise-characterization study (not currently available) | **Yes, if ever claimed representative of real sensors** |
 | 12 | Inverse-square point-source approximation acceptability for area monitoring | §1 / existing engine | Inherited from v1.2.3, self-disclosed in-engine as limited | Health-physics literature on area-monitor geometry corrections | **Yes, if used beyond illustrative purposes** |
 | 13 | Chromium 141-vs-153 browser-version gap in verification reruns | `Verification_Rerun_Report.md`; carried forward here | Disclosed, unresolved | Either obtain the pinned 141 build under a different network policy, or formally accept 153 as the reference environment | **Yes** (methodological sign-off, not domain expertise) |
+| 14 | The frozen engine's own `baselineRates` (35-92 µSv/h by room) | §1 / existing engine; `phase2a_adapter/config/engine_provisional_parameters.json` | Inherited from v1.2.3, self-disclosed in-engine as "CONFIGURABLE, ILLUSTRATIVE placeholder values (not derived from real data)" (frozen release line 1497); now load-bearing for Phase 2A/2C's `rescale_to_engine_baseline` | Real per-room dose-rate survey data, or RSO sign-off that the illustrative values are an acceptable stand-in | **Yes** |
+| 15 | The frozen engine's own `CONFIG` thresholds (`devElevated/devCritical/doseElevated/doseCritical`, 30-minute horizon) | §1 / existing engine; `phase2a_adapter/config/engine_provisional_parameters.json` | Inherited from v1.2.3, self-disclosed in-engine as "PROTOTYPE warning thresholds — configurable placeholders, NOT regulatory limits" (frozen release line 1501) | Medical-physicist/RSO review of whether these thresholds, or the 30-minute projection horizon, are clinically appropriate | **Yes** |
+| 16 | Physical/conceptual coherence of mapping Phase 1's procedure-class framing onto the engine's room-based framing via `rescale_to_engine_baseline` | §2 (exposure simulation); `detection_adapter.rescale_to_engine_baseline`; `PHASE2B_INTEGRATION_AUDIT.md` §1-2 | Not a numeric question: does a Phase-1-generated pattern, re-anchored onto a specific room's illustrative baseline, represent a coherent simulated worker? Unresolved | Domain input on whether procedure-class and room-based framings are interchangeable for this purpose, or should be unified (see `PHASE2C_CORRECTIVE_IMPLEMENTATION.md` §7 for the retained-rescaling decision) | **Yes** |
+| 17 | Clinical basis for the immediate-alert dose bypass (`AlaradSafety.immediateAlert`, default policy `{mode:'dose', doseMsv:null}`) | §4 (not previously described in this methodology at all); `PHASE2B_INTEGRATION_AUDIT.md` §4; now implemented in `detection_adapter.classify_series` (Phase 2C item 1) | The bypass encodes a real safety-workflow judgment (an immediately dangerous projected dose should alert faster than standard confirmation); whether `doseCritical=0.35` mSv over 30 minutes is the clinically right trigger is unreviewed | RSO/medical-physicist review of the bypass's trigger value and whether bypassing confirmation is itself an appropriate design | **Yes** |
+| 18 | Realism of scenario dynamics not yet reproducible against the engine (S10's masked-event timing, S11's recovery-to-next-event spacing) if/when a Phase 1 generator for them is built | `PHASE2B_INTEGRATION_AUDIT.md` §7; `PHASE2C_CORRECTIVE_IMPLEMENTATION.md` coverage matrix | Not yet applicable — no Phase 1 generator for these dynamics exists; registered now so the question is not forgotten once one is built | Domain input on realistic frozen-sensor masking durations and recovery-to-next-event spacing, before any such generator is built | **Yes, before that future generator's parameters are fixed** |
 
 No row in this table has been resolved by this document. Resolving a row
 means obtaining and citing the evidence source listed, or obtaining the
