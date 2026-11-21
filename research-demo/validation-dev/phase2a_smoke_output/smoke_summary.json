@@ -1,0 +1,107 @@
+{
+  "candidate": {
+    "n_worker_shifts": 10,
+    "false_alarms_per_worker_shift": 0.1,
+    "precision": 0.8,
+    "precision_n_defined": 5,
+    "precision_n_excluded_undefined": 5,
+    "recall": 1,
+    "recall_n_defined": 4,
+    "recall_n_excluded_undefined": 6,
+    "f1": 0.8,
+    "f1_n_defined": 5,
+    "f1_n_excluded_undefined": 5,
+    "detection_delay": {
+      "n": 4,
+      "median": 0.0,
+      "q1": 0,
+      "q3": 5,
+      "min": 0,
+      "max": 5
+    }
+  },
+  "baseline_0_always_normal": {
+    "n_worker_shifts": 10,
+    "false_alarms_per_worker_shift": 0.0,
+    "precision": null,
+    "precision_n_defined": 0,
+    "precision_n_excluded_undefined": 10,
+    "recall": 0,
+    "recall_n_defined": 4,
+    "recall_n_excluded_undefined": 6,
+    "f1": 0,
+    "f1_n_defined": 4,
+    "f1_n_excluded_undefined": 6,
+    "detection_delay": {
+      "n": 0,
+      "median": null,
+      "q1": null,
+      "q3": null,
+      "min": null,
+      "max": null
+    }
+  },
+  "baseline_2_fixed_threshold": {
+    "n_worker_shifts": 10,
+    "false_alarms_per_worker_shift": 0.1,
+    "precision": 0.8,
+    "precision_n_defined": 5,
+    "precision_n_excluded_undefined": 5,
+    "recall": 1,
+    "recall_n_defined": 4,
+    "recall_n_excluded_undefined": 6,
+    "f1": 0.8,
+    "f1_n_defined": 5,
+    "f1_n_excluded_undefined": 5,
+    "detection_delay": {
+      "n": 4,
+      "median": 0.0,
+      "q1": 0,
+      "q3": 10,
+      "min": 0,
+      "max": 10
+    }
+  },
+  "baseline_3_moving_average": {
+    "n_worker_shifts": 10,
+    "false_alarms_per_worker_shift": 0.0,
+    "precision": 1,
+    "precision_n_defined": 4,
+    "precision_n_excluded_undefined": 6,
+    "recall": 1,
+    "recall_n_defined": 4,
+    "recall_n_excluded_undefined": 6,
+    "f1": 1,
+    "f1_n_defined": 4,
+    "f1_n_excluded_undefined": 6,
+    "detection_delay": {
+      "n": 4,
+      "median": 1.5,
+      "q1": 1,
+      "q3": 12,
+      "min": 1,
+      "max": 12
+    }
+  },
+  "data_quality_layer": {
+    "n_worker_shifts": 10,
+    "false_alarms_per_worker_shift": 0.0,
+    "precision": 1,
+    "precision_n_defined": 6,
+    "precision_n_excluded_undefined": 4,
+    "recall": 1,
+    "recall_n_defined": 6,
+    "recall_n_excluded_undefined": 4,
+    "f1": 1,
+    "f1_n_defined": 6,
+    "f1_n_excluded_undefined": 4,
+    "detection_delay": {
+      "n": 6,
+      "median": 1.0,
+      "q1": 0,
+      "q3": 1,
+      "min": 0,
+      "max": 4
+    }
+  }
+}

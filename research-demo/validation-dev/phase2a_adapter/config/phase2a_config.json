@@ -1,0 +1,25 @@
+{
+  "_disclaimer": "PROVISIONAL CONFIGURATION -- NOT CLINICALLY VALIDATED, AND NOT ESTABLISHED AS REPRESENTATIVE OF CONVENTIONAL PRACTICE. Baseline thresholds below are placeholders chosen only to make the two comparison baselines runnable and testable. Per ICAIRE_Simulation_Validation_Methodology.md section 4a (Revision 2), the moving-average baseline's characterization as 'conventional practice' is explicitly withdrawn pending a citation -- do not present either baseline's threshold as evidence-based until the corresponding parameter registry row (section 9) is resolved.",
+  "schema_version": "1.0.0",
+  "methodology_reference": "ICAIRE_Simulation_Validation_Methodology.md (Revision 2), section 4a",
+  "baselines": {
+    "baseline_0_always_normal": {
+      "description": "Never flags any minute. A sanity floor, not a threshold.",
+      "status": "PROVISIONAL",
+      "registry_row": "n/a -- trivial comparator, no numeric parameter"
+    },
+    "baseline_2_fixed_threshold": {
+      "description": "Instantaneous per-reading comparison against a fixed multiple of the engine's own baseline for that room/procMult. No averaging window, no confirmation window.",
+      "fixed_multiple": 2.0,
+      "status": "PROVISIONAL",
+      "registry_row": 5
+    },
+    "baseline_3_moving_average": {
+      "description": "A fixed-window moving average of readings compared against a fixed multiple of the engine's own baseline. No confirmation window.",
+      "window_minutes": 5,
+      "fixed_multiple": 2.0,
+      "status": "PROVISIONAL",
+      "registry_row": 6
+    }
+  }
+}
