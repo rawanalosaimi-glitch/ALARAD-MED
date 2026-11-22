@@ -1,0 +1,29 @@
+{
+  "_disclaimer": "PROVISIONAL CONFIGURATION -- NOT CLINICALLY VALIDATED. This config documents constants reused unchanged from the frozen v1.2.3 engine (status REUSED_FROM_V1.2.3_EXISTING_ENGINE_RULE) alongside this project's own new provisional choices (status PROVISIONAL). None has been reviewed by a radiation safety officer or medical physicist. See SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md for the existing registry this config's new parameters would need to be added to before any expert review.",
+  "schema_version": "1.0.0",
+  "methodology_reference": "ICAIRE_Simulation_Validation_Methodology.md (Revision 4), section 4b / 5",
+  "linear_forecast_window": {
+    "trailing_points": 4,
+    "horizon_minutes_ahead": [1, 2, 3],
+    "source_comment": "Reused exactly from the frozen engine's own SimLab closure (PRED_LEN=4, PRED_AHEAD=3, frozen release line 2809) -- not an independently chosen value. linearForecast's own output shape (next:[n,n+1,n+2]) hardcodes exactly 3 future points regardless of input length; see PHASE3A_LIMITATIONS.md section 1 for why this means a 15-minute horizon (methodology registry row 7's placeholder) is not achievable with the existing function as-is.",
+    "status": "REUSED_FROM_V1.2.3_EXISTING_ENGINE_RULE",
+    "registry_row": "n/a -- existing engine rule, not an open assumption; see PHASE3A_LIMITATIONS.md for the related open question about row 7's placeholder"
+  },
+  "baseline_persistence": {
+    "description": "Forecast = last valid reading in the window, repeated for all 3 horizons. No parameters.",
+    "status": "PROVISIONAL",
+    "registry_row": "n/a -- trivial comparator, no numeric parameter"
+  },
+  "baseline_exponential_smoothing": {
+    "description": "Simple (single) exponential smoothing over the same 4-point window as linearForecast; forecast = the final smoothed level, repeated for all 3 horizons (no trend extrapolation, unlike linearForecast).",
+    "alpha": 0.5,
+    "status": "PROVISIONAL",
+    "registry_row": "new -- not yet in SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md; see PHASE3A_LIMITATIONS.md"
+  },
+  "cumulative_dose_forecast_integration": {
+    "description": "Derived, adapter-only calculation (not present anywhere in the frozen engine): integrates a rate forecast forward using the same Dose(mSv) = Rate(uSv/h) x Duration(h) / 1000 rule already established in phase1_simulator/units.py and the frozen engine's own convention, applied per 1-minute step over the forecast horizon.",
+    "time_step_minutes": 1,
+    "status": "REUSED_FROM_V1.2.3_EXISTING_ENGINE_RULE",
+    "registry_row": "n/a -- reuses the existing, already-registered dose-integration rule; the act of forecasting cumulative dose this way is new, not the formula itself"
+  }
+}

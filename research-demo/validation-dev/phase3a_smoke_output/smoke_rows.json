@@ -1,0 +1,58 @@
+[
+  {
+    "archetype": "normal",
+    "worker_id": "W-00",
+    "n_windows": 477,
+    "n_skipped": 0,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 3.4150600867166733e-06
+  },
+  {
+    "archetype": "gradual_increase",
+    "worker_id": "W-00",
+    "n_windows": 237,
+    "n_skipped": 0,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 6.452012395064387e-06
+  },
+  {
+    "archetype": "sudden_increase",
+    "worker_id": "W-00",
+    "n_windows": 477,
+    "n_skipped": 0,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 3.263602100218362e-05
+  },
+  {
+    "archetype": "transient_spike",
+    "worker_id": "W-00",
+    "n_windows": 717,
+    "n_skipped": 0,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 6.059257654835168e-06
+  },
+  {
+    "archetype": "fault_missing",
+    "worker_id": "W-00",
+    "n_windows": 237,
+    "n_skipped": 11,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 3.128085761589981e-06
+  },
+  {
+    "archetype": "fault_invalid",
+    "worker_id": "W-00",
+    "n_windows": 237,
+    "n_skipped": 5,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 5.497150378844348e-06
+  },
+  {
+    "archetype": "fault_frozen",
+    "worker_id": "W-00",
+    "n_windows": 477,
+    "n_skipped": 0,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 3.201318734180573e-06
+  },
+  {
+    "archetype": "fault_delayed",
+    "worker_id": "W-00",
+    "n_windows": 237,
+    "n_skipped": 6,
+    "mean_abs_cumulative_dose_forecast_error_mSv": 1.3257127415424608e-05
+  }
+]
