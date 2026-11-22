@@ -101,9 +101,60 @@ comes out. Nothing below has been decided. Row numbers refer to
     process, if any, would close that gap, or whether ICAIRE's own
     methodology requires it to be closed before publication.
 
-12. **Should `linearForecast`'s predictive accuracy be evaluated before
-    or independently of building any new forecasting model?** Nothing
-    currently measures how good its existing early-warning predictions
-    actually are against ground truth. That evaluation does not require
-    building a new model first, and could be scoped as its own,
-    smaller piece of work — whether it should be is undecided.
+12. **Resolved as built and run at smoke scale; still open as a question
+    of sufficiency: should `linearForecast`'s predictive accuracy be
+    evaluated before or independently of building any new forecasting
+    model?** This item previously read "nothing currently measures..." —
+    an evaluation harness has since been built and run independently of
+    any new model (Phase 3A, `phase3a_forecasting/`), confirming that
+    scoping choice was workable. It found `linearForecast`'s skill score
+    negative at every horizon against simple persistence, for 8 specific
+    seeds (`PHASE3A_SMOKE_TEST_REPORT.md` §3). **What remains genuinely
+    unresolved** is whether that preliminary, 8-seed result is itself a
+    sufficient basis for any reporting, design, or sign-off decision, or
+    whether the full ≥30-seed-per-class statistical campaign (§7 of the
+    methodology) must run first before the finding can be treated as
+    general — this project treats it as preliminary only and has not run
+    that campaign, but whether that is the right bar is a decision for
+    whoever owns scientific sign-off, not something this project decides
+    for itself.
+
+13. **Should the forecasting adapter apply the same Phase-1-to-engine
+    baseline rescaling that the detection adapter already applies, before
+    computing MAE/RMSE?** Found and verified numerically during this
+    documentation round: `phase3a_forecasting/forecast_adapter.py` scores
+    `linearForecast` directly against Phase 1's own small provisional
+    baseline scale (3–8 µSv/h), never rescaling onto the frozen engine's
+    own room baselines (35–92 µSv/h, row 14) the way
+    `detection_adapter.rescale_to_engine_baseline` does. A direct
+    numerical check this round (rescaling a test series by a factor
+    k=22.5 and re-scoring) confirmed MAE/RMSE scale exactly linearly with
+    that factor at every horizon, while the skill-vs-persistence score
+    already reported in `PHASE3A_SMOKE_TEST_REPORT.md` §3 is unaffected —
+    it is a ratio of two quantities that scale identically, so it is
+    scale-invariant and numerically identical (to ~12 significant
+    figures) whether or not rescaling is applied. **So the skill-score
+    comparisons already reported remain valid as relative comparisons**;
+    what would need rescaling first is any future reporting of *absolute*
+    MAE/RMSE in units meant to represent a realistic room's dose-rate
+    scale. Whether to add this rescaling to `forecast_adapter.py` before
+    any absolute-unit forecast-accuracy result is reported is undecided,
+    and no code change has been made for this finding — see
+    `PHASE3A_LIMITATIONS.md` for the full numeric evidence.
+
+14. **What selection method, if any, should replace the illustrative
+    `alpha=0.5` for the exponential-smoothing forecasting baseline** (row
+    20)? Options not yet chosen between: leave it a fixed, expert-chosen
+    value; fit it to simulated or real data; or require a documented
+    sensitivity sweep (e.g. 0.1–0.9) to be reported alongside any future
+    campaign result, so readers can see how sensitive the baseline
+    comparison is to this choice.
+
+15. **Should a longer forecast horizon than `linearForecast`'s hardcoded
+    3 samples ever be built, and if so, by what technique** — recursively
+    feeding the existing 3-step output back in as new input (uncharacterized,
+    not something the frozen engine does anywhere) or a different model
+    entirely (row 7, revised)? Separately, and not conditional on that
+    question: is a 3-minute-ahead horizon itself sufficient for an RSO's
+    early-warning decisions, or is a longer horizon operationally
+    necessary regardless of how it would be built?

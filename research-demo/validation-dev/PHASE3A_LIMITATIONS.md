@@ -27,7 +27,11 @@ scope for this phase (no new forecasting model may be implemented).
 the real function actually produces**, and registry row 7's placeholder
 remains open and now additionally flagged as needing a decision about
 *how* (not just *what value*) a longer horizon would be reached, before
-any future phase attempts one.
+any future phase attempts one. **Update:** the methodology document's
+"15-minute horizon" placeholder language has since been corrected
+(`ICAIRE_Simulation_Validation_Methodology.md` Revision 5, §5 and
+registry row 7) to describe this 3-sample limit directly, rather than
+leaving it as an open placeholder value.
 
 ## 2. `linearForecast` is used in three different contexts in the frozen engine; only one was evaluated
 
@@ -90,18 +94,74 @@ class, balanced statistical campaign that would be needed to say
 anything general. It is reported here exactly as observed, per the
 discipline established in every prior phase.
 
-## 5. New provisional parameter not yet in the registry
+## 5. New provisional parameter not yet in the registry — RESOLVED
 
 `baseline_exponential_smoothing.alpha` (currently 0.5,
-`phase3a_config.json`) is a new choice introduced this phase and is not
-yet a row in `SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md`'s registry. Per
-task 8, it is labeled `PROVISIONAL` in its own config file, but has not
-been added as a new numbered registry row — consistent with this
-project's established practice of not silently expanding that document
-without being asked, and flagged here so the gap is not lost (the same
-treatment `SENSOR_P` received before being added as row 19).
+`phase3a_config.json`) was a new choice introduced this phase and, at the
+time this section was first written, was not yet a row in
+`SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md`'s registry. **It has since been
+added** as **Parameter Registry row 20**
+(`ICAIRE_Simulation_Validation_Methodology.md` Revision 5) and as a
+priority item in `SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md` §2, alongside
+rows 14/15/17/19 which it matches in kind (a provisional constant this
+project's own code depends on, not yet reviewed). What remains open is
+the review itself (no expert has assessed `alpha=0.5`) and the question
+of selection method — see `UNRESOLVED_SCIENTIFIC_DECISIONS.md` item 14.
 
-## 6. No statistical campaign has been run
+## 6. The forecasting adapter does not rescale onto the engine's baseline scale, unlike the detection adapter (new finding, this documentation round)
+
+Checked directly in `forecast_adapter.py` (grep for `rescale`/`baseline`:
+no match beyond the unrelated word "baselines" in an import) and
+confirmed by inspection of `run_phase3a_smoke.py`: unlike
+`detection_adapter.py`, which calls
+`rescale_to_engine_baseline` to re-anchor Phase 1's own small provisional
+baselines (3–8 µSv/h) onto the frozen engine's room baselines (35–92
+µSv/h, registry row 14) before evaluating detection, the forecasting
+adapter scores `linearForecast` directly against Phase 1's raw,
+un-rescaled series. Every MAE/RMSE figure in
+`PHASE3A_SMOKE_TEST_REPORT.md` §3 is therefore on Phase 1's own small
+scale, not the engine's room scale.
+
+**Whether this matters was checked numerically, not assumed.** Using the
+already-built `EngineBridge`, `build_rate_forecasts`,
+`score_against_ground_truth`, `mae_rmse_by_horizon`, and
+`skill_vs_persistence` (read-only; no code changed to produce this
+check), a 40-point noisy-trend test series was built on Phase 1's own
+`diagnostic_fluoroscopy` baseline (4.0 µSv/h, registry row 1) and
+re-scored after multiplying every value by `k = 92.0 / 4.0 = 23.0` — the
+exact ratio between that Phase 1 baseline and the engine's Cath Lab 3
+room baseline (registry row 14), so the test uses two values already on
+the record rather than an arbitrary number. Result:
+
+| Horizon | MAE ratio (scaled/raw) | RMSE ratio (scaled/raw) | Skill vs. persistence, raw | Skill vs. persistence, scaled |
+|---|---|---|---|---|
+| 1 min | 23.0000 | 23.0000 | 0.300889463962662 | 0.300889463962664 |
+| 2 min | 23.0000 | 23.0000 | 0.638424100239878 | 0.638424100239878 |
+| 3 min | 23.0000 | 23.0000 | 0.725285959326467 | 0.725285959326467 |
+
+MAE and RMSE scale **exactly** by the rescaling factor `k` at every
+horizon (confirmed to the displayed precision). The skill-vs-persistence
+score — a ratio of the candidate's and persistence's mean-squared errors,
+both of which scale by `k²` — is **numerically unchanged** by rescaling,
+to 12+ significant figures at every horizon.
+
+**Conclusion, precisely stated:**
+- The absolute MAE/RMSE values in `PHASE3A_SMOKE_TEST_REPORT.md` §3 are
+  on Phase 1's own illustrative scale, not the engine's room scale — they
+  would need rescaling first before being quoted as "the forecast error
+  on a realistic room's dose-rate scale."
+- The **relative** comparisons already reported — `linearForecast`'s
+  skill score being negative at every horizon while persistence and
+  exponential smoothing are not — are **unaffected** by this gap and
+  remain valid as reported, because skill-vs-persistence is
+  mathematically scale-invariant (confirmed above, not merely argued).
+- This is a documentation finding, not a code change: per this round's
+  explicit restriction, `forecast_adapter.py` has not been modified.
+  Whether to add rescaling before any future *absolute*-unit result is
+  reported is recorded as open in
+  `UNRESOLVED_SCIENTIFIC_DECISIONS.md` item 13.
+
+## 7. No statistical campaign has been run
 
 Every number in `PHASE3A_SMOKE_TEST_REPORT.md` describes 8 specific
 seeds. No claim of clinical or scientific predictive validity is made

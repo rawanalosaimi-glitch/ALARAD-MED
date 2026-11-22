@@ -60,11 +60,12 @@ their decision in the review table (§8).
 
 ---
 
-## 2. Priority parameters — rows 14–17 and 19
+## 2. Priority parameters — rows 14–17, 19, and 20
 
-These five were only discovered to need review during this project's own
+These six were only discovered to need review during this project's own
 internal integration/documentation work (`PHASE2B_INTEGRATION_AUDIT.md`
-for rows 14–17; this review package's own preparation for row 19): the
+for rows 14–17; this review package's own preparation for row 19; Phase
+3A's own implementation for row 20): the
 research software was already depending on them before anyone had
 flagged them as scientific assumptions. They are prioritized here because
 resolving them first is the most direct path to being able to interpret
@@ -212,6 +213,38 @@ any future result scientifically.
   radiation dosimeter's communication link, or do you know of device
   specifications or field data that should replace them?*
 
+### Row 20 — Exponential-smoothing forecasting baseline's smoothing parameter
+
+- **Exact current value:** `alpha = 0.5`
+  (`phase3a_forecasting/config/phase3a_config.json`, block
+  `baseline_exponential_smoothing`).
+- **Source:** new code written for Phase 3A
+  (`phase3a_forecasting/baselines.py::build_exponential_smoothing_forecasts`),
+  not the frozen engine — this is this project's own baseline, used only
+  to give the frozen `linearForecast` function a second point of
+  comparison besides simple persistence (row 7's "already exists but
+  unevaluated" `linearForecast`).
+- **Selection method, stated exactly:** `alpha=0.5` was chosen as an
+  **illustrative round number**, so the baseline would run end-to-end for
+  the Phase 3A smoke test. It was **not** fit to any data, **not**
+  cross-validated, and is **not** derived from any clinical or domain
+  source. The config file marks it `PROVISIONAL` for exactly this reason.
+- **Scientific assumption encoded:** that equal-weighting half the most
+  recent reading and half the prior smoothed estimate is a reasonable
+  general-purpose smoothing timescale for dose-rate trends — untested.
+- **Role:** this value directly produced the "+0.32 to +0.33" positive
+  skill scores reported for the exponential-smoothing baseline in
+  `PHASE3A_SMOKE_TEST_REPORT.md` §3, which currently read as more
+  favorable than the real `linearForecast`'s negative skill scores at the
+  same smoke scale. Changing `alpha` would change those numbers; how much,
+  and in which direction, has not been tested.
+- **Illustrative, not evidence-supported, and not yet subjected to even a
+  sensitivity sweep** (see §7's note on this).
+- **Review question:** *Is `alpha=0.5` a defensible default smoothing
+  parameter for this kind of baseline, or should a sensitivity analysis
+  (sweeping a range such as 0.1–0.9) be required before this baseline's
+  comparison numbers are used for anything beyond illustration?*
+
 ---
 
 ## 3. Remaining registry parameters — rows 1–13, 18
@@ -228,7 +261,7 @@ Documented more briefly, since these were already written up in
 | 4 | Fault duration ranges (sensor faults) | Missing: 5–20 min; invalid: 1–4 min; frozen: 10–30 min; delayed: 3–9 min | This project's own Phase 1 config | Illustrative | Are these sensor-fault duration ranges realistic for the kind of wearable dosimeter this is meant to simulate? |
 | 5 | Baseline-2 fixed-threshold setpoint | 2.0× room baseline, instantaneous, no window | This project's own Phase 2A config | Illustrative, explicitly not sourced from a manufacturer spec | Is 2.0× a reasonable "simple commercial alarm" setpoint to compare against, or do you know of a manufacturer/regulatory figure that should be used instead? |
 | 6 | Baseline-3 moving-average characterization | 5-minute window, 2.0× threshold | This project's own Phase 2A config | Illustrative; **explicitly not labeled "conventional practice"** pending a citation | Is a 5-minute moving average at 2.0× a reasonable second reference point? Do you know of a citation that would justify calling this "conventional practice"? |
-| 7 | Forecast horizon for scientific evaluation | Placeholder "15 minutes" | Methodology document only | Placeholder, not yet acted on | What forecast horizon would actually be actionable for an RSO? **Note:** the frozen engine already contains a forecasting function (`linearForecast`), used operationally today for early-warning triggering inside the detection logic — this row is about a *different* thing: the horizon a future, scientifically-evaluated forecast-accuracy study (not yet built) would use. `linearForecast`'s own predictive accuracy has never been evaluated against ground truth; see §3 note below. |
+| 7 | Forecast horizon beyond the 3 samples `linearForecast` actually produces | Previously an unexamined placeholder "15 minutes"; **now empirically confirmed that the real function hardcodes exactly 3 future samples regardless of input length** (verified for input lengths 3/4/7/10; `PHASE3A_LIMITATIONS.md` §1) | Methodology document, revised following Phase 3A | Not a value to pick — a question of whether/how any longer horizon could ever be reached | Should a longer horizon ever be built, and if so, by what technique (recursively feeding the existing 3-step output back in — uncharacterized, and not something the frozen engine does — or a different model)? **Note:** Phase 3A has already evaluated the three horizons `linearForecast` actually produces (1/2/3 minutes ahead) against ground truth — see `PHASE3A_SMOKE_TEST_REPORT.md`. This row is only about any *longer* horizon, which remains both unbuilt and, on current evidence, not achievable by calling the existing function differently. |
 | 8 | Worker eligibility/credentialing model | Does not exist | Methodology document only | N/A — nothing built yet | What data would a real eligibility check need (credentials, current dose, open incidents)? |
 | 9 | Minimum handoff/briefing duration | Not chosen; **no rotation recommender exists** | Methodology document only | N/A | What is a realistic minimum handoff time before a rotation takes effect? |
 | 10 | Rotation scoring weights | Not chosen; **no rotation recommender exists** | Methodology document only | N/A | Once built, how should dose reduction, fairness, latency, and rotation count be weighted against each other? |
@@ -252,13 +285,26 @@ predictions against ground truth, has been built** for this research
 framework. "No forecasting has been implemented" and "no forecasting
 code exists" are not the same statement, and only the first is true.
 
+**Update following Phase 3A:** an evaluation harness comparing
+`linearForecast` against ground truth (and against two independent
+baselines — simple persistence, and exponential smoothing, row 20) has
+since been built and run at smoke scale (8 seeds). It found
+`linearForecast`'s skill score **negative** at every horizon it
+evaluated, while exponential smoothing scored positively — see
+`PHASE3A_SMOKE_TEST_REPORT.md` §3 and `PHASE3A_LIMITATIONS.md` §4. This
+is a real, verified result for those 8 specific seeds, explicitly **not**
+a statistically established finding (8 seeds, heavily weighted toward
+flat/near-flat scenarios, is not the balanced ≥30-seed-per-class campaign
+§7 of the methodology calls for). It still does not evaluate any horizon
+beyond the 3 samples the real function produces.
+
 ---
 
 ## 4. Illustrative vs. evidence-supported — summary classification
 
 | Status | Rows |
 |---|---|
-| **Illustrative placeholder (no evidence at all)** | 1, 2, 3, 4, 5, 6, 14, 15, 17, 19 |
+| **Illustrative placeholder (no evidence at all)** | 1, 2, 3, 4, 5, 6, 14, 15, 17, 19, 20 |
 | **Inherited from the frozen engine, explicitly unverified against reality** | 11 |
 | **Inherited from the frozen engine, self-disclosed as a limited approximation** | 12 |
 | **Not yet applicable (feature does not exist yet)** | 7, 8, 9, 10, 18 |
@@ -293,6 +339,7 @@ That is the central fact this review package exists to start changing.
 | 17 | ✓ (timing only) | — | — | — | — |
 | 18 | ✓ (future) | — | ✓ (future) | — | — |
 | 19 | ✓ (data-quality) | — | — | — | — |
+| 20 | — | — | — | ✓ (baseline comparator) | — |
 
 ---
 
@@ -322,7 +369,7 @@ against the current official ICRP and NRRC texts — nothing below should
 be read as this project vouching for either one**, and no further
 citation has been added or invented anywhere in this package.
 
-**No other parameter in this registry (rows 1–19) has any citation
+**No other parameter in this registry (rows 1–20) has any citation
 behind it at all.** Where a Review Question above asks whether a
 manufacturer specification, regulatory alarm-setpoint guidance, or
 published noise/failure-rate/communication-reliability data exists, that
@@ -356,13 +403,20 @@ complete:**
 - Any claim, in a paper draft or elsewhere, that this project's detection
   results reflect real-world radiation-safety performance.
 - Any characterization of Baseline 3 as "conventional practice" (row 6).
-- Any claim that `linearForecast` is an accurate or validated predictor
-  (its accuracy has never been evaluated — see the forecasting note in
-  §3) — and separately, any *new* forecasting model or rotation
-  algorithm (rows 7–10), which remain out of scope for implementation
-  regardless of this review.
+- Any claim that `linearForecast` is accurate or validated beyond the
+  8-seed smoke result already reported (see the forecasting note in §3)
+  — and separately, any *new* forecasting model or rotation algorithm
+  (rows 8–10), which remain out of scope for implementation regardless of
+  this review.
+- Any claim that the Phase 3A smoke test's negative skill score for
+  `linearForecast`, or the positive skill score for the exponential-
+  smoothing baseline (row 20), generalizes beyond those 8 seeds — neither
+  has been through the statistical campaign.
 - Any statement that rows 14/15/17/19's thresholds are clinically
   appropriate, in either direction.
+- Any use of the exponential-smoothing baseline's (row 20) comparison
+  numbers as more than illustrative, before a sensitivity analysis on
+  `alpha` is performed.
 - Any claim that a reviewer's approval of a provisional value, however
   thorough, by itself establishes external validity or regulatory
   compliance (see the note at the top of this document) — those would
@@ -382,13 +436,14 @@ with a comment, and today's date. Leave blank if deferring.*
 | 16 | Procedure-to-room rescaling coherence | (conceptual — see §2) | | | |
 | 17 | Immediate-alert dose bypass | 0.35 mSv, on by default | | | |
 | 19 | Sensor-health state-machine timing | stale 2 min; disconnected 5 min; frozen 6 readings; recover 2 samples | | | |
+| 20 | Exponential-smoothing baseline alpha | 0.5, illustrative round number | | | |
 | 1 | Procedure-class baselines/multipliers | 3.0–8.0 µSv/h, various ×ranges | | | |
 | 2 | Shift-length set | 60/240/480/720 min | | | |
 | 3 | Event magnitude/duration ranges | ×2.0–6.0, 1–20 min | | | |
 | 4 | Fault duration ranges | 1–30 min by kind | | | |
 | 5 | Baseline-2 fixed-threshold setpoint | 2.0× baseline | | | |
 | 6 | Baseline-3 moving-average + label | 5 min window, 2.0×, not "conventional" | | | |
-| 7 | Forecast horizon (placeholder) | "15 minutes", unbuilt | | | |
+| 7 | Forecast horizon beyond 3 samples | 3-sample limit confirmed; any longer horizon unbuilt | | | |
 | 8 | Worker eligibility model | does not exist | | | |
 | 9 | Handoff/briefing duration | not chosen, unbuilt | | | |
 | 10 | Rotation scoring weights | not chosen, unbuilt | | | |
@@ -401,16 +456,17 @@ with a comment, and today's date. Leave blank if deferring.*
 
 ## 9. Explicit statement of what this package does and does not do
 
-- **Does:** collect every registered scientific parameter (19, as of
+- **Does:** collect every registered scientific parameter (20, as of
   this revision), in plain language, with exact values, sources, and
   review questions, so a qualified reviewer can act without reading
   code; distinguish what the frozen engine already contains
-  (`linearForecast`, operating but unevaluated) from what has not been
-  built (a new forecaster, any rotation algorithm); and state plainly
-  that approving a value for this synthetic study is not the same claim
-  as evidence of real-world representativeness, and that expert
-  approval alone does not establish external validity or regulatory
-  compliance.
+  (`linearForecast`, now evaluated at smoke scale against two baselines,
+  including the new row-20 exponential-smoothing baseline) from what has
+  not been built (a new forecaster, any rotation algorithm, any horizon
+  beyond `linearForecast`'s own 3-sample limit); and state plainly that
+  approving a value for this synthetic study is not the same claim as
+  evidence of real-world representativeness, and that expert approval
+  alone does not establish external validity or regulatory compliance.
 - **Does not:** change any parameter value; modify the frozen release;
   implement forecasting or rotation; run the statistical campaign; claim
   any expert has approved anything; invent or add any citation beyond

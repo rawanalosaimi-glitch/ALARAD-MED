@@ -22,7 +22,7 @@ by itself establish external validity or regulatory compliance with
 ICRP, NRRC, or any other authority. Those would need their own,
 separately-scoped review.
 
-**Start here — five items, newly surfaced, most load-bearing:**
+**Start here — six items, newly surfaced, most load-bearing:**
 
 1. **Room baseline dose rates** (35–92 µSv/h across 7 rooms) — the number
    every detection calculation is anchored to. Self-labeled by the
@@ -44,21 +44,36 @@ separately-scoped review.
    sensor's link counts as "stale" (2 minutes), "disconnected" (5
    minutes), or "stuck/frozen" (6 identical readings). Are these
    realistic for a real wearable dosimeter?
+6. **A forecasting-baseline smoothing parameter** (`alpha=0.5`), new in
+   this round: a simple exponential-smoothing baseline built to give the
+   software's own `linearForecast` function a second point of
+   comparison. `alpha=0.5` is an illustrative round number, not fit to
+   any data. At smoke scale (8 seeds) this baseline scored *better* than
+   `linearForecast` itself — see the note below before reading that as a
+   finding about either method.
 
-**Fourteen more items** (procedure-class baselines, event/fault timing
+**Thirteen more items** (procedure-class baselines, event/fault timing
 ranges, two comparison-alarm setpoints, a noise model, an area-monitor
-geometry approximation, and four not-yet-built forecasting/rotation
+geometry approximation, and three not-yet-built forecasting/rotation
 parameters) are listed in full, with exact values, in the main package.
 
 **What is already blocked, independent of your review:** no *new*
 forecasting model and no rotation algorithm have been built, and both
-remain out of scope regardless of this review. (The software's existing
+remain out of scope regardless of this review. The software's existing
 `linearForecast` function already runs operationally for early-warning
-triggering — it exists and works for that purpose — but no one has
-scientifically evaluated how accurate its predictions actually are, and
-that evaluation is not part of this review either.) No large-scale
-statistical evaluation has been run or will be run before this review is
-further along.
+triggering, and has now been evaluated at **smoke scale only** (8 seeds)
+against ground truth: it scored *negative* skill versus simply repeating
+the last reading at every horizon, while the new exponential-smoothing
+baseline (#6 above) scored positively. **This is a preliminary result
+from 8 specific seeds, not a statistically established finding** — it is
+not yet the balanced, large-sample campaign that would be needed to say
+anything general about either method's real accuracy, and that full
+campaign is not part of this review either. Separately, the real
+function is hard-limited to forecasting exactly 3 minutes ahead (1/2/3
+minutes) — a longer horizon is not a parameter to adjust but an
+unbuilt, not-yet-designed capability. No large-scale statistical
+evaluation has been run or will be run before this review is further
+along.
 
 **What your review unblocks:** the project's planned statistical
 evaluation campaign (many simulated seeds, compared against the real

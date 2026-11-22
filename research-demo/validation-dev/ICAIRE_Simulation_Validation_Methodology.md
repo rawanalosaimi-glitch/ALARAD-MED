@@ -54,6 +54,29 @@ as one explicit, unmissable rule rather than left to be inferred. No
 parameter value, implementation code, or other section's substantive
 content is changed in this revision.
 
+**Revision 5 (documentation-only; Phase 3A follow-up).** Corrects §5's
+dose-forecasting row and Parameter Registry row 7: the frozen
+`linearForecast` function was empirically confirmed (Phase 3A,
+`PHASE3A_LIMITATIONS.md` §1) to always return exactly 3 future samples
+regardless of input length, so the previous "two horizons (next-minute
+and a longer horizon, e.g. 15 minutes)" language was not describing an
+open placeholder but misdescribing the function's hard limit. §5 now
+describes the evaluation actually performed — 1-, 2-, and 3-minute-ahead
+MAE/RMSE/MAPE, the only horizons the real function produces — and states
+explicitly that any longer horizon (15 minutes included) is a distinct,
+not-yet-built capability, not a parameter value waiting to be filled into
+the existing function. Row 7 is reframed accordingly, from "what 15-minute
+value to pick" to "whether and how any longer horizon could ever be
+reached given this limit." Adds Parameter Registry row 20, registering
+the Phase 3A exponential-smoothing baseline's `alpha=0.5` as a
+provisional, non-data-driven illustrative choice requiring a future
+sensitivity analysis before its comparison results can be treated as
+more than illustrative. No code was written or run to produce this
+revision; every finding cited was already established and verified in
+Phase 3A's own deliverables (`PHASE3A_LIMITATIONS.md`,
+`PHASE3A_SMOKE_TEST_REPORT.md`), re-checked again while writing this
+revision.
+
 **Branch:** `research/icaire-v123-validation` (this file). No other branch
 was touched. The frozen `research-demo/releases/html/ALARAD_Prototype_Research_Demo_v1.2.3.html`
 (SHA-256 `92e897dd0ff1738f083df829b53f7f46377e042b7019bb9776232792261182ee`)
@@ -270,7 +293,7 @@ prediction horizon; the true value is used only afterward, for scoring.
 |---|---|---|---|
 | Anomaly detection | A | Precision, recall, F1, **event-level** detection delay (see §5a), **false alarms per worker-shift** (see §5a) | `truth` arrays, existing `matchEvents()` |
 | Data-quality/sensor-fault detection | A | Same metric set, independently, per §2 of `Ground_Truth_Scenarios_S1-S13.md` | `faults` arrays, existing dual-layer matching |
-| Dose forecasting | A | MAE, RMSE, MAPE at two horizons (next-minute and a longer horizon — exact longer horizon is a placeholder pending domain input, Parameter Registry §9 row 7), compared across the three §4b baselines, reported in the mSv/µSv-h units defined in §1 | The simulator's own known true future series (simulation-only; not available with real sensors, a limitation noted in §10) |
+| Dose forecasting | A | MAE, RMSE, MAPE at the 1-, 2-, and 3-minute-ahead horizons the frozen `linearForecast` actually produces — it hardcodes exactly three future samples regardless of input length, verified empirically for input lengths 3/4/7/10 (`PHASE3A_LIMITATIONS.md` §1; Parameter Registry §9 row 7, revised in Revision 5) — compared across the three §4b baselines, reported in the mSv/µSv-h units defined in §1. **A longer horizon (e.g. 15 minutes) is a separate, not-yet-built capability, not a parameter of this evaluation**: reaching it would need either a recursive/cascading use of the 3-step output as new input (not something the frozen engine does anywhere, and whose compounding uncertainty is uncharacterized) or a different forecasting function entirely — both out of scope until a future phase decides to build one | The simulator's own known true future series (simulation-only; not available with real sensors, a limitation noted in §10) |
 | Rotation recommendation | B — specification only | The criteria and constraints in §6 | Not applicable yet — no run has been performed |
 
 ### 5a. Metric definitions requiring explicit convention (new in Revision 2)
@@ -557,7 +580,7 @@ table only ever settles the first.
 | 4 | Fault (missing/invalid/frozen/delayed) timing/duration sampling ranges | §3 | Open | Domain input; wearable-sensor failure-rate literature if any exists | **Yes** |
 | 5 | Conventional fixed-threshold alarm setpoint (Baseline 2) | §4a | Open — no value chosen | Manufacturer alarm specification, or published regulatory alarm-setpoint guidance | **Yes** |
 | 6 | Characterization of the moving-average baseline (Baseline 3) as "conventional practice" | §4a | Explicitly **not asserted** pending evidence | A citation to an industry standard or published description of commercial dosimetry alarm logic | **Yes — required before this label may be used in any paper draft** |
-| 7 | Forecast horizon beyond next-minute (placeholder "15 minutes") | §5 | Placeholder, not chosen | Clinical/operational input on what horizon is actionable for an RSO | **Yes** |
+| 7 | Forecast horizon beyond the 3 samples `linearForecast` actually produces (previously an unexamined placeholder "15 minutes") | §5 | **Revised in Revision 5**: the 3-sample limit is now empirically confirmed, not an open placeholder value (`PHASE3A_LIMITATIONS.md` §1, `test_forecast_contract.py::test_linear_forecast_always_returns_exactly_three_future_points`). What remains genuinely open is whether a longer horizon should ever be built at all, and if so *how* — recursively feeding the existing 3-step output back in, or a different model — not merely *what number of minutes* | Clinical/operational input on what horizon would be actionable for an RSO, **and** a methodological decision on the technique by which any longer horizon would be reached, before this row can be resolved | **Yes** |
 | 8 | Worker eligibility / credentialing data model | §6b.2 | Does not exist, synthetic or real | Facility staffing/credentialing policy, or a synthetic model built with RSO input | **Yes** |
 | 9 | Minimum handoff/briefing duration | §6b.3 | Open | Facility handoff-safety policy, or published radiation-safety workflow guidance | **Yes** |
 | 10 | Rotation-recommendation scoring weights/thresholds across §6c criteria | §6c | Open | ICAIRE methodology reviewers + RSO | **Yes** |
@@ -570,6 +593,7 @@ table only ever settles the first.
 | 17 | Clinical basis for the immediate-alert dose bypass (`AlaradSafety.immediateAlert`, default policy `{mode:'dose', doseMsv:null}`) | §4 (not previously described in this methodology at all); `PHASE2B_INTEGRATION_AUDIT.md` §4; now implemented in `detection_adapter.classify_series` (Phase 2C item 1) | The bypass encodes a real safety-workflow judgment (an immediately dangerous projected dose should alert faster than standard confirmation); whether `doseCritical=0.35` mSv over 30 minutes is the clinically right trigger is unreviewed | RSO/medical-physicist review of the bypass's trigger value and whether bypassing confirmation is itself an appropriate design | **Yes** |
 | 18 | Realism of scenario dynamics not yet reproducible against the engine (S10's masked-event timing, S11's recovery-to-next-event spacing) if/when a Phase 1 generator for them is built | `PHASE2B_INTEGRATION_AUDIT.md` §7; `PHASE2C_CORRECTIVE_IMPLEMENTATION.md` coverage matrix | Not yet applicable — no Phase 1 generator for these dynamics exists; registered now so the question is not forgotten once one is built | Domain input on realistic frozen-sensor masking durations and recovery-to-next-event spacing, before any such generator is built | **Yes, before that future generator's parameters are fixed** |
 | 19 | The frozen engine's own sensor-health state-machine timing (`AlaradSafety.SENSOR_P`: a sensor is marked STALE after 2 missed minutes, DISCONNECTED after 5, SUSPECTED_FROZEN after 6 identical consecutive readings at 0.1 µSv/h resolution, with 2 consecutive changed/consistent samples required to exit RECOVERING or SUSPECTED_FROZEN) | §1 / existing engine, frozen release line 1316 (`SENSOR_P={staleAfter:2, disconnectedAfter:5, frozenN:6, frozenExitN:2, recoverN:2, resolution:0.1}`); identified while preparing `SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md` as a gap of exactly the same kind as rows 14/15, not previously registered | Inherited from v1.2.3, the engine's own code comment describes these as "simulation assumptions (documented in the UI); expected cadence = 1 sample per minute" — illustrative, not evidence-supported, and now load-bearing for every data-quality-layer result this project has reported (Phase 2A/2C's `dq_adapter.py`) | Real wearable-sensor communication-reliability data (typical dropout/reconnection timing), or RSO sign-off that these timings are an acceptable stand-in | **Yes** |
+| 20 | Exponential-smoothing forecasting baseline's smoothing parameter (`alpha=0.5`, `phase3a_forecasting/config/phase3a_config.json`, block `baseline_exponential_smoothing`) | §4b baseline 2 (forecasting); `phase3a_forecasting/baselines.py::build_exponential_smoothing_forecasts` | New in Phase 3A; marked `PROVISIONAL` in its own config file at the point of implementation. Selection method: an **illustrative round-number choice (0.5)**, not fit, not cross-validated, and not derived from any domain or clinical source — chosen only so the baseline would run end-to-end for the smoke test | A sensitivity analysis sweeping `alpha` across a reasonable range (e.g. 0.1-0.9) against the full statistical campaign's data (not the 8-seed smoke batch), and/or domain input on a clinically-motivated smoothing timescale for dose-rate trends | **Yes, before this baseline's smoke-test comparison (`PHASE3A_SMOKE_TEST_REPORT.md` §3) can be treated as more than illustrative** |
 
 No row in this table has been resolved by this document. Resolving a row
 means obtaining and citing the evidence source listed, or obtaining the
