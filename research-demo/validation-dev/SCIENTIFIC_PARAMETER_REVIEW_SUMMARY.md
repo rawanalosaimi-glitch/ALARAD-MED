@@ -14,7 +14,15 @@ for each parameter mark **Approved / Revise / Not Approved** with a
 comment, in its review table. You do not need to approve everything at
 once — partial review is useful.
 
-**Start here — four items, newly surfaced, most load-bearing:**
+**What "Approved" means, and does not mean:** it means *"a reasonable
+choice for this synthetic simulation study."* It does **not** mean the
+value is representative of real occupational radiation exposure, and
+your approval of these provisional values — however thorough — does not
+by itself establish external validity or regulatory compliance with
+ICRP, NRRC, or any other authority. Those would need their own,
+separately-scoped review.
+
+**Start here — five items, newly surfaced, most load-bearing:**
 
 1. **Room baseline dose rates** (35–92 µSv/h across 7 rooms) — the number
    every detection calculation is anchored to. Self-labeled by the
@@ -32,16 +40,25 @@ once — partial review is useful.
    lets a high projected dose (0.35 mSv, same figure as #2) skip the
    normal multi-minute confirmation and alert right away. Is that the
    right behavior, and is 0.35 mSv the right trigger for it?
+5. **Sensor-health timing** — the rules deciding when a wearable
+   sensor's link counts as "stale" (2 minutes), "disconnected" (5
+   minutes), or "stuck/frozen" (6 identical readings). Are these
+   realistic for a real wearable dosimeter?
 
 **Fourteen more items** (procedure-class baselines, event/fault timing
 ranges, two comparison-alarm setpoints, a noise model, an area-monitor
 geometry approximation, and four not-yet-built forecasting/rotation
 parameters) are listed in full, with exact values, in the main package.
 
-**What is already blocked, independent of your review:** forecasting and
-worker-rotation features do not exist yet and are out of scope regardless.
-No large-scale statistical evaluation has been run or will be run before
-this review is further along.
+**What is already blocked, independent of your review:** no *new*
+forecasting model and no rotation algorithm have been built, and both
+remain out of scope regardless of this review. (The software's existing
+`linearForecast` function already runs operationally for early-warning
+triggering — it exists and works for that purpose — but no one has
+scientifically evaluated how accurate its predictions actually are, and
+that evaluation is not part of this review either.) No large-scale
+statistical evaluation has been run or will be run before this review is
+further along.
 
 **What your review unblocks:** the project's planned statistical
 evaluation campaign (many simulated seeds, compared against the real
@@ -52,10 +69,13 @@ until the numbers above have your input. Nothing is lost by reviewing in
 stages; each approved row lets that specific number be cited with
 confidence in later reporting.
 
-**One citation already exists in the software**, unverified by this
-project: ICRP Publication 103's 20 mSv/year (5-year-averaged) dose limit,
-used only as a dashboard reference line, and a reference to Saudi NRRC
-requirements the software itself says to check against the current
-official text. No other parameter has any citation. If you know of
+**One citation already exists in the software**, and both it and a
+second reference remain **explicitly unverified by this project until
+checked against the current official text** — nothing here should be
+read as vouching for either: ICRP Publication 103's 20 mSv/year
+(5-year-averaged) dose limit, used only as a dashboard reference line,
+and a reference to Saudi NRRC requirements the software itself says to
+check against the current official text. No other parameter has any
+citation, and none has been invented for this review. If you know of
 applicable manufacturer, regulatory, or published literature for any item
 above, that is exactly what this review is for.

@@ -5,10 +5,30 @@ been approved, revised, or rejected by a qualified Medical Physicist or
 Radiation Safety Officer (RSO). No parameter value has been changed. The
 frozen ALARAD v1.2.3 release was not modified (SHA-256
 `92e897dd0ff1738f083df829b53f7f46377e042b7019bb9776232792261182ee`,
-re-verified unchanged while preparing this package). No forecasting or
-rotation algorithm exists to review yet. No statistical campaign has been
-run. This document does not claim expert approval anywhere, and nothing
-in it should be read as implying any parameter is clinically validated.
+re-verified unchanged while preparing this package). No new forecasting
+model and no rotation algorithm has been implemented (the frozen engine's
+own `linearForecast` already exists and is used operationally for
+early-warning triggering — see row 7 in §3 — but its predictive accuracy
+has not been scientifically evaluated; that is a separate, correct fact
+from "no forecasting exists"). No statistical campaign has been run. This
+document does not claim expert approval anywhere, and nothing in it
+should be read as implying any parameter is clinically validated.
+
+**What approving a row in this package does, and does not, establish —
+read this before reviewing anything below:**
+- Marking a row **Approved** means *"this value is a reasonable,
+  internally-consistent choice for the purposes of this synthetic
+  simulation study."* It does **not** mean the value is representative
+  of real occupational radiation exposure, and must never be cited as
+  evidence that it is. Those are two different claims; this package and
+  its review table only ever ask about the first.
+- Expert approval of these provisional values, however thorough, does
+  **not** by itself establish external validity (that the simulation
+  behaves like the real world) or regulatory compliance with ICRP, NRRC,
+  or any other authority. A reviewer's sign-off is a statement about
+  reasonableness for a synthetic study, not a validation study and not a
+  compliance determination — both would require their own, separate,
+  explicitly-scoped review.
 
 **Purpose:** collect, in one place, every scientific assumption this
 research project currently depends on, so a qualified reviewer can
@@ -40,14 +60,15 @@ their decision in the review table (§8).
 
 ---
 
-## 2. Priority parameters — rows 14–17
+## 2. Priority parameters — rows 14–17 and 19
 
-These four were only discovered to need review during this project's own
-internal integration audit (`PHASE2B_INTEGRATION_AUDIT.md`): the research
-software was already depending on them before anyone had flagged them as
-scientific assumptions. They are prioritized here because resolving them
-first is the most direct path to being able to interpret any future
-result scientifically.
+These five were only discovered to need review during this project's own
+internal integration/documentation work (`PHASE2B_INTEGRATION_AUDIT.md`
+for rows 14–17; this review package's own preparation for row 19): the
+research software was already depending on them before anyone had
+flagged them as scientific assumptions. They are prioritized here because
+resolving them first is the most direct path to being able to interpret
+any future result scientifically.
 
 ### Row 14 — The frozen engine's own room baseline dose rates
 
@@ -160,6 +181,37 @@ result scientifically.
   0.35 mSv over 30 minutes the right trigger value, or should the bypass
   use a different threshold than the ordinary "critical" classification?*
 
+### Row 19 — The frozen engine's own sensor-health state-machine timing
+
+- **Exact current values:** a sensor is marked **STALE** after **2**
+  consecutive missed minutes, **DISCONNECTED** after **5**; a reading is
+  marked **SUSPECTED_FROZEN** after **6** consecutive identical readings
+  (compared at **0.1 µSv/h** resolution); recovering from DISCONNECTED or
+  exiting SUSPECTED_FROZEN each require **2** consecutive
+  changed/consistent samples.
+- **Source:** the frozen software's own `AlaradSafety.SENSOR_P` object
+  (`{staleAfter:2, disconnectedAfter:5, frozenN:6, frozenExitN:2,
+  recoverN:2, resolution:0.1}`), with its own source-code comment reading,
+  verbatim: *"Parameters are simulation assumptions (documented in the
+  UI); expected cadence = 1 sample per minute."* Identified as needing
+  review only while preparing this package — it is, in kind, exactly like
+  rows 14/15 (the engine's own illustrative constant) but had not
+  previously been registered.
+- **Scientific assumption encoded:** that these five timing/counting
+  thresholds are reasonable stand-ins for how quickly a real wearable
+  dosimeter's communication link would be judged stale, disconnected, or
+  stuck, and how quickly it should be judged recovered.
+- **Role:** this is the complete rule set behind every sensor-fault
+  (data-quality) detection result this project has reported — whether a
+  missing, frozen, or delayed reading is correctly flagged, and how fast.
+- **Illustrative, not evidence-supported.** No real wearable-sensor
+  communication-reliability data was used.
+- **Review question:** *Are 2 minutes (stale), 5 minutes
+  (disconnected), 6 identical readings (suspected frozen), and 2
+  consecutive samples (recovery) reasonable timings for a real wearable
+  radiation dosimeter's communication link, or do you know of device
+  specifications or field data that should replace them?*
+
 ---
 
 ## 3. Remaining registry parameters — rows 1–13, 18
@@ -176,7 +228,7 @@ Documented more briefly, since these were already written up in
 | 4 | Fault duration ranges (sensor faults) | Missing: 5–20 min; invalid: 1–4 min; frozen: 10–30 min; delayed: 3–9 min | This project's own Phase 1 config | Illustrative | Are these sensor-fault duration ranges realistic for the kind of wearable dosimeter this is meant to simulate? |
 | 5 | Baseline-2 fixed-threshold setpoint | 2.0× room baseline, instantaneous, no window | This project's own Phase 2A config | Illustrative, explicitly not sourced from a manufacturer spec | Is 2.0× a reasonable "simple commercial alarm" setpoint to compare against, or do you know of a manufacturer/regulatory figure that should be used instead? |
 | 6 | Baseline-3 moving-average characterization | 5-minute window, 2.0× threshold | This project's own Phase 2A config | Illustrative; **explicitly not labeled "conventional practice"** pending a citation | Is a 5-minute moving average at 2.0× a reasonable second reference point? Do you know of a citation that would justify calling this "conventional practice"? |
-| 7 | Forecast horizon | Placeholder "15 minutes"; **no forecaster is implemented** | Methodology document only | Placeholder, not yet acted on | What forecast horizon would actually be actionable for an RSO, once forecasting is built? |
+| 7 | Forecast horizon for scientific evaluation | Placeholder "15 minutes" | Methodology document only | Placeholder, not yet acted on | What forecast horizon would actually be actionable for an RSO? **Note:** the frozen engine already contains a forecasting function (`linearForecast`), used operationally today for early-warning triggering inside the detection logic — this row is about a *different* thing: the horizon a future, scientifically-evaluated forecast-accuracy study (not yet built) would use. `linearForecast`'s own predictive accuracy has never been evaluated against ground truth; see §3 note below. |
 | 8 | Worker eligibility/credentialing model | Does not exist | Methodology document only | N/A — nothing built yet | What data would a real eligibility check need (credentials, current dose, open incidents)? |
 | 9 | Minimum handoff/briefing duration | Not chosen; **no rotation recommender exists** | Methodology document only | N/A | What is a realistic minimum handoff time before a rotation takes effect? |
 | 10 | Rotation scoring weights | Not chosen; **no rotation recommender exists** | Methodology document only | N/A | Once built, how should dose reduction, fairness, latency, and rotation count be weighted against each other? |
@@ -185,13 +237,28 @@ Documented more briefly, since these were already written up in
 | 13 | Chromium browser-version gap | Pinned 141.0.7390.37 vs. actually used 153.0.8010.12 | This project's own test infrastructure | N/A — a reproducibility/methodology matter, not a clinical one | (No domain expertise needed; included for completeness only.) |
 | 18 | Realism of not-yet-buildable scenario dynamics (masked-event timing, recovery-to-next-event spacing) | Not yet applicable — no generator exists | `PHASE2B_INTEGRATION_AUDIT.md` §7 | N/A until built | Once a generator for these dynamics is proposed, what durations/spacings would be realistic? |
 
+**Note on forecasting (row 7), stated precisely so it is not
+misread:** the frozen v1.2.3 engine already contains a forecasting
+function, `linearForecast` — an ordinary-least-squares extrapolation of
+the last 4 readings, used today inside the detection logic as an
+early-warning trigger (projecting whether a deviation will cross the
+elevated threshold within the next few minutes). This is a real,
+existing capability, not a placeholder. What is true, and is what row 7
+is actually about, is narrower: **`linearForecast`'s predictive accuracy
+has never been scientifically evaluated against ground truth** (how
+close its predictions actually come to what happens), and **no new
+forecasting model, and no evaluation harness comparing any forecaster's
+predictions against ground truth, has been built** for this research
+framework. "No forecasting has been implemented" and "no forecasting
+code exists" are not the same statement, and only the first is true.
+
 ---
 
 ## 4. Illustrative vs. evidence-supported — summary classification
 
 | Status | Rows |
 |---|---|
-| **Illustrative placeholder (no evidence at all)** | 1, 2, 3, 4, 5, 6, 14, 15, 17 |
+| **Illustrative placeholder (no evidence at all)** | 1, 2, 3, 4, 5, 6, 14, 15, 17, 19 |
 | **Inherited from the frozen engine, explicitly unverified against reality** | 11 |
 | **Inherited from the frozen engine, self-disclosed as a limited approximation** | 12 |
 | **Not yet applicable (feature does not exist yet)** | 7, 8, 9, 10, 18 |
@@ -225,6 +292,7 @@ That is the central fact this review package exists to start changing.
 | 16 | ✓ | — | ✓ | — | — |
 | 17 | ✓ (timing only) | — | — | — | — |
 | 18 | ✓ (future) | — | ✓ (future) | — | — |
+| 19 | ✓ (data-quality) | — | — | — | — |
 
 ---
 
@@ -248,14 +316,18 @@ project has not independently verified either citation** against the
 current official ICRP or NRRC text, and the software's own text says the
 same (*"consult the current official text"*). The engine uses the 20
 mSv/year figure only as a visual dashboard reference level (`CONFIG.refAnnual`),
-explicitly not as a 5-year-averaged compliance calculation.
+explicitly not as a 5-year-averaged compliance calculation. **These two
+citations remain explicitly unverified by this project until checked
+against the current official ICRP and NRRC texts — nothing below should
+be read as this project vouching for either one**, and no further
+citation has been added or invented anywhere in this package.
 
-**No other parameter in this registry (rows 1–18) has any citation
+**No other parameter in this registry (rows 1–19) has any citation
 behind it at all.** Where a Review Question above asks whether a
 manufacturer specification, regulatory alarm-setpoint guidance, or
-published noise/failure-rate data exists, that is a genuine open question
-for the reviewer's own expertise — this project does not have, and has
-not searched for, such sources.
+published noise/failure-rate/communication-reliability data exists, that
+is a genuine open question for the reviewer's own expertise — this
+project does not have, and has not searched for, such sources.
 
 ---
 
@@ -284,11 +356,17 @@ complete:**
 - Any claim, in a paper draft or elsewhere, that this project's detection
   results reflect real-world radiation-safety performance.
 - Any characterization of Baseline 3 as "conventional practice" (row 6).
-- Any forecasting or rotation implementation (rows 7–10) — not just
-  blocked by this review, but explicitly out of scope for this phase
-  regardless.
-- Any statement that rows 14/15/17's thresholds are clinically
+- Any claim that `linearForecast` is an accurate or validated predictor
+  (its accuracy has never been evaluated — see the forecasting note in
+  §3) — and separately, any *new* forecasting model or rotation
+  algorithm (rows 7–10), which remain out of scope for implementation
+  regardless of this review.
+- Any statement that rows 14/15/17/19's thresholds are clinically
   appropriate, in either direction.
+- Any claim that a reviewer's approval of a provisional value, however
+  thorough, by itself establishes external validity or regulatory
+  compliance (see the note at the top of this document) — those would
+  need their own, separately-scoped review.
 
 ---
 
@@ -303,6 +381,7 @@ with a comment, and today's date. Leave blank if deferring.*
 | 15 | Engine alert thresholds + horizon | +50%/+150% dev; 0.15/0.35 mSv; 30 min | | | |
 | 16 | Procedure-to-room rescaling coherence | (conceptual — see §2) | | | |
 | 17 | Immediate-alert dose bypass | 0.35 mSv, on by default | | | |
+| 19 | Sensor-health state-machine timing | stale 2 min; disconnected 5 min; frozen 6 readings; recover 2 samples | | | |
 | 1 | Procedure-class baselines/multipliers | 3.0–8.0 µSv/h, various ×ranges | | | |
 | 2 | Shift-length set | 60/240/480/720 min | | | |
 | 3 | Event magnitude/duration ranges | ×2.0–6.0, 1–20 min | | | |
@@ -322,10 +401,19 @@ with a comment, and today's date. Leave blank if deferring.*
 
 ## 9. Explicit statement of what this package does and does not do
 
-- **Does:** collect every registered scientific parameter, in plain
-  language, with exact values, sources, and review questions, so a
-  qualified reviewer can act without reading code.
+- **Does:** collect every registered scientific parameter (19, as of
+  this revision), in plain language, with exact values, sources, and
+  review questions, so a qualified reviewer can act without reading
+  code; distinguish what the frozen engine already contains
+  (`linearForecast`, operating but unevaluated) from what has not been
+  built (a new forecaster, any rotation algorithm); and state plainly
+  that approving a value for this synthetic study is not the same claim
+  as evidence of real-world representativeness, and that expert
+  approval alone does not establish external validity or regulatory
+  compliance.
 - **Does not:** change any parameter value; modify the frozen release;
   implement forecasting or rotation; run the statistical campaign; claim
-  any expert has approved anything; deploy anything. All of those remain
-  exactly as they were before this package was written.
+  any expert has approved anything; invent or add any citation beyond
+  the two already present in the frozen engine's own text (§6, both
+  still unverified); deploy anything. All of those remain exactly as
+  they were before this package was written.

@@ -2,9 +2,13 @@
 
 **Status: design document only.** Nothing described here has been
 implemented or executed. No code has been written, no new seeds have been
-run, and no forecasting or rotation algorithm has been built. This document
-exists to be reviewed and approved before any of that work starts, per
-instruction.
+run, and no new forecasting model or rotation algorithm has been built.
+(The frozen engine's own `linearForecast` already exists, independently
+of this document, and is used operationally for early-warning triggering
+— see §0 below; its predictive accuracy has not been scientifically
+evaluated, and that is a separate fact from whether a new forecaster has
+been built.) This document exists to be reviewed and approved before any
+of that work starts, per instruction.
 
 **Revision 2.** Adds: explicit unit/time-integration/personal-vs-area
 definitions (§1); a conventional fixed-threshold detection baseline,
@@ -28,6 +32,27 @@ reproducible against the engine — all found during
 none previously tracked as scientific assumptions despite being load-
 bearing for Phase 2A/2C's adapter. No other section is changed in this
 revision; everything else from Revision 2 is preserved as-is.
+
+**Revision 4 (documentation-only correction).** Adds Parameter Registry
+row 19, registering `AlaradSafety.SENSOR_P` (the frozen engine's own
+sensor-health state-machine timing thresholds) — identified as a gap of
+exactly the same kind as rows 14/15 while preparing
+`SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md`, and not previously registered.
+Tightens the Status note above and this document's framing elsewhere so
+"no forecasting has been built" cannot be misread as "no forecasting
+code exists at all" — `linearForecast` exists in the frozen engine
+(unchanged fact, already stated correctly in §0 below since Revision 1);
+what remains true is that its predictive accuracy is unevaluated and no
+new forecaster has been built for this research framework. Adds an
+explicit note, immediately before §9's table, that a reviewer's approval
+of a provisional value for this synthetic simulation study is not
+evidence that the value is representative of real occupational radiation
+exposure, and that expert approval alone does not establish external
+validity or regulatory compliance — both already implicit in this
+document's repeated "illustrative, not validated" language, now stated
+as one explicit, unmissable rule rather than left to be inferred. No
+parameter value, implementation code, or other section's substantive
+content is changed in this revision.
 
 **Branch:** `research/icaire-v123-validation` (this file). No other branch
 was touched. The frozen `research-demo/releases/html/ALARAD_Prototype_Research_Demo_v1.2.3.html`
@@ -512,6 +537,18 @@ actually evaluated, recorded alongside every reported number.
 Every open parameter referenced above, in one place, so none can be quietly
 fixed later without the review this table calls for.
 
+**What a reviewer's sign-off on a row means, and does not mean (Revision
+4):** an "Approved" mark against a row means *"this value is a
+reasonable, internally-consistent choice for the purposes of this
+synthetic simulation study."* It does **not** mean, and must never be
+cited as meaning, that the value is representative of real occupational
+radiation exposure, that it has been validated against real dosimeter or
+survey data, or that it establishes regulatory compliance with ICRP,
+NRRC, or any other authority. Expert approval of a provisional parameter
+for a synthetic study and evidence of that parameter's real-world
+representativeness are two different claims; resolving a row in this
+table only ever settles the first.
+
 | # | Parameter | Used in | Current status | Proposed evidence source | Expert approval required? |
 |---|---|---|---|---|---|
 | 1 | Procedure-class taxonomy and multiplier ranges | §2 | Open — illustrative class names only, no ranges chosen | RSO / medical-physicist consultation; facility procedure logs, if available | **Yes** |
@@ -532,6 +569,7 @@ fixed later without the review this table calls for.
 | 16 | Physical/conceptual coherence of mapping Phase 1's procedure-class framing onto the engine's room-based framing via `rescale_to_engine_baseline` | §2 (exposure simulation); `detection_adapter.rescale_to_engine_baseline`; `PHASE2B_INTEGRATION_AUDIT.md` §1-2 | Not a numeric question: does a Phase-1-generated pattern, re-anchored onto a specific room's illustrative baseline, represent a coherent simulated worker? Unresolved | Domain input on whether procedure-class and room-based framings are interchangeable for this purpose, or should be unified (see `PHASE2C_CORRECTIVE_IMPLEMENTATION.md` §7 for the retained-rescaling decision) | **Yes** |
 | 17 | Clinical basis for the immediate-alert dose bypass (`AlaradSafety.immediateAlert`, default policy `{mode:'dose', doseMsv:null}`) | §4 (not previously described in this methodology at all); `PHASE2B_INTEGRATION_AUDIT.md` §4; now implemented in `detection_adapter.classify_series` (Phase 2C item 1) | The bypass encodes a real safety-workflow judgment (an immediately dangerous projected dose should alert faster than standard confirmation); whether `doseCritical=0.35` mSv over 30 minutes is the clinically right trigger is unreviewed | RSO/medical-physicist review of the bypass's trigger value and whether bypassing confirmation is itself an appropriate design | **Yes** |
 | 18 | Realism of scenario dynamics not yet reproducible against the engine (S10's masked-event timing, S11's recovery-to-next-event spacing) if/when a Phase 1 generator for them is built | `PHASE2B_INTEGRATION_AUDIT.md` §7; `PHASE2C_CORRECTIVE_IMPLEMENTATION.md` coverage matrix | Not yet applicable — no Phase 1 generator for these dynamics exists; registered now so the question is not forgotten once one is built | Domain input on realistic frozen-sensor masking durations and recovery-to-next-event spacing, before any such generator is built | **Yes, before that future generator's parameters are fixed** |
+| 19 | The frozen engine's own sensor-health state-machine timing (`AlaradSafety.SENSOR_P`: a sensor is marked STALE after 2 missed minutes, DISCONNECTED after 5, SUSPECTED_FROZEN after 6 identical consecutive readings at 0.1 µSv/h resolution, with 2 consecutive changed/consistent samples required to exit RECOVERING or SUSPECTED_FROZEN) | §1 / existing engine, frozen release line 1316 (`SENSOR_P={staleAfter:2, disconnectedAfter:5, frozenN:6, frozenExitN:2, recoverN:2, resolution:0.1}`); identified while preparing `SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md` as a gap of exactly the same kind as rows 14/15, not previously registered | Inherited from v1.2.3, the engine's own code comment describes these as "simulation assumptions (documented in the UI); expected cadence = 1 sample per minute" — illustrative, not evidence-supported, and now load-bearing for every data-quality-layer result this project has reported (Phase 2A/2C's `dq_adapter.py`) | Real wearable-sensor communication-reliability data (typical dropout/reconnection timing), or RSO sign-off that these timings are an acceptable stand-in | **Yes** |
 
 No row in this table has been resolved by this document. Resolving a row
 means obtaining and citing the evidence source listed, or obtaining the
