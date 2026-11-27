@@ -42,6 +42,16 @@ class AssignmentSlot:
     proc_mult: float
     baseline_rate_uSv_h: float  # = procedure class baseline * proc_mult
 
+    def remaining_minutes(self, t: int) -> int:
+        """Closes PHASE3C_A_REVIEW_AGAINST_REVISION_3.md section 2 item
+        5: a single, named, tested helper for 'how many minutes remain
+        in this slot from t' -- used by PHASE3B_ROTATION_ALGORITHM_DESIGN.md
+        section 3a's horizon H(t) and section 3i's 'intended assignment
+        interval', rather than ad hoc `slot.end_minute - t` arithmetic
+        scattered across call sites. Returns 0 if t is at or past the
+        slot's own end (never negative)."""
+        return max(0, self.end_minute - t)
+
 
 def generate_room_boundaries(seed: int, room: str, shift_minutes: int,
                               p3c_cfg: Phase3CConfig) -> List[int]:

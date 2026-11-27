@@ -1,0 +1,253 @@
+{
+  "rotation_threshold_fraction": [
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.04106314786689617,
+      "mean_collective_dose_mSv": 0.06845736751160855,
+      "collective_dose_stdev": 0.0802020574674451,
+      "mean_n_completed": 0.26666666666666666,
+      "mean_n_infeasible": 18.733333333333334,
+      "parameter": "cgdtr_trigger.rotation_threshold_fraction",
+      "value": 0.1
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.050822865214510286,
+      "mean_collective_dose_mSv": 0.08532058027803055,
+      "collective_dose_stdev": 0.0871262390454836,
+      "mean_n_completed": 0.6666666666666666,
+      "mean_n_infeasible": 10.933333333333334,
+      "parameter": "cgdtr_trigger.rotation_threshold_fraction",
+      "value": 0.3
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.04566806020750975,
+      "mean_collective_dose_mSv": 0.05985421365937042,
+      "collective_dose_stdev": 0.03944837075257233,
+      "mean_n_completed": 0.2,
+      "mean_n_infeasible": 2.533333333333333,
+      "parameter": "cgdtr_trigger.rotation_threshold_fraction",
+      "value": 0.5
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.03869732442682749,
+      "mean_collective_dose_mSv": 0.05120112414942436,
+      "collective_dose_stdev": 0.02995019168946276,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 0.2,
+      "parameter": "cgdtr_trigger.rotation_threshold_fraction",
+      "value": 0.7
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.032660517209755525,
+      "mean_collective_dose_mSv": 0.04432221961003897,
+      "collective_dose_stdev": 0.04334947928278953,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 0,
+      "parameter": "cgdtr_trigger.rotation_threshold_fraction",
+      "value": 0.9
+    }
+  ],
+  "fixed_interval_minutes": [
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.03992016253643655,
+      "mean_collective_dose_mSv": 0.049648658830059735,
+      "collective_dose_stdev": 0.037917840022555174,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 2,
+      "parameter": "fixed_interval_baseline.fixed_interval_minutes",
+      "value": 20
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.03400702759946368,
+      "mean_collective_dose_mSv": 0.05283163989907088,
+      "collective_dose_stdev": 0.059575554482921726,
+      "mean_n_completed": 0.13333333333333333,
+      "mean_n_infeasible": 2.2666666666666666,
+      "parameter": "fixed_interval_baseline.fixed_interval_minutes",
+      "value": 40
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.04686909334634591,
+      "mean_collective_dose_mSv": 0.07546031803415337,
+      "collective_dose_stdev": 0.08334900719131218,
+      "mean_n_completed": 0.13333333333333333,
+      "mean_n_infeasible": 5.2,
+      "parameter": "fixed_interval_baseline.fixed_interval_minutes",
+      "value": 60
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.06153471764048661,
+      "mean_collective_dose_mSv": 0.07641384308979242,
+      "collective_dose_stdev": 0.05642097455446366,
+      "mean_n_completed": 0.06666666666666667,
+      "mean_n_infeasible": 6.2,
+      "parameter": "fixed_interval_baseline.fixed_interval_minutes",
+      "value": 80
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.03553232477273724,
+      "mean_collective_dose_mSv": 0.06292822580485373,
+      "collective_dose_stdev": 0.10044532855007535,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 5.6,
+      "parameter": "fixed_interval_baseline.fixed_interval_minutes",
+      "value": 100
+    }
+  ],
+  "min_handoff_duration_minutes": [
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.058576820753511866,
+      "mean_collective_dose_mSv": 0.0814946276771945,
+      "collective_dose_stdev": 0.071297664317966,
+      "mean_n_completed": 0.06666666666666667,
+      "mean_n_infeasible": 5.8,
+      "parameter": "handoff.min_handoff_duration_minutes",
+      "value": 5
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.02840359468576179,
+      "mean_collective_dose_mSv": 0.04605848230617122,
+      "collective_dose_stdev": 0.044929808613658806,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 0.8666666666666667,
+      "parameter": "handoff.min_handoff_duration_minutes",
+      "value": 10
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.043480495869709215,
+      "mean_collective_dose_mSv": 0.07628645574477319,
+      "collective_dose_stdev": 0.07971575994193218,
+      "mean_n_completed": 0.3333333333333333,
+      "mean_n_infeasible": 3.6,
+      "parameter": "handoff.min_handoff_duration_minutes",
+      "value": 15
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.05062811078513963,
+      "mean_collective_dose_mSv": 0.07606694278061883,
+      "collective_dose_stdev": 0.09956483123855855,
+      "mean_n_completed": 0.3333333333333333,
+      "mean_n_infeasible": 5,
+      "parameter": "handoff.min_handoff_duration_minutes",
+      "value": 20
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.03682272206365,
+      "mean_collective_dose_mSv": 0.05641076752844696,
+      "collective_dose_stdev": 0.057121735492518574,
+      "mean_n_completed": 0.13333333333333333,
+      "mean_n_infeasible": 2.6666666666666665,
+      "parameter": "handoff.min_handoff_duration_minutes",
+      "value": 30
+    }
+  ],
+  "max_rotations_per_shift_range": [
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.03492251074762909,
+      "mean_collective_dose_mSv": 0.04902235630979005,
+      "collective_dose_stdev": 0.05018455972713865,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 2.7333333333333334,
+      "parameter": "duty_limits.max_rotations_per_shift_range",
+      "value": [
+        1,
+        1
+      ]
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.046772149241905175,
+      "mean_collective_dose_mSv": 0.0641438227284337,
+      "collective_dose_stdev": 0.055023839449453216,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 3.2666666666666666,
+      "parameter": "duty_limits.max_rotations_per_shift_range",
+      "value": [
+        1,
+        2
+      ]
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.034237259387191805,
+      "mean_collective_dose_mSv": 0.058321227314757335,
+      "collective_dose_stdev": 0.0686252562891394,
+      "mean_n_completed": 0.06666666666666667,
+      "mean_n_infeasible": 2.466666666666667,
+      "parameter": "duty_limits.max_rotations_per_shift_range",
+      "value": [
+        1,
+        3
+      ]
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.04861983792032782,
+      "mean_collective_dose_mSv": 0.07301433813734921,
+      "collective_dose_stdev": 0.06399489488455092,
+      "mean_n_completed": 0.13333333333333333,
+      "mean_n_infeasible": 4.533333333333333,
+      "parameter": "duty_limits.max_rotations_per_shift_range",
+      "value": [
+        2,
+        4
+      ]
+    }
+  ],
+  "credential_coverage_probability_range": [
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.04658781352292596,
+      "mean_collective_dose_mSv": 0.06905449296119216,
+      "collective_dose_stdev": 0.06230758190093256,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 3.8,
+      "parameter": "roster_generation.credential_coverage_probability_range",
+      "value": [
+        0.2,
+        0.3
+      ]
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.0463170417681588,
+      "mean_collective_dose_mSv": 0.06735670562925603,
+      "collective_dose_stdev": 0.051529741639121364,
+      "mean_n_completed": 0,
+      "mean_n_infeasible": 3.2666666666666666,
+      "parameter": "roster_generation.credential_coverage_probability_range",
+      "value": [
+        0.4,
+        0.7
+      ]
+    },
+    {
+      "n_runs": 15,
+      "mean_max_individual_dose_mSv": 0.03252474661403743,
+      "mean_collective_dose_mSv": 0.049990587630186,
+      "collective_dose_stdev": 0.044382740456964664,
+      "mean_n_completed": 0.2,
+      "mean_n_infeasible": 0.5333333333333333,
+      "parameter": "roster_generation.credential_coverage_probability_range",
+      "value": [
+        0.8,
+        0.95
+      ]
+    }
+  ]
+}

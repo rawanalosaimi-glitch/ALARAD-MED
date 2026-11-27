@@ -59,6 +59,15 @@ class TestExposureLayer(unittest.TestCase):
         layer_2 = generate_exposure_layer(99, slots_by_room)
         self.assertEqual(layer_1, layer_2)
 
+    def test_remaining_minutes_helper(self):
+        """Closes gap 5: a single, named helper for 'how many minutes
+        remain in this slot from t'."""
+        slots = generate_slots_for_room(7, "Cath Lab 1", 100, self.p1_cfg)
+        slot = slots[0]
+        self.assertEqual(slot.remaining_minutes(slot.start_minute), slot.end_minute - slot.start_minute)
+        self.assertEqual(slot.remaining_minutes(slot.end_minute), 0)
+        self.assertEqual(slot.remaining_minutes(slot.end_minute + 50), 0)
+
     def test_each_slot_series_has_correct_length(self):
         slots = generate_slots_for_room(3, "PET/CT Suite", 90, self.p1_cfg)
         for slot in slots:

@@ -9,14 +9,16 @@ It only resolves, deterministically and exclusively, a set of already-
 ranked `RotationRequest`s supplied by the caller (a test, or a future
 policy module) at the same decision point.
 
-Duty-limit (max_dose_per_shift_mSv) checking is deliberately NOT wired
-into this module's eligibility filtering: that check needs a live,
-per-minute dose figure this infrastructure phase does not maintain
-during batch resolution (dose accounting lives in dose_attribution.py,
-computed after the fact over a full exposure+assignment layer). Wiring
-duty-limit checks into the live eligibility filter is deferred to
-whichever future phase implements the real trigger/selection logic
-(CGDTR), and is listed as a remaining blocker in this round's report.
+**Duty-limit checking (section 3i, closes
+PHASE3C_A_REVIEW_AGAINST_REVISION_3.md section 2 item 3):** `batch_resolve`
+now accepts an optional `intended_assignment_minutes_by_room` map. When
+given, a candidate projected (via `dose_quantities.projected_shift_total_dose_mSv`)
+to reach their own `max_dose_per_shift_mSv` before the end of the
+intended assignment is excluded -- one more condition in the same
+step-6 filter, never a separate mechanism. When omitted (every call
+site that predates this check), behavior is byte-for-byte unchanged
+from before this check existed, so Phase 3C-A's own 55 tests keep
+passing without modification.
 """
 
 from __future__ import annotations
@@ -24,6 +26,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
+from .dose_quantities import projected_shift_total_dose_mSv
 from .staffing import ASSIGNED, FREE, RESERVED, RESTING, WorkerProfile
 
 
@@ -43,7 +46,9 @@ class ReservationOutcome:
 
 
 def batch_resolve(requests: List[RotationRequest], roster: Dict[str, WorkerProfile],
-                   t_decide: int, t_effective_by_room: Dict[str, int]) -> List[ReservationOutcome]:
+                   t_decide: int, t_effective_by_room: Dict[str, int],
+                   intended_assignment_minutes_by_room: Optional[Dict[str, int]] = None
+                   ) -> List[ReservationOutcome]:
     """Section 3g steps 1-6: one deterministic pass, rooms processed in
     ascending room-name order, each picking the first still-eligible
     candidate and marking them RESERVED immediately -- before the next
@@ -52,13 +57,21 @@ def batch_resolve(requests: List[RotationRequest], roster: Dict[str, WorkerProfi
 
     A candidate is excluded from a room's list (step 6) if: not FREE,
     currently RESTING at t_decide, at their rotation-burden cap
-    (rotations_so_far >= max_rotations_per_shift), or their own
+    (rotations_so_far >= max_rotations_per_shift), their own
     availability_windows do not cover the full
-    [t_decide, t_effective_by_room[room]] interval.
+    [t_decide, t_effective_by_room[room]] interval, or -- new, section
+    3i, only checked when `intended_assignment_minutes_by_room` is
+    given for this room -- they are projected to exceed their own
+    `max_dose_per_shift_mSv` before the end of the intended assignment.
+    A candidate with no trusted reading yet (`projected_shift_total_dose_mSv`
+    returns `None`) is never excluded on this ground -- undefined is not
+    "over limit," per this project's established "undefined is reported,
+    never silently treated as a failure" discipline.
     """
     outcomes: List[ReservationOutcome] = []
     for req in sorted(requests, key=lambda r: r.room):
         t_eff = t_effective_by_room.get(req.room)
+        intended_minutes = (intended_assignment_minutes_by_room or {}).get(req.room)
         chosen: Optional[WorkerProfile] = None
         for cand_id in req.candidate_order:
             w = roster.get(cand_id)
@@ -72,6 +85,10 @@ def batch_resolve(requests: List[RotationRequest], roster: Dict[str, WorkerProfi
                 continue
             if t_eff is not None and not w.is_within_availability_interval(t_decide, t_eff):
                 continue
+            if intended_minutes is not None:
+                projected = projected_shift_total_dose_mSv(w, intended_minutes / 60.0)
+                if projected is not None and projected >= w.max_dose_per_shift_mSv:
+                    continue
             chosen = w
             break
         if chosen is None:

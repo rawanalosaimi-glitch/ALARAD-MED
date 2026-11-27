@@ -1,0 +1,2364 @@
+{
+  "archetypes": [
+    "normal",
+    "gradual_increase",
+    "sudden_increase",
+    "transient_spike",
+    "area_relocation",
+    "multi_worker_mixed",
+    "fault_missing",
+    "fault_invalid",
+    "fault_frozen",
+    "fault_delayed",
+    "fault_during_event",
+    "multi_worker_faults",
+    "concurrent_alert_and_fault"
+  ],
+  "seeds_per_class": 30,
+  "seed_base": 700000,
+  "completed_runs": [
+    {
+      "archetype": "normal",
+      "seed": 700000,
+      "file": "normal_700000.json",
+      "elapsed_s": 7.267481565475464
+    },
+    {
+      "archetype": "normal",
+      "seed": 700001,
+      "file": "normal_700001.json",
+      "elapsed_s": 0.9251556396484375
+    },
+    {
+      "archetype": "normal",
+      "seed": 700002,
+      "file": "normal_700002.json",
+      "elapsed_s": 6.881205797195435
+    },
+    {
+      "archetype": "normal",
+      "seed": 700003,
+      "file": "normal_700003.json",
+      "elapsed_s": 1.0047218799591064
+    },
+    {
+      "archetype": "normal",
+      "seed": 700004,
+      "file": "normal_700004.json",
+      "elapsed_s": 6.767451763153076
+    },
+    {
+      "archetype": "normal",
+      "seed": 700005,
+      "file": "normal_700005.json",
+      "elapsed_s": 6.573692083358765
+    },
+    {
+      "archetype": "normal",
+      "seed": 700006,
+      "file": "normal_700006.json",
+      "elapsed_s": 7.210801601409912
+    },
+    {
+      "archetype": "normal",
+      "seed": 700007,
+      "file": "normal_700007.json",
+      "elapsed_s": 7.3942084312438965
+    },
+    {
+      "archetype": "normal",
+      "seed": 700008,
+      "file": "normal_700008.json",
+      "elapsed_s": 0.9794278144836426
+    },
+    {
+      "archetype": "normal",
+      "seed": 700009,
+      "file": "normal_700009.json",
+      "elapsed_s": 7.024062871932983
+    },
+    {
+      "archetype": "normal",
+      "seed": 700010,
+      "file": "normal_700010.json",
+      "elapsed_s": 0.9079771041870117
+    },
+    {
+      "archetype": "normal",
+      "seed": 700011,
+      "file": "normal_700011.json",
+      "elapsed_s": 10.291404247283936
+    },
+    {
+      "archetype": "normal",
+      "seed": 700012,
+      "file": "normal_700012.json",
+      "elapsed_s": 0.9101881980895996
+    },
+    {
+      "archetype": "normal",
+      "seed": 700013,
+      "file": "normal_700013.json",
+      "elapsed_s": 3.4730262756347656
+    },
+    {
+      "archetype": "normal",
+      "seed": 700014,
+      "file": "normal_700014.json",
+      "elapsed_s": 0.8602001667022705
+    },
+    {
+      "archetype": "normal",
+      "seed": 700015,
+      "file": "normal_700015.json",
+      "elapsed_s": 0.8634746074676514
+    },
+    {
+      "archetype": "normal",
+      "seed": 700016,
+      "file": "normal_700016.json",
+      "elapsed_s": 0.925469160079956
+    },
+    {
+      "archetype": "normal",
+      "seed": 700017,
+      "file": "normal_700017.json",
+      "elapsed_s": 10.156670093536377
+    },
+    {
+      "archetype": "normal",
+      "seed": 700018,
+      "file": "normal_700018.json",
+      "elapsed_s": 10.018471956253052
+    },
+    {
+      "archetype": "normal",
+      "seed": 700019,
+      "file": "normal_700019.json",
+      "elapsed_s": 6.655777931213379
+    },
+    {
+      "archetype": "normal",
+      "seed": 700020,
+      "file": "normal_700020.json",
+      "elapsed_s": 6.4521708488464355
+    },
+    {
+      "archetype": "normal",
+      "seed": 700021,
+      "file": "normal_700021.json",
+      "elapsed_s": 9.785390138626099
+    },
+    {
+      "archetype": "normal",
+      "seed": 700022,
+      "file": "normal_700022.json",
+      "elapsed_s": 3.289059638977051
+    },
+    {
+      "archetype": "normal",
+      "seed": 700023,
+      "file": "normal_700023.json",
+      "elapsed_s": 0.8440382480621338
+    },
+    {
+      "archetype": "normal",
+      "seed": 700024,
+      "file": "normal_700024.json",
+      "elapsed_s": 0.8365395069122314
+    },
+    {
+      "archetype": "normal",
+      "seed": 700025,
+      "file": "normal_700025.json",
+      "elapsed_s": 7.0503599643707275
+    },
+    {
+      "archetype": "normal",
+      "seed": 700026,
+      "file": "normal_700026.json",
+      "elapsed_s": 0.87418532371521
+    },
+    {
+      "archetype": "normal",
+      "seed": 700027,
+      "file": "normal_700027.json",
+      "elapsed_s": 3.198103189468384
+    },
+    {
+      "archetype": "normal",
+      "seed": 700028,
+      "file": "normal_700028.json",
+      "elapsed_s": 9.927644491195679
+    },
+    {
+      "archetype": "normal",
+      "seed": 700029,
+      "file": "normal_700029.json",
+      "elapsed_s": 10.14345932006836
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701000,
+      "file": "gradual_increase_701000.json",
+      "elapsed_s": 6.803497076034546
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701001,
+      "file": "gradual_increase_701001.json",
+      "elapsed_s": 0.8449571132659912
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701002,
+      "file": "gradual_increase_701002.json",
+      "elapsed_s": 3.13254451751709
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701003,
+      "file": "gradual_increase_701003.json",
+      "elapsed_s": 6.5529375076293945
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701004,
+      "file": "gradual_increase_701004.json",
+      "elapsed_s": 6.266192197799683
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701005,
+      "file": "gradual_increase_701005.json",
+      "elapsed_s": 9.813210487365723
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701006,
+      "file": "gradual_increase_701006.json",
+      "elapsed_s": 3.326324462890625
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701007,
+      "file": "gradual_increase_701007.json",
+      "elapsed_s": 3.5472230911254883
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701008,
+      "file": "gradual_increase_701008.json",
+      "elapsed_s": 0.8434889316558838
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701009,
+      "file": "gradual_increase_701009.json",
+      "elapsed_s": 3.4865212440490723
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701010,
+      "file": "gradual_increase_701010.json",
+      "elapsed_s": 0.8720359802246094
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701011,
+      "file": "gradual_increase_701011.json",
+      "elapsed_s": 9.829145669937134
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701012,
+      "file": "gradual_increase_701012.json",
+      "elapsed_s": 10.076395273208618
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701013,
+      "file": "gradual_increase_701013.json",
+      "elapsed_s": 0.8262057304382324
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701014,
+      "file": "gradual_increase_701014.json",
+      "elapsed_s": 3.4726369380950928
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701015,
+      "file": "gradual_increase_701015.json",
+      "elapsed_s": 9.91675853729248
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701016,
+      "file": "gradual_increase_701016.json",
+      "elapsed_s": 0.8311755657196045
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701017,
+      "file": "gradual_increase_701017.json",
+      "elapsed_s": 9.913718938827515
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701018,
+      "file": "gradual_increase_701018.json",
+      "elapsed_s": 3.4221136569976807
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701019,
+      "file": "gradual_increase_701019.json",
+      "elapsed_s": 3.1674721240997314
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701020,
+      "file": "gradual_increase_701020.json",
+      "elapsed_s": 9.771021366119385
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701021,
+      "file": "gradual_increase_701021.json",
+      "elapsed_s": 9.849076747894287
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701022,
+      "file": "gradual_increase_701022.json",
+      "elapsed_s": 6.782994747161865
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701023,
+      "file": "gradual_increase_701023.json",
+      "elapsed_s": 10.372204780578613
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701024,
+      "file": "gradual_increase_701024.json",
+      "elapsed_s": 6.84033203125
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701025,
+      "file": "gradual_increase_701025.json",
+      "elapsed_s": 6.66389012336731
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701026,
+      "file": "gradual_increase_701026.json",
+      "elapsed_s": 0.8948748111724854
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701027,
+      "file": "gradual_increase_701027.json",
+      "elapsed_s": 0.8985087871551514
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701028,
+      "file": "gradual_increase_701028.json",
+      "elapsed_s": 6.650409460067749
+    },
+    {
+      "archetype": "gradual_increase",
+      "seed": 701029,
+      "file": "gradual_increase_701029.json",
+      "elapsed_s": 0.8738799095153809
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702000,
+      "file": "sudden_increase_702000.json",
+      "elapsed_s": 6.967569589614868
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702001,
+      "file": "sudden_increase_702001.json",
+      "elapsed_s": 10.167598962783813
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702002,
+      "file": "sudden_increase_702002.json",
+      "elapsed_s": 3.4087488651275635
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702003,
+      "file": "sudden_increase_702003.json",
+      "elapsed_s": 6.571908950805664
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702004,
+      "file": "sudden_increase_702004.json",
+      "elapsed_s": 3.20650053024292
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702005,
+      "file": "sudden_increase_702005.json",
+      "elapsed_s": 6.6945459842681885
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702006,
+      "file": "sudden_increase_702006.json",
+      "elapsed_s": 3.2494797706604004
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702007,
+      "file": "sudden_increase_702007.json",
+      "elapsed_s": 0.819007396697998
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702008,
+      "file": "sudden_increase_702008.json",
+      "elapsed_s": 10.118112087249756
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702009,
+      "file": "sudden_increase_702009.json",
+      "elapsed_s": 0.9176886081695557
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702010,
+      "file": "sudden_increase_702010.json",
+      "elapsed_s": 0.8833940029144287
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702011,
+      "file": "sudden_increase_702011.json",
+      "elapsed_s": 9.908519506454468
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702012,
+      "file": "sudden_increase_702012.json",
+      "elapsed_s": 0.8343033790588379
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702013,
+      "file": "sudden_increase_702013.json",
+      "elapsed_s": 3.200312376022339
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702014,
+      "file": "sudden_increase_702014.json",
+      "elapsed_s": 0.8840811252593994
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702015,
+      "file": "sudden_increase_702015.json",
+      "elapsed_s": 11.853415727615356
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702016,
+      "file": "sudden_increase_702016.json",
+      "elapsed_s": 13.291476488113403
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702017,
+      "file": "sudden_increase_702017.json",
+      "elapsed_s": 9.13966989517212
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702018,
+      "file": "sudden_increase_702018.json",
+      "elapsed_s": 11.920646905899048
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702019,
+      "file": "sudden_increase_702019.json",
+      "elapsed_s": 0.9451882839202881
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702020,
+      "file": "sudden_increase_702020.json",
+      "elapsed_s": 4.04572057723999
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702021,
+      "file": "sudden_increase_702021.json",
+      "elapsed_s": 12.317617416381836
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702022,
+      "file": "sudden_increase_702022.json",
+      "elapsed_s": 1.0752248764038086
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702023,
+      "file": "sudden_increase_702023.json",
+      "elapsed_s": 12.565666198730469
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702024,
+      "file": "sudden_increase_702024.json",
+      "elapsed_s": 12.355282545089722
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702025,
+      "file": "sudden_increase_702025.json",
+      "elapsed_s": 10.417675256729126
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702026,
+      "file": "sudden_increase_702026.json",
+      "elapsed_s": 6.980053424835205
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702027,
+      "file": "sudden_increase_702027.json",
+      "elapsed_s": 3.4844210147857666
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702028,
+      "file": "sudden_increase_702028.json",
+      "elapsed_s": 3.3001489639282227
+    },
+    {
+      "archetype": "sudden_increase",
+      "seed": 702029,
+      "file": "sudden_increase_702029.json",
+      "elapsed_s": 0.8609974384307861
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703000,
+      "file": "transient_spike_703000.json",
+      "elapsed_s": 10.102273225784302
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703001,
+      "file": "transient_spike_703001.json",
+      "elapsed_s": 6.916134834289551
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703002,
+      "file": "transient_spike_703002.json",
+      "elapsed_s": 3.422283411026001
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703003,
+      "file": "transient_spike_703003.json",
+      "elapsed_s": 3.2136337757110596
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703004,
+      "file": "transient_spike_703004.json",
+      "elapsed_s": 3.5379371643066406
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703005,
+      "file": "transient_spike_703005.json",
+      "elapsed_s": 7.190912961959839
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703006,
+      "file": "transient_spike_703006.json",
+      "elapsed_s": 3.6188602447509766
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703007,
+      "file": "transient_spike_703007.json",
+      "elapsed_s": 6.96370005607605
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703008,
+      "file": "transient_spike_703008.json",
+      "elapsed_s": 3.4095723628997803
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703009,
+      "file": "transient_spike_703009.json",
+      "elapsed_s": 3.551858901977539
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703010,
+      "file": "transient_spike_703010.json",
+      "elapsed_s": 0.9080252647399902
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703011,
+      "file": "transient_spike_703011.json",
+      "elapsed_s": 0.8680844306945801
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703012,
+      "file": "transient_spike_703012.json",
+      "elapsed_s": 10.120180130004883
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703013,
+      "file": "transient_spike_703013.json",
+      "elapsed_s": 3.296090841293335
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703014,
+      "file": "transient_spike_703014.json",
+      "elapsed_s": 10.062736511230469
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703015,
+      "file": "transient_spike_703015.json",
+      "elapsed_s": 6.930131912231445
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703016,
+      "file": "transient_spike_703016.json",
+      "elapsed_s": 6.794895887374878
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703017,
+      "file": "transient_spike_703017.json",
+      "elapsed_s": 0.8419895172119141
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703018,
+      "file": "transient_spike_703018.json",
+      "elapsed_s": 3.340461492538452
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703019,
+      "file": "transient_spike_703019.json",
+      "elapsed_s": 0.7707128524780273
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703020,
+      "file": "transient_spike_703020.json",
+      "elapsed_s": 3.2590391635894775
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703021,
+      "file": "transient_spike_703021.json",
+      "elapsed_s": 0.8816149234771729
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703022,
+      "file": "transient_spike_703022.json",
+      "elapsed_s": 0.8507339954376221
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703023,
+      "file": "transient_spike_703023.json",
+      "elapsed_s": 9.715332984924316
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703024,
+      "file": "transient_spike_703024.json",
+      "elapsed_s": 3.2846527099609375
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703025,
+      "file": "transient_spike_703025.json",
+      "elapsed_s": 0.8161351680755615
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703026,
+      "file": "transient_spike_703026.json",
+      "elapsed_s": 0.8865816593170166
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703027,
+      "file": "transient_spike_703027.json",
+      "elapsed_s": 6.600304126739502
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703028,
+      "file": "transient_spike_703028.json",
+      "elapsed_s": 6.536633491516113
+    },
+    {
+      "archetype": "transient_spike",
+      "seed": 703029,
+      "file": "transient_spike_703029.json",
+      "elapsed_s": 3.4276347160339355
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704000,
+      "file": "area_relocation_704000.json",
+      "elapsed_s": 3.198169231414795
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704001,
+      "file": "area_relocation_704001.json",
+      "elapsed_s": 6.526019811630249
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704002,
+      "file": "area_relocation_704002.json",
+      "elapsed_s": 9.819695234298706
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704003,
+      "file": "area_relocation_704003.json",
+      "elapsed_s": 3.4725446701049805
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704004,
+      "file": "area_relocation_704004.json",
+      "elapsed_s": 9.765408515930176
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704005,
+      "file": "area_relocation_704005.json",
+      "elapsed_s": 9.72812557220459
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704006,
+      "file": "area_relocation_704006.json",
+      "elapsed_s": 9.653385877609253
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704007,
+      "file": "area_relocation_704007.json",
+      "elapsed_s": 9.390879154205322
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704008,
+      "file": "area_relocation_704008.json",
+      "elapsed_s": 6.248857259750366
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704009,
+      "file": "area_relocation_704009.json",
+      "elapsed_s": 9.58497667312622
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704010,
+      "file": "area_relocation_704010.json",
+      "elapsed_s": 6.460192918777466
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704011,
+      "file": "area_relocation_704011.json",
+      "elapsed_s": 6.810321092605591
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704012,
+      "file": "area_relocation_704012.json",
+      "elapsed_s": 9.593449831008911
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704013,
+      "file": "area_relocation_704013.json",
+      "elapsed_s": 3.2259395122528076
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704014,
+      "file": "area_relocation_704014.json",
+      "elapsed_s": 3.072472333908081
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704015,
+      "file": "area_relocation_704015.json",
+      "elapsed_s": 9.466096639633179
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704016,
+      "file": "area_relocation_704016.json",
+      "elapsed_s": 0.776360273361206
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704017,
+      "file": "area_relocation_704017.json",
+      "elapsed_s": 9.641984462738037
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704018,
+      "file": "area_relocation_704018.json",
+      "elapsed_s": 6.411530494689941
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704019,
+      "file": "area_relocation_704019.json",
+      "elapsed_s": 6.49860954284668
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704020,
+      "file": "area_relocation_704020.json",
+      "elapsed_s": 0.893634557723999
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704021,
+      "file": "area_relocation_704021.json",
+      "elapsed_s": 0.8895773887634277
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704022,
+      "file": "area_relocation_704022.json",
+      "elapsed_s": 6.382465600967407
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704023,
+      "file": "area_relocation_704023.json",
+      "elapsed_s": 0.8433017730712891
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704024,
+      "file": "area_relocation_704024.json",
+      "elapsed_s": 6.495841979980469
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704025,
+      "file": "area_relocation_704025.json",
+      "elapsed_s": 0.8346784114837646
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704026,
+      "file": "area_relocation_704026.json",
+      "elapsed_s": 6.36153244972229
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704027,
+      "file": "area_relocation_704027.json",
+      "elapsed_s": 6.422992944717407
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704028,
+      "file": "area_relocation_704028.json",
+      "elapsed_s": 0.7736988067626953
+    },
+    {
+      "archetype": "area_relocation",
+      "seed": 704029,
+      "file": "area_relocation_704029.json",
+      "elapsed_s": 9.750632047653198
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705000,
+      "file": "multi_worker_mixed_705000.json",
+      "elapsed_s": 12.136644840240479
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705001,
+      "file": "multi_worker_mixed_705001.json",
+      "elapsed_s": 12.398496150970459
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705002,
+      "file": "multi_worker_mixed_705002.json",
+      "elapsed_s": 4.246161937713623
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705003,
+      "file": "multi_worker_mixed_705003.json",
+      "elapsed_s": 12.697032690048218
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705004,
+      "file": "multi_worker_mixed_705004.json",
+      "elapsed_s": 1.1357555389404297
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705005,
+      "file": "multi_worker_mixed_705005.json",
+      "elapsed_s": 1.0393762588500977
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705006,
+      "file": "multi_worker_mixed_705006.json",
+      "elapsed_s": 8.212320327758789
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705007,
+      "file": "multi_worker_mixed_705007.json",
+      "elapsed_s": 8.25731086730957
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705008,
+      "file": "multi_worker_mixed_705008.json",
+      "elapsed_s": 12.125000715255737
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705009,
+      "file": "multi_worker_mixed_705009.json",
+      "elapsed_s": 4.122034549713135
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705010,
+      "file": "multi_worker_mixed_705010.json",
+      "elapsed_s": 8.317395448684692
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705011,
+      "file": "multi_worker_mixed_705011.json",
+      "elapsed_s": 12.548391819000244
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705012,
+      "file": "multi_worker_mixed_705012.json",
+      "elapsed_s": 4.172919273376465
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705013,
+      "file": "multi_worker_mixed_705013.json",
+      "elapsed_s": 8.36704707145691
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705014,
+      "file": "multi_worker_mixed_705014.json",
+      "elapsed_s": 9.0261812210083
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705015,
+      "file": "multi_worker_mixed_705015.json",
+      "elapsed_s": 1.3156518936157227
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705016,
+      "file": "multi_worker_mixed_705016.json",
+      "elapsed_s": 15.312965631484985
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705017,
+      "file": "multi_worker_mixed_705017.json",
+      "elapsed_s": 15.098740577697754
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705018,
+      "file": "multi_worker_mixed_705018.json",
+      "elapsed_s": 4.948866844177246
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705019,
+      "file": "multi_worker_mixed_705019.json",
+      "elapsed_s": 4.245059967041016
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705020,
+      "file": "multi_worker_mixed_705020.json",
+      "elapsed_s": 1.0796258449554443
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705021,
+      "file": "multi_worker_mixed_705021.json",
+      "elapsed_s": 8.966333866119385
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705022,
+      "file": "multi_worker_mixed_705022.json",
+      "elapsed_s": 4.4561896324157715
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705023,
+      "file": "multi_worker_mixed_705023.json",
+      "elapsed_s": 4.45417594909668
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705024,
+      "file": "multi_worker_mixed_705024.json",
+      "elapsed_s": 1.0739305019378662
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705025,
+      "file": "multi_worker_mixed_705025.json",
+      "elapsed_s": 4.202216625213623
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705026,
+      "file": "multi_worker_mixed_705026.json",
+      "elapsed_s": 8.28222918510437
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705027,
+      "file": "multi_worker_mixed_705027.json",
+      "elapsed_s": 4.534613132476807
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705028,
+      "file": "multi_worker_mixed_705028.json",
+      "elapsed_s": 4.4482808113098145
+    },
+    {
+      "archetype": "multi_worker_mixed",
+      "seed": 705029,
+      "file": "multi_worker_mixed_705029.json",
+      "elapsed_s": 1.1685893535614014
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706000,
+      "file": "fault_missing_706000.json",
+      "elapsed_s": 3.4021224975585938
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706001,
+      "file": "fault_missing_706001.json",
+      "elapsed_s": 9.568515062332153
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706002,
+      "file": "fault_missing_706002.json",
+      "elapsed_s": 9.674128293991089
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706003,
+      "file": "fault_missing_706003.json",
+      "elapsed_s": 9.895802974700928
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706004,
+      "file": "fault_missing_706004.json",
+      "elapsed_s": 6.466647148132324
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706005,
+      "file": "fault_missing_706005.json",
+      "elapsed_s": 3.2480876445770264
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706006,
+      "file": "fault_missing_706006.json",
+      "elapsed_s": 3.169309139251709
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706007,
+      "file": "fault_missing_706007.json",
+      "elapsed_s": 0.7719535827636719
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706008,
+      "file": "fault_missing_706008.json",
+      "elapsed_s": 0.8465509414672852
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706009,
+      "file": "fault_missing_706009.json",
+      "elapsed_s": 6.6989219188690186
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706010,
+      "file": "fault_missing_706010.json",
+      "elapsed_s": 0.8235108852386475
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706011,
+      "file": "fault_missing_706011.json",
+      "elapsed_s": 3.279655933380127
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706012,
+      "file": "fault_missing_706012.json",
+      "elapsed_s": 6.435042381286621
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706013,
+      "file": "fault_missing_706013.json",
+      "elapsed_s": 3.20534610748291
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706014,
+      "file": "fault_missing_706014.json",
+      "elapsed_s": 3.236936330795288
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706015,
+      "file": "fault_missing_706015.json",
+      "elapsed_s": 11.140911102294922
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706016,
+      "file": "fault_missing_706016.json",
+      "elapsed_s": 0.8466038703918457
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706017,
+      "file": "fault_missing_706017.json",
+      "elapsed_s": 6.980891704559326
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706018,
+      "file": "fault_missing_706018.json",
+      "elapsed_s": 9.76380205154419
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706019,
+      "file": "fault_missing_706019.json",
+      "elapsed_s": 3.2384393215179443
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706020,
+      "file": "fault_missing_706020.json",
+      "elapsed_s": 9.529298543930054
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706021,
+      "file": "fault_missing_706021.json",
+      "elapsed_s": 0.8770332336425781
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706022,
+      "file": "fault_missing_706022.json",
+      "elapsed_s": 6.625599145889282
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706023,
+      "file": "fault_missing_706023.json",
+      "elapsed_s": 0.8061020374298096
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706024,
+      "file": "fault_missing_706024.json",
+      "elapsed_s": 6.614995002746582
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706025,
+      "file": "fault_missing_706025.json",
+      "elapsed_s": 3.221642017364502
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706026,
+      "file": "fault_missing_706026.json",
+      "elapsed_s": 0.8481402397155762
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706027,
+      "file": "fault_missing_706027.json",
+      "elapsed_s": 9.444900274276733
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706028,
+      "file": "fault_missing_706028.json",
+      "elapsed_s": 3.393946409225464
+    },
+    {
+      "archetype": "fault_missing",
+      "seed": 706029,
+      "file": "fault_missing_706029.json",
+      "elapsed_s": 3.380866289138794
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707000,
+      "file": "fault_invalid_707000.json",
+      "elapsed_s": 3.270176649093628
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707001,
+      "file": "fault_invalid_707001.json",
+      "elapsed_s": 7.015389919281006
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707002,
+      "file": "fault_invalid_707002.json",
+      "elapsed_s": 3.427927017211914
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707003,
+      "file": "fault_invalid_707003.json",
+      "elapsed_s": 6.885298252105713
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707004,
+      "file": "fault_invalid_707004.json",
+      "elapsed_s": 10.531425714492798
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707005,
+      "file": "fault_invalid_707005.json",
+      "elapsed_s": 9.962712526321411
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707006,
+      "file": "fault_invalid_707006.json",
+      "elapsed_s": 3.522515058517456
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707007,
+      "file": "fault_invalid_707007.json",
+      "elapsed_s": 6.618808746337891
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707008,
+      "file": "fault_invalid_707008.json",
+      "elapsed_s": 0.7862100601196289
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707009,
+      "file": "fault_invalid_707009.json",
+      "elapsed_s": 6.4334330558776855
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707010,
+      "file": "fault_invalid_707010.json",
+      "elapsed_s": 10.20385479927063
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707011,
+      "file": "fault_invalid_707011.json",
+      "elapsed_s": 10.324458360671997
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707012,
+      "file": "fault_invalid_707012.json",
+      "elapsed_s": 3.5117921829223633
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707013,
+      "file": "fault_invalid_707013.json",
+      "elapsed_s": 10.347439050674438
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707014,
+      "file": "fault_invalid_707014.json",
+      "elapsed_s": 7.127586126327515
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707015,
+      "file": "fault_invalid_707015.json",
+      "elapsed_s": 3.54689884185791
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707016,
+      "file": "fault_invalid_707016.json",
+      "elapsed_s": 0.8527698516845703
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707017,
+      "file": "fault_invalid_707017.json",
+      "elapsed_s": 7.035820960998535
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707018,
+      "file": "fault_invalid_707018.json",
+      "elapsed_s": 6.703450441360474
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707019,
+      "file": "fault_invalid_707019.json",
+      "elapsed_s": 10.511497020721436
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707020,
+      "file": "fault_invalid_707020.json",
+      "elapsed_s": 3.735762119293213
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707021,
+      "file": "fault_invalid_707021.json",
+      "elapsed_s": 7.080081462860107
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707022,
+      "file": "fault_invalid_707022.json",
+      "elapsed_s": 6.859421968460083
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707023,
+      "file": "fault_invalid_707023.json",
+      "elapsed_s": 3.549300193786621
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707024,
+      "file": "fault_invalid_707024.json",
+      "elapsed_s": 3.6568620204925537
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707025,
+      "file": "fault_invalid_707025.json",
+      "elapsed_s": 10.291841506958008
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707026,
+      "file": "fault_invalid_707026.json",
+      "elapsed_s": 3.307314872741699
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707027,
+      "file": "fault_invalid_707027.json",
+      "elapsed_s": 10.273014783859253
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707028,
+      "file": "fault_invalid_707028.json",
+      "elapsed_s": 3.4427545070648193
+    },
+    {
+      "archetype": "fault_invalid",
+      "seed": 707029,
+      "file": "fault_invalid_707029.json",
+      "elapsed_s": 10.341451406478882
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708000,
+      "file": "fault_frozen_708000.json",
+      "elapsed_s": 11.073193073272705
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708001,
+      "file": "fault_frozen_708001.json",
+      "elapsed_s": 10.79567813873291
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708002,
+      "file": "fault_frozen_708002.json",
+      "elapsed_s": 0.894404411315918
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708003,
+      "file": "fault_frozen_708003.json",
+      "elapsed_s": 3.6312527656555176
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708004,
+      "file": "fault_frozen_708004.json",
+      "elapsed_s": 6.703236818313599
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708005,
+      "file": "fault_frozen_708005.json",
+      "elapsed_s": 3.2921667098999023
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708006,
+      "file": "fault_frozen_708006.json",
+      "elapsed_s": 4.015868663787842
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708007,
+      "file": "fault_frozen_708007.json",
+      "elapsed_s": 11.188342809677124
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708008,
+      "file": "fault_frozen_708008.json",
+      "elapsed_s": 10.511220932006836
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708009,
+      "file": "fault_frozen_708009.json",
+      "elapsed_s": 0.8483850955963135
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708010,
+      "file": "fault_frozen_708010.json",
+      "elapsed_s": 9.91218376159668
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708011,
+      "file": "fault_frozen_708011.json",
+      "elapsed_s": 3.4254233837127686
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708012,
+      "file": "fault_frozen_708012.json",
+      "elapsed_s": 0.9196336269378662
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708013,
+      "file": "fault_frozen_708013.json",
+      "elapsed_s": 3.2803778648376465
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708014,
+      "file": "fault_frozen_708014.json",
+      "elapsed_s": 0.8921306133270264
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708015,
+      "file": "fault_frozen_708015.json",
+      "elapsed_s": 9.78766417503357
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708016,
+      "file": "fault_frozen_708016.json",
+      "elapsed_s": 0.8430891036987305
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708017,
+      "file": "fault_frozen_708017.json",
+      "elapsed_s": 0.7723696231842041
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708018,
+      "file": "fault_frozen_708018.json",
+      "elapsed_s": 0.7891879081726074
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708019,
+      "file": "fault_frozen_708019.json",
+      "elapsed_s": 3.331594467163086
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708020,
+      "file": "fault_frozen_708020.json",
+      "elapsed_s": 6.294501543045044
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708021,
+      "file": "fault_frozen_708021.json",
+      "elapsed_s": 6.568983554840088
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708022,
+      "file": "fault_frozen_708022.json",
+      "elapsed_s": 3.510922431945801
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708023,
+      "file": "fault_frozen_708023.json",
+      "elapsed_s": 3.6416945457458496
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708024,
+      "file": "fault_frozen_708024.json",
+      "elapsed_s": 3.6444811820983887
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708025,
+      "file": "fault_frozen_708025.json",
+      "elapsed_s": 7.129110097885132
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708026,
+      "file": "fault_frozen_708026.json",
+      "elapsed_s": 10.340677738189697
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708027,
+      "file": "fault_frozen_708027.json",
+      "elapsed_s": 0.8667693138122559
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708028,
+      "file": "fault_frozen_708028.json",
+      "elapsed_s": 0.9243700504302979
+    },
+    {
+      "archetype": "fault_frozen",
+      "seed": 708029,
+      "file": "fault_frozen_708029.json",
+      "elapsed_s": 6.540027856826782
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709000,
+      "file": "fault_delayed_709000.json",
+      "elapsed_s": 0.8593664169311523
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709001,
+      "file": "fault_delayed_709001.json",
+      "elapsed_s": 9.60089635848999
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709002,
+      "file": "fault_delayed_709002.json",
+      "elapsed_s": 6.826905965805054
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709003,
+      "file": "fault_delayed_709003.json",
+      "elapsed_s": 7.069599151611328
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709004,
+      "file": "fault_delayed_709004.json",
+      "elapsed_s": 0.8998982906341553
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709005,
+      "file": "fault_delayed_709005.json",
+      "elapsed_s": 6.541306018829346
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709006,
+      "file": "fault_delayed_709006.json",
+      "elapsed_s": 3.379390239715576
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709007,
+      "file": "fault_delayed_709007.json",
+      "elapsed_s": 0.8638124465942383
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709008,
+      "file": "fault_delayed_709008.json",
+      "elapsed_s": 0.8767960071563721
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709009,
+      "file": "fault_delayed_709009.json",
+      "elapsed_s": 6.923096179962158
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709010,
+      "file": "fault_delayed_709010.json",
+      "elapsed_s": 0.953561544418335
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709011,
+      "file": "fault_delayed_709011.json",
+      "elapsed_s": 6.925272226333618
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709012,
+      "file": "fault_delayed_709012.json",
+      "elapsed_s": 6.989540338516235
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709013,
+      "file": "fault_delayed_709013.json",
+      "elapsed_s": 3.6348400115966797
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709014,
+      "file": "fault_delayed_709014.json",
+      "elapsed_s": 3.8237311840057373
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709015,
+      "file": "fault_delayed_709015.json",
+      "elapsed_s": 3.3627121448516846
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709016,
+      "file": "fault_delayed_709016.json",
+      "elapsed_s": 3.4566588401794434
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709017,
+      "file": "fault_delayed_709017.json",
+      "elapsed_s": 3.5239975452423096
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709018,
+      "file": "fault_delayed_709018.json",
+      "elapsed_s": 10.806849956512451
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709019,
+      "file": "fault_delayed_709019.json",
+      "elapsed_s": 3.73720383644104
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709020,
+      "file": "fault_delayed_709020.json",
+      "elapsed_s": 6.7638022899627686
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709021,
+      "file": "fault_delayed_709021.json",
+      "elapsed_s": 0.884101152420044
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709022,
+      "file": "fault_delayed_709022.json",
+      "elapsed_s": 3.387214422225952
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709023,
+      "file": "fault_delayed_709023.json",
+      "elapsed_s": 6.875749826431274
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709024,
+      "file": "fault_delayed_709024.json",
+      "elapsed_s": 3.6629700660705566
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709025,
+      "file": "fault_delayed_709025.json",
+      "elapsed_s": 6.872316360473633
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709026,
+      "file": "fault_delayed_709026.json",
+      "elapsed_s": 0.8252837657928467
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709027,
+      "file": "fault_delayed_709027.json",
+      "elapsed_s": 0.900261402130127
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709028,
+      "file": "fault_delayed_709028.json",
+      "elapsed_s": 6.954092979431152
+    },
+    {
+      "archetype": "fault_delayed",
+      "seed": 709029,
+      "file": "fault_delayed_709029.json",
+      "elapsed_s": 0.9809136390686035
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710000,
+      "file": "fault_during_event_710000.json",
+      "elapsed_s": 6.994451522827148
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710001,
+      "file": "fault_during_event_710001.json",
+      "elapsed_s": 7.012833833694458
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710002,
+      "file": "fault_during_event_710002.json",
+      "elapsed_s": 10.56768536567688
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710003,
+      "file": "fault_during_event_710003.json",
+      "elapsed_s": 0.8608882427215576
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710004,
+      "file": "fault_during_event_710004.json",
+      "elapsed_s": 10.034852743148804
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710005,
+      "file": "fault_during_event_710005.json",
+      "elapsed_s": 3.3842837810516357
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710006,
+      "file": "fault_during_event_710006.json",
+      "elapsed_s": 3.607656240463257
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710007,
+      "file": "fault_during_event_710007.json",
+      "elapsed_s": 10.712830781936646
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710008,
+      "file": "fault_during_event_710008.json",
+      "elapsed_s": 3.5855956077575684
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710009,
+      "file": "fault_during_event_710009.json",
+      "elapsed_s": 10.379263639450073
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710010,
+      "file": "fault_during_event_710010.json",
+      "elapsed_s": 6.964036226272583
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710011,
+      "file": "fault_during_event_710011.json",
+      "elapsed_s": 6.776856899261475
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710012,
+      "file": "fault_during_event_710012.json",
+      "elapsed_s": 6.867981910705566
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710013,
+      "file": "fault_during_event_710013.json",
+      "elapsed_s": 6.72654390335083
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710014,
+      "file": "fault_during_event_710014.json",
+      "elapsed_s": 6.97391152381897
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710015,
+      "file": "fault_during_event_710015.json",
+      "elapsed_s": 0.9144742488861084
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710016,
+      "file": "fault_during_event_710016.json",
+      "elapsed_s": 3.466125249862671
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710017,
+      "file": "fault_during_event_710017.json",
+      "elapsed_s": 10.211113929748535
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710018,
+      "file": "fault_during_event_710018.json",
+      "elapsed_s": 3.4623937606811523
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710019,
+      "file": "fault_during_event_710019.json",
+      "elapsed_s": 10.215480327606201
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710020,
+      "file": "fault_during_event_710020.json",
+      "elapsed_s": 6.931125640869141
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710021,
+      "file": "fault_during_event_710021.json",
+      "elapsed_s": 3.4573748111724854
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710022,
+      "file": "fault_during_event_710022.json",
+      "elapsed_s": 3.511337995529175
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710023,
+      "file": "fault_during_event_710023.json",
+      "elapsed_s": 10.260104894638062
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710024,
+      "file": "fault_during_event_710024.json",
+      "elapsed_s": 10.219251871109009
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710025,
+      "file": "fault_during_event_710025.json",
+      "elapsed_s": 6.6741485595703125
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710026,
+      "file": "fault_during_event_710026.json",
+      "elapsed_s": 0.8706259727478027
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710027,
+      "file": "fault_during_event_710027.json",
+      "elapsed_s": 9.946533918380737
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710028,
+      "file": "fault_during_event_710028.json",
+      "elapsed_s": 9.757602214813232
+    },
+    {
+      "archetype": "fault_during_event",
+      "seed": 710029,
+      "file": "fault_during_event_710029.json",
+      "elapsed_s": 10.126904726028442
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711000,
+      "file": "multi_worker_faults_711000.json",
+      "elapsed_s": 4.215983629226685
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711001,
+      "file": "multi_worker_faults_711001.json",
+      "elapsed_s": 4.389882326126099
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711002,
+      "file": "multi_worker_faults_711002.json",
+      "elapsed_s": 13.100441455841064
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711003,
+      "file": "multi_worker_faults_711003.json",
+      "elapsed_s": 1.1668546199798584
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711004,
+      "file": "multi_worker_faults_711004.json",
+      "elapsed_s": 1.1249899864196777
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711005,
+      "file": "multi_worker_faults_711005.json",
+      "elapsed_s": 8.431715488433838
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711006,
+      "file": "multi_worker_faults_711006.json",
+      "elapsed_s": 4.290196895599365
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711007,
+      "file": "multi_worker_faults_711007.json",
+      "elapsed_s": 1.0384082794189453
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711008,
+      "file": "multi_worker_faults_711008.json",
+      "elapsed_s": 4.250601053237915
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711009,
+      "file": "multi_worker_faults_711009.json",
+      "elapsed_s": 4.125216722488403
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711010,
+      "file": "multi_worker_faults_711010.json",
+      "elapsed_s": 8.58114767074585
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711011,
+      "file": "multi_worker_faults_711011.json",
+      "elapsed_s": 4.3880295753479
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711012,
+      "file": "multi_worker_faults_711012.json",
+      "elapsed_s": 12.801771402359009
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711013,
+      "file": "multi_worker_faults_711013.json",
+      "elapsed_s": 1.089425802230835
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711014,
+      "file": "multi_worker_faults_711014.json",
+      "elapsed_s": 1.1410274505615234
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711015,
+      "file": "multi_worker_faults_711015.json",
+      "elapsed_s": 12.70138955116272
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711016,
+      "file": "multi_worker_faults_711016.json",
+      "elapsed_s": 1.0698792934417725
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711017,
+      "file": "multi_worker_faults_711017.json",
+      "elapsed_s": 8.411332845687866
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711018,
+      "file": "multi_worker_faults_711018.json",
+      "elapsed_s": 4.199449300765991
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711019,
+      "file": "multi_worker_faults_711019.json",
+      "elapsed_s": 1.0349500179290771
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711020,
+      "file": "multi_worker_faults_711020.json",
+      "elapsed_s": 4.3492021560668945
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711021,
+      "file": "multi_worker_faults_711021.json",
+      "elapsed_s": 12.407455444335938
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711022,
+      "file": "multi_worker_faults_711022.json",
+      "elapsed_s": 4.08197546005249
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711023,
+      "file": "multi_worker_faults_711023.json",
+      "elapsed_s": 4.173653602600098
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711024,
+      "file": "multi_worker_faults_711024.json",
+      "elapsed_s": 1.0613436698913574
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711025,
+      "file": "multi_worker_faults_711025.json",
+      "elapsed_s": 12.997446060180664
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711026,
+      "file": "multi_worker_faults_711026.json",
+      "elapsed_s": 1.0930471420288086
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711027,
+      "file": "multi_worker_faults_711027.json",
+      "elapsed_s": 8.167384147644043
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711028,
+      "file": "multi_worker_faults_711028.json",
+      "elapsed_s": 8.232033014297485
+    },
+    {
+      "archetype": "multi_worker_faults",
+      "seed": 711029,
+      "file": "multi_worker_faults_711029.json",
+      "elapsed_s": 4.087643146514893
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712000,
+      "file": "concurrent_alert_and_fault_712000.json",
+      "elapsed_s": 9.996477365493774
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712001,
+      "file": "concurrent_alert_and_fault_712001.json",
+      "elapsed_s": 0.8442294597625732
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712002,
+      "file": "concurrent_alert_and_fault_712002.json",
+      "elapsed_s": 9.931217432022095
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712003,
+      "file": "concurrent_alert_and_fault_712003.json",
+      "elapsed_s": 3.3265390396118164
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712004,
+      "file": "concurrent_alert_and_fault_712004.json",
+      "elapsed_s": 9.825763463973999
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712005,
+      "file": "concurrent_alert_and_fault_712005.json",
+      "elapsed_s": 3.1689274311065674
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712006,
+      "file": "concurrent_alert_and_fault_712006.json",
+      "elapsed_s": 0.8281159400939941
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712007,
+      "file": "concurrent_alert_and_fault_712007.json",
+      "elapsed_s": 0.894850492477417
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712008,
+      "file": "concurrent_alert_and_fault_712008.json",
+      "elapsed_s": 3.3673713207244873
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712009,
+      "file": "concurrent_alert_and_fault_712009.json",
+      "elapsed_s": 0.9907245635986328
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712010,
+      "file": "concurrent_alert_and_fault_712010.json",
+      "elapsed_s": 6.908008337020874
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712011,
+      "file": "concurrent_alert_and_fault_712011.json",
+      "elapsed_s": 6.604201555252075
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712012,
+      "file": "concurrent_alert_and_fault_712012.json",
+      "elapsed_s": 10.23232650756836
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712013,
+      "file": "concurrent_alert_and_fault_712013.json",
+      "elapsed_s": 6.518559455871582
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712014,
+      "file": "concurrent_alert_and_fault_712014.json",
+      "elapsed_s": 0.8948535919189453
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712015,
+      "file": "concurrent_alert_and_fault_712015.json",
+      "elapsed_s": 9.603484392166138
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712016,
+      "file": "concurrent_alert_and_fault_712016.json",
+      "elapsed_s": 3.203213691711426
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712017,
+      "file": "concurrent_alert_and_fault_712017.json",
+      "elapsed_s": 6.704035043716431
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712018,
+      "file": "concurrent_alert_and_fault_712018.json",
+      "elapsed_s": 6.699288845062256
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712019,
+      "file": "concurrent_alert_and_fault_712019.json",
+      "elapsed_s": 0.8744111061096191
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712020,
+      "file": "concurrent_alert_and_fault_712020.json",
+      "elapsed_s": 3.6170852184295654
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712021,
+      "file": "concurrent_alert_and_fault_712021.json",
+      "elapsed_s": 6.6285881996154785
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712022,
+      "file": "concurrent_alert_and_fault_712022.json",
+      "elapsed_s": 6.647938251495361
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712023,
+      "file": "concurrent_alert_and_fault_712023.json",
+      "elapsed_s": 6.424219369888306
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712024,
+      "file": "concurrent_alert_and_fault_712024.json",
+      "elapsed_s": 10.72693133354187
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712025,
+      "file": "concurrent_alert_and_fault_712025.json",
+      "elapsed_s": 9.665307521820068
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712026,
+      "file": "concurrent_alert_and_fault_712026.json",
+      "elapsed_s": 3.231130361557007
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712027,
+      "file": "concurrent_alert_and_fault_712027.json",
+      "elapsed_s": 0.9068543910980225
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712028,
+      "file": "concurrent_alert_and_fault_712028.json",
+      "elapsed_s": 3.285444736480713
+    },
+    {
+      "archetype": "concurrent_alert_and_fault",
+      "seed": 712029,
+      "file": "concurrent_alert_and_fault_712029.json",
+      "elapsed_s": 10.175963401794434
+    }
+  ],
+  "failed_runs": [],
+  "started_at": 1795806807.495274,
+  "elapsed_total_s": 2145.1116828918457
+}

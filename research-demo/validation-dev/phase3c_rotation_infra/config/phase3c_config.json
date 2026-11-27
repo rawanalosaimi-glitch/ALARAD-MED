@@ -39,5 +39,20 @@
     "status": "PROVISIONAL",
     "source": "Synthetic assumption for this research prototype; not derived from real alerting/paging policy. This threshold governs only the simulated, in-framework escalation log in this module -- it is never connected to a real notification system.",
     "registry_row": "new -- not yet a numbered registry row; introduced by Phase 3C-A"
+  },
+  "cgdtr_trigger": {
+    "description": "CGDTR trigger clause (a) parameters (PHASE3B_ROTATION_ALGORITHM_DESIGN.md Revision 3, section 3a): WorkerAccumulatedShiftDose >= rotation_threshold_fraction x reference_level_mSv_per_shift. `reference_level_mSv_per_shift` is this project's own per-shift stand-in for the engine's CONFIG.refAnnual (20 mSv/yr) dashboard reference level -- NOT a regulatory limit of any kind, and not the engine's own quantity (which is annual, not per-shift). Illustrative derivation shown for transparency only: 20 mSv/yr / ~250 working shifts/yr ~= 0.08 mSv/shift, rounded to an illustrative 0.1 mSv -- this derivation is itself a research assumption, not an approved dose-budgeting method.",
+    "rotation_threshold_fraction": 0.5,
+    "reference_level_mSv_per_shift": 0.1,
+    "status": "PROVISIONAL",
+    "source": "Synthetic assumption for this research prototype; not derived from real staffing policy, clinical guidance, or regulatory dose-budgeting practice. PHASE3B_ROTATION_ALGORITHM_DESIGN.md section 9d item 1 explicitly leaves rotation_threshold_fraction open -- this value exists only so the trigger is computable for testing and the campaign, not as a chosen final value.",
+    "registry_row": "new -- not yet a numbered registry row; PHASE3B_ROTATION_ALGORITHM_DESIGN.md section 9d item 1"
+  },
+  "fixed_interval_baseline": {
+    "description": "The fixed-interval rotation baseline's own trigger period N (ROTATION_RECOMMENDER_DESIGN_SPEC.md section 4.2; PHASE3B_ROTATION_ALGORITHM_DESIGN.md section 6 item 2). Also used, unchanged, by Ablation D (section 6a).",
+    "fixed_interval_minutes": 60,
+    "status": "PROVISIONAL",
+    "source": "Synthetic assumption for this research prototype; not derived from any real facility rotation schedule. Explicitly flagged in PHASE3B section 9c as needing a sensitivity sweep rather than being left as a single unexamined constant.",
+    "registry_row": "new -- not yet a numbered registry row; PHASE3B_ROTATION_ALGORITHM_DESIGN.md section 9d item 4"
   }
 }

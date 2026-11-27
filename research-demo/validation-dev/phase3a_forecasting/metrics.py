@@ -48,13 +48,27 @@ def mae_rmse_by_horizon(scored: List[Dict[str, Any]]) -> Dict[int, Dict[str, Opt
     return out
 
 
+def _pairing_key(r: Dict[str, Any]):
+    """Rows from a single series carry a bare integer `t` (0-based
+    within that series); pooling rows from many series (as the campaign
+    scripts do for per-class/pooled skill scores) would otherwise let
+    different series' rows collide on the same `t` and silently
+    overwrite each other in the dict below, discarding almost all the
+    data. Including `series_id` (set by the caller when pooling; absent
+    for a single-series call, where bare `t` is already unique) in the
+    key avoids that collision."""
+    return (r.get("series_id"), r["t"])
+
+
 def skill_vs_persistence(candidate_scored: List[Dict[str, Any]],
                           persistence_scored: List[Dict[str, Any]]) -> Dict[int, Optional[float]]:
     """Mean-squared-error skill score at each horizon:
         skill = 1 - MSE(candidate) / MSE(persistence)
     computed only over minutes `t` where BOTH methods produced a scored
     (non-skipped, non-None-actual) forecast at that horizon -- a paired
-    comparison, not two independently-filtered samples.
+    comparison, not two independently-filtered samples. When pooling
+    rows from multiple series, the caller must set a `series_id` field
+    on each row (see `_pairing_key`) so pairing stays correct.
 
     skill > 0: candidate beats persistence at this horizon.
     skill = 0: identical to persistence.
@@ -63,9 +77,9 @@ def skill_vs_persistence(candidate_scored: List[Dict[str, Any]],
     own MSE is exactly 0 (a zero-error floor that cannot be improved on,
     reported as undefined rather than as -inf or a divide-by-zero).
     """
-    cand_by_t = {r["t"]: r for r in candidate_scored if not r.get("skipped")}
-    pers_by_t = {r["t"]: r for r in persistence_scored if not r.get("skipped")}
-    shared_t = sorted(set(cand_by_t) & set(pers_by_t))
+    cand_by_t = {_pairing_key(r): r for r in candidate_scored if not r.get("skipped")}
+    pers_by_t = {_pairing_key(r): r for r in persistence_scored if not r.get("skipped")}
+    shared_t = sorted(set(cand_by_t) & set(pers_by_t), key=lambda k: (str(k[0]), k[1]))
 
     out: Dict[int, Optional[float]] = {}
     for i, h in enumerate(HORIZONS_MINUTES):
@@ -78,6 +92,8 @@ def skill_vs_persistence(candidate_scored: List[Dict[str, Any]],
                 continue
             a_c, a_p = actual_c[i], actual_p[i]
             if a_c is None or a_p is None:
+                continue
+            if (isinstance(a_c, float) and math.isnan(a_c)) or (isinstance(a_p, float) and math.isnan(a_p)):
                 continue
             cand_sq.append((c["forecast_rate_uSv_h"][i] - a_c) ** 2)
             pers_sq.append((p["forecast_rate_uSv_h"][i] - a_p) ** 2)

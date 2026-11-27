@@ -1,0 +1,2515 @@
+{
+  "n_runs": 390,
+  "collective_dose_invariant_check": {
+    "n_checked": 1950,
+    "max_abs_diff_mSv": 2.220446049250313e-16,
+    "violations": []
+  },
+  "per_policy_descriptives": {
+    "no_rotation": {
+      "n_runs": 390,
+      "max_individual_dose_mSv": {
+        "mean_ci": [
+          0.03877387060680007,
+          0.03520153155670926,
+          0.04245048105036177
+        ]
+      },
+      "collective_dose_mSv": {
+        "mean_ci": [
+          0.04642271171978243,
+          0.04177401264964589,
+          0.05139327793801743
+        ]
+      },
+      "n_completed": {
+        "mean": 0,
+        "total": 0
+      },
+      "n_infeasible": {
+        "mean": 0,
+        "total": 0
+      },
+      "n_aborted": {
+        "total": 0
+      },
+      "n_held": {
+        "total": 0
+      },
+      "n_runs_with_escalation": 0
+    },
+    "fixed_interval": {
+      "n_runs": 390,
+      "max_individual_dose_mSv": {
+        "mean_ci": [
+          0.038204923349938205,
+          0.034704567844844304,
+          0.04186662347476834
+        ]
+      },
+      "collective_dose_mSv": {
+        "mean_ci": [
+          0.04642271171978243,
+          0.04177401264964589,
+          0.05139327793801743
+        ]
+      },
+      "n_completed": {
+        "mean": 0.05384615384615385,
+        "total": 21
+      },
+      "n_infeasible": {
+        "mean": 0.28717948717948716,
+        "total": 112
+      },
+      "n_aborted": {
+        "total": 0
+      },
+      "n_held": {
+        "total": 0
+      },
+      "n_runs_with_escalation": 0
+    },
+    "reference_rule": {
+      "n_runs": 390,
+      "max_individual_dose_mSv": {
+        "mean_ci": [
+          0.03766956374849809,
+          0.03423489882488781,
+          0.041214726169179254
+        ]
+      },
+      "collective_dose_mSv": {
+        "mean_ci": [
+          0.04642271171978243,
+          0.04177401264964589,
+          0.05139327793801743
+        ]
+      },
+      "n_completed": {
+        "mean": 0.05128205128205128,
+        "total": 20
+      },
+      "n_infeasible": {
+        "mean": 2.5256410256410255,
+        "total": 985
+      },
+      "n_aborted": {
+        "total": 0
+      },
+      "n_held": {
+        "total": 0
+      },
+      "n_runs_with_escalation": 72
+    },
+    "ablation_d": {
+      "n_runs": 390,
+      "max_individual_dose_mSv": {
+        "mean_ci": [
+          0.038204923349938205,
+          0.034704567844844304,
+          0.04186662347476834
+        ]
+      },
+      "collective_dose_mSv": {
+        "mean_ci": [
+          0.04642271171978243,
+          0.04177401264964589,
+          0.05139327793801743
+        ]
+      },
+      "n_completed": {
+        "mean": 0.05384615384615385,
+        "total": 21
+      },
+      "n_infeasible": {
+        "mean": 0.28717948717948716,
+        "total": 112
+      },
+      "n_aborted": {
+        "total": 0
+      },
+      "n_held": {
+        "total": 0
+      },
+      "n_runs_with_escalation": 0
+    },
+    "cgdtr": {
+      "n_runs": 390,
+      "max_individual_dose_mSv": {
+        "mean_ci": [
+          0.03766956374849809,
+          0.03423489882488781,
+          0.041214726169179254
+        ]
+      },
+      "collective_dose_mSv": {
+        "mean_ci": [
+          0.04642271171978243,
+          0.04177401264964589,
+          0.05139327793801743
+        ]
+      },
+      "n_completed": {
+        "mean": 0.05128205128205128,
+        "total": 20
+      },
+      "n_infeasible": {
+        "mean": 2.5256410256410255,
+        "total": 985
+      },
+      "n_aborted": {
+        "total": 0
+      },
+      "n_held": {
+        "total": 0
+      },
+      "n_runs_with_escalation": 72
+    }
+  },
+  "paired_comparisons": {
+    "raw": {
+      "cgdtr_vs_no_rotation": {
+        "max_individual_dose": {
+          "statistic": 0.0,
+          "p_value": 0.00019643672621231134,
+          "n_pairs": 390,
+          "note": null
+        },
+        "fairness_variance": {
+          "statistic": 12.0,
+          "p_value": 0.0005167151238567522,
+          "n_pairs": 390,
+          "note": null
+        },
+        "mean_diff_max_dose": -0.0011043068583019774
+      },
+      "fixed_interval_vs_no_rotation": {
+        "max_individual_dose": {
+          "statistic": 0.0,
+          "p_value": 0.00043777719457466354,
+          "n_pairs": 390,
+          "note": null
+        },
+        "fairness_variance": {
+          "statistic": 21.0,
+          "p_value": 0.002902103448847165,
+          "n_pairs": 390,
+          "note": null
+        },
+        "mean_diff_max_dose": -0.0005689472568618653
+      },
+      "reference_rule_vs_no_rotation": {
+        "max_individual_dose": {
+          "statistic": 0.0,
+          "p_value": 0.00019643672621231134,
+          "n_pairs": 390,
+          "note": null
+        },
+        "fairness_variance": {
+          "statistic": 12.0,
+          "p_value": 0.0005167151238567522,
+          "n_pairs": 390,
+          "note": null
+        },
+        "mean_diff_max_dose": -0.0011043068583019774
+      },
+      "ablation_d_vs_no_rotation": {
+        "max_individual_dose": {
+          "statistic": 0.0,
+          "p_value": 0.00043777719457466354,
+          "n_pairs": 390,
+          "note": null
+        },
+        "fairness_variance": {
+          "statistic": 21.0,
+          "p_value": 0.002902103448847165,
+          "n_pairs": 390,
+          "note": null
+        },
+        "mean_diff_max_dose": -0.0005689472568618653
+      },
+      "cgdtr_vs_fixed_interval": {
+        "max_individual_dose": {
+          "statistic": 101.0,
+          "p_value": 0.09797013209472538,
+          "n_pairs": 390,
+          "note": null
+        },
+        "fairness_variance": {
+          "statistic": 196.0,
+          "p_value": 0.4528065046691958,
+          "n_pairs": 390,
+          "note": null
+        },
+        "mean_diff_max_dose": -0.0005353596014401121
+      },
+      "cgdtr_vs_reference_rule": {
+        "max_individual_dose": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 390,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "fairness_variance": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 390,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "mean_diff_max_dose": 0.0
+      },
+      "cgdtr_vs_ablation_d": {
+        "max_individual_dose": {
+          "statistic": 101.0,
+          "p_value": 0.09797013209472538,
+          "n_pairs": 390,
+          "note": null
+        },
+        "fairness_variance": {
+          "statistic": 196.0,
+          "p_value": 0.4528065046691958,
+          "n_pairs": 390,
+          "note": null
+        },
+        "mean_diff_max_dose": -0.0005353596014401121
+      }
+    },
+    "holm_bonferroni_corrected": {
+      "cgdtr_vs_no_rotation": {
+        "p_value": 0.00019643672621231134,
+        "adjusted_alpha": 0.0035714285714285718,
+        "significant": true
+      },
+      "fixed_interval_vs_no_rotation": {
+        "p_value": 0.00043777719457466354,
+        "adjusted_alpha": 0.004166666666666667,
+        "significant": true
+      },
+      "reference_rule_vs_no_rotation": {
+        "p_value": 0.00019643672621231134,
+        "adjusted_alpha": 0.0038461538461538464,
+        "significant": true
+      },
+      "ablation_d_vs_no_rotation": {
+        "p_value": 0.00043777719457466354,
+        "adjusted_alpha": 0.004545454545454546,
+        "significant": true
+      },
+      "cgdtr_vs_fixed_interval": {
+        "p_value": 0.09797013209472538,
+        "adjusted_alpha": 0.008333333333333333,
+        "significant": false
+      },
+      "cgdtr_vs_reference_rule": {
+        "p_value": null,
+        "adjusted_alpha": null,
+        "significant": false
+      },
+      "cgdtr_vs_ablation_d": {
+        "p_value": 0.09797013209472538,
+        "adjusted_alpha": 0.01,
+        "significant": false
+      },
+      "cgdtr_vs_no_rotation_fairness": {
+        "p_value": 0.0005167151238567522,
+        "adjusted_alpha": 0.005,
+        "significant": true
+      },
+      "fixed_interval_vs_no_rotation_fairness": {
+        "p_value": 0.002902103448847165,
+        "adjusted_alpha": 0.00625,
+        "significant": true
+      },
+      "reference_rule_vs_no_rotation_fairness": {
+        "p_value": 0.0005167151238567522,
+        "adjusted_alpha": 0.005555555555555556,
+        "significant": true
+      },
+      "ablation_d_vs_no_rotation_fairness": {
+        "p_value": 0.002902103448847165,
+        "adjusted_alpha": 0.0071428571428571435,
+        "significant": true
+      },
+      "cgdtr_vs_fixed_interval_fairness": {
+        "p_value": 0.4528065046691958,
+        "adjusted_alpha": 0.0125,
+        "significant": false
+      },
+      "cgdtr_vs_reference_rule_fairness": {
+        "p_value": null,
+        "adjusted_alpha": null,
+        "significant": false
+      },
+      "cgdtr_vs_ablation_d_fairness": {
+        "p_value": 0.4528065046691958,
+        "adjusted_alpha": 0.016666666666666666,
+        "significant": false
+      }
+    }
+  },
+  "ablation_decomposition": {
+    "n_runs": 390,
+    "selection_effect_mSv": {
+      "mean_ci": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "trigger_effect_mSv": {
+      "mean_ci": [
+        -0.0005353596014401161,
+        -0.0009244037545214565,
+        -0.0001863830197862058
+      ]
+    }
+  },
+  "per_archetype": {
+    "area_relocation": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.16666666666666666,
+            "total": 5
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 1.7333333333333334,
+            "total": 52
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 3
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.16666666666666666,
+            "total": 5
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.031437623995009295,
+              0.019780498174727764,
+              0.04617831720826652
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 1.7333333333333334,
+            "total": 52
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 3
+        }
+      }
+    },
+    "concurrent_alert_and_fault": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03825436931963865,
+              0.02534023299881288,
+              0.05270615570207706
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03825436931963865,
+              0.02534023299881288,
+              0.05270615570207706
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.037003265105600855,
+              0.02442953736096135,
+              0.05141399306650159
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03825436931963865,
+              0.02534023299881288,
+              0.05270615570207707
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 0.36666666666666664,
+            "total": 11
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0349272586506573,
+              0.023958768397071565,
+              0.04801671562923411
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03825436931963865,
+              0.025340232998812887,
+              0.05270615570207707
+            ]
+          },
+          "n_completed": {
+            "mean": 0.1,
+            "total": 3
+          },
+          "n_infeasible": {
+            "mean": 1.8,
+            "total": 54
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.037003265105600855,
+              0.02442953736096135,
+              0.05141399306650159
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03825436931963865,
+              0.02534023299881288,
+              0.05270615570207707
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 0.36666666666666664,
+            "total": 11
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0349272586506573,
+              0.023958768397071565,
+              0.04801671562923411
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03825436931963865,
+              0.025340232998812887,
+              0.05270615570207707
+            ]
+          },
+          "n_completed": {
+            "mean": 0.1,
+            "total": 3
+          },
+          "n_infeasible": {
+            "mean": 1.8,
+            "total": 54
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        }
+      }
+    },
+    "fault_delayed": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.02382378439600191,
+              0.016135587663112603,
+              0.03299700405830172
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.02382378439600191,
+              0.016135587663112603,
+              0.03299700405830172
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.02335576317084278,
+              0.015799582440211415,
+              0.03224447131071858
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.023823784396001912,
+              0.016135587663112603,
+              0.03299700405830173
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 0.1,
+            "total": 3
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.02250150893452995,
+              0.01581154286409445,
+              0.030478806801939082
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.02382378439600191,
+              0.016135587663112603,
+              0.03299700405830173
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 0.5333333333333333,
+            "total": 16
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 1
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.02335576317084278,
+              0.015799582440211415,
+              0.03224447131071858
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.023823784396001912,
+              0.016135587663112603,
+              0.03299700405830173
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 0.1,
+            "total": 3
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.02250150893452995,
+              0.01581154286409445,
+              0.030478806801939082
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.02382378439600191,
+              0.016135587663112603,
+              0.03299700405830173
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 0.5333333333333333,
+            "total": 16
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 1
+        }
+      }
+    },
+    "fault_during_event": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05376657801238556,
+              0.03861191236793523,
+              0.06954384240386029
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.05376657801238556,
+              0.03861191236793523,
+              0.06954384240386029
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05250189125471939,
+              0.03721371070333394,
+              0.06782811383726829
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.05376657801238556,
+              0.038611912367935215,
+              0.06954384240386029
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 0.43333333333333335,
+            "total": 13
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.052445654203194025,
+              0.037713688109462185,
+              0.06793041520719871
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.05376657801238556,
+              0.03861191236793523,
+              0.06954384240386029
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 4.266666666666667,
+            "total": 128
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 8
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05250189125471939,
+              0.03721371070333394,
+              0.06782811383726829
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.05376657801238556,
+              0.038611912367935215,
+              0.06954384240386029
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 0.43333333333333335,
+            "total": 13
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.052445654203194025,
+              0.037713688109462185,
+              0.06793041520719871
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.05376657801238556,
+              0.03861191236793523,
+              0.06954384240386029
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 4.266666666666667,
+            "total": 128
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 8
+        }
+      }
+    },
+    "fault_frozen": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03318378151710219,
+              0.021531004887475405,
+              0.04632986562537853
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03318378151710219,
+              0.021531004887475405,
+              0.04632986562537853
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03318378151710219,
+              0.021531004887475405,
+              0.04632986562537853
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03318378151710219,
+              0.021531004887475405,
+              0.04632986562537853
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.16666666666666666,
+            "total": 5
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0324085321663686,
+              0.0210500106515989,
+              0.045249757532435174
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.0331837815171022,
+              0.021531004887475405,
+              0.04632986562537854
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 1.6333333333333333,
+            "total": 49
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 4
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03318378151710219,
+              0.021531004887475405,
+              0.04632986562537853
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03318378151710219,
+              0.021531004887475405,
+              0.04632986562537853
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.16666666666666666,
+            "total": 5
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0324085321663686,
+              0.0210500106515989,
+              0.045249757532435174
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.0331837815171022,
+              0.021531004887475405,
+              0.04632986562537854
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 1.6333333333333333,
+            "total": 49
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 4
+        }
+      }
+    },
+    "fault_invalid": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 1,
+            "total": 30
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033956880349113795,
+              0.027647059366051923,
+              0.04110203136509558
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 1,
+            "total": 30
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        }
+      }
+    },
+    "fault_missing": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.3,
+            "total": 9
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03244912626507436,
+              0.021122139719735932,
+              0.04474118141991736
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 2.3333333333333335,
+            "total": 70
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 4
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.3,
+            "total": 9
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03244912626507436,
+              0.021122139719735932,
+              0.04474118141991736
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.0332053462978559,
+              0.02150154876566312,
+              0.04601396550133256
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 2.3333333333333335,
+            "total": 70
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 4
+        }
+      }
+    },
+    "gradual_increase": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.051963306986932065,
+              0.03496223571668278,
+              0.0716140775365758
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.051963306986932065,
+              0.03496223571668278,
+              0.0716140775365758
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05092335852087441,
+              0.03369297519766939,
+              0.07045857390412379
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.051963306986932065,
+              0.03496223571668278,
+              0.07161407753657578
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 0.23333333333333334,
+            "total": 7
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05185885566487085,
+              0.03490424085568092,
+              0.07154277992946532
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.051963306986932065,
+              0.03496223571668277,
+              0.0716140775365758
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 5,
+            "total": 150
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 9
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05092335852087441,
+              0.03369297519766939,
+              0.07045857390412379
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.051963306986932065,
+              0.03496223571668278,
+              0.07161407753657578
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 0.23333333333333334,
+            "total": 7
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05185885566487085,
+              0.03490424085568092,
+              0.07154277992946532
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.051963306986932065,
+              0.03496223571668277,
+              0.0716140775365758
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 5,
+            "total": 150
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 9
+        }
+      }
+    },
+    "multi_worker_faults": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04173266944646456,
+              0.02843432051285786,
+              0.056091086078787857
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.08931601529542527,
+              0.06190887237863835,
+              0.11848431135917005
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.041665456755018995,
+              0.028381525477948488,
+              0.05609029012173159
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.08931601529542527,
+              0.06190887237863835,
+              0.11848431135917005
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 0.5666666666666667,
+            "total": 17
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04173266944646456,
+              0.02843432051285786,
+              0.056091086078787857
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.08931601529542527,
+              0.06190887237863835,
+              0.11848431135917005
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 4.366666666666666,
+            "total": 131
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 7
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.041665456755018995,
+              0.028381525477948488,
+              0.05609029012173159
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.08931601529542527,
+              0.06190887237863835,
+              0.11848431135917005
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 0.5666666666666667,
+            "total": 17
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04173266944646456,
+              0.02843432051285786,
+              0.056091086078787857
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.08931601529542527,
+              0.06190887237863835,
+              0.11848431135917005
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 4.366666666666666,
+            "total": 131
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 7
+        }
+      }
+    },
+    "multi_worker_mixed": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.0518444988934041,
+              0.039056491017150904,
+              0.06604271310808336
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.10369608751321403,
+              0.08029271455872967,
+              0.12980323676297745
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05035028842348119,
+              0.03791753194358383,
+              0.06441540066257857
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.10369608751321403,
+              0.08029271455872967,
+              0.12980323676297745
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 0.6666666666666666,
+            "total": 20
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05055983256028109,
+              0.038256028354614745,
+              0.06457325106359574
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.10369608751321403,
+              0.08029271455872967,
+              0.12980323676297745
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 4.866666666666666,
+            "total": 146
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 11
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05035028842348119,
+              0.03791753194358383,
+              0.06441540066257857
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.10369608751321403,
+              0.08029271455872967,
+              0.12980323676297745
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 0.6666666666666666,
+            "total": 20
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.05055983256028109,
+              0.038256028354614745,
+              0.06457325106359574
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.10369608751321403,
+              0.08029271455872967,
+              0.12980323676297745
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 4.866666666666666,
+            "total": 146
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 11
+        }
+      }
+    },
+    "normal": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.16666666666666666,
+            "total": 5
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03266336588414557,
+              0.0222979643123553,
+              0.044307472812565876
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 1.4333333333333333,
+            "total": 43
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0.16666666666666666,
+            "total": 5
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03266336588414557,
+              0.0222979643123553,
+              0.044307472812565876
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.033235420840385825,
+              0.022625619327031436,
+              0.045144899274988305
+            ]
+          },
+          "n_completed": {
+            "mean": 0.06666666666666667,
+            "total": 2
+          },
+          "n_infeasible": {
+            "mean": 1.4333333333333333,
+            "total": 43
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        }
+      }
+    },
+    "sudden_increase": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04074019693049267,
+              0.028051141600180757,
+              0.055546972324174854
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.04074019693049267,
+              0.028051141600180757,
+              0.055546972324174854
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04050397935450647,
+              0.027765277644728338,
+              0.0553707182162621
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.04074019693049267,
+              0.028051141600180757,
+              0.055546972324174854
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04015220472670131,
+              0.027639298091625776,
+              0.05495898012038349
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.04074019693049267,
+              0.02805114160018076,
+              0.055546972324174854
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 2.466666666666667,
+            "total": 74
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04050397935450647,
+              0.027765277644728338,
+              0.0553707182162621
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.04074019693049267,
+              0.028051141600180757,
+              0.055546972324174854
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.04015220472670131,
+              0.027639298091625776,
+              0.05495898012038349
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.04074019693049267,
+              0.02805114160018076,
+              0.055546972324174854
+            ]
+          },
+          "n_completed": {
+            "mean": 0.03333333333333333,
+            "total": 1
+          },
+          "n_infeasible": {
+            "mean": 2.466666666666667,
+            "total": 74
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        }
+      }
+    },
+    "transient_spike": {
+      "n_runs": 30,
+      "policies": {
+        "no_rotation": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03691586090361444,
+              0.0253007569729123,
+              0.05033455385087104
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03691586090361444,
+              0.0253007569729123,
+              0.05033455385087104
+            ]
+          },
+          "n_completed": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_infeasible": {
+            "mean": 0,
+            "total": 0
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "fixed_interval": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03534094796468558,
+              0.024744989758724436,
+              0.04730770774624442
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03691586090361444,
+              0.0253007569729123,
+              0.050334553850871044
+            ]
+          },
+          "n_completed": {
+            "mean": 0.1,
+            "total": 3
+          },
+          "n_infeasible": {
+            "mean": 0.3,
+            "total": 9
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "reference_rule": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03261081588406446,
+              0.023448576007489765,
+              0.04316726087183353
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03691586090361445,
+              0.0253007569729123,
+              0.05033455385087105
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 1.4,
+            "total": 42
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        },
+        "ablation_d": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03534094796468558,
+              0.024744989758724436,
+              0.04730770774624442
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03691586090361444,
+              0.0253007569729123,
+              0.050334553850871044
+            ]
+          },
+          "n_completed": {
+            "mean": 0.1,
+            "total": 3
+          },
+          "n_infeasible": {
+            "mean": 0.3,
+            "total": 9
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 0
+        },
+        "cgdtr": {
+          "n_runs": 30,
+          "max_individual_dose_mSv": {
+            "mean_ci": [
+              0.03261081588406446,
+              0.023448576007489765,
+              0.04316726087183353
+            ]
+          },
+          "collective_dose_mSv": {
+            "mean_ci": [
+              0.03691586090361445,
+              0.0253007569729123,
+              0.05033455385087105
+            ]
+          },
+          "n_completed": {
+            "mean": 0.13333333333333333,
+            "total": 4
+          },
+          "n_infeasible": {
+            "mean": 1.4,
+            "total": 42
+          },
+          "n_aborted": {
+            "total": 0
+          },
+          "n_held": {
+            "total": 0
+          },
+          "n_runs_with_escalation": 5
+        }
+      }
+    }
+  }
+}

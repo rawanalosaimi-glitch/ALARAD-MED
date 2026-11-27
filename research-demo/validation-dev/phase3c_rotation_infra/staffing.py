@@ -45,6 +45,16 @@ class WorkerProfile:
     cumulative_dose_mSv: float = 0.0
     last_rotation_out_minute: Optional[int] = None
     reserved_for_room: Optional[str] = None
+    # Live per-minute state (closes PHASE3C_A_REVIEW_AGAINST_REVISION_3.md
+    # section 2 items 1/2/4): updated minute by minute by
+    # phase3c_rotation_infra.runtime.advance_worker_one_minute, never
+    # written anywhere else. `sensor_state_obj` is the exact state object
+    # the real engine's AlaradSafety.sensorStep threads forward -- opaque
+    # here, never inspected or reconstructed by this module.
+    sensor_state_obj: Optional[Dict] = None
+    sensor_state_label: str = "UNINITIALIZED"
+    last_valid_rate_uSv_h: Optional[float] = None
+    last_valid_rate_minute: Optional[int] = None
 
     def is_credentialed_for(self, room: str, procedure_class: str) -> bool:
         return room in self.credentialed_rooms and procedure_class in self.credentialed_procedure_classes

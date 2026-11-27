@@ -109,6 +109,55 @@ class TestAssignmentExclusivity(unittest.TestCase):
         advance_resting_to_free(w, t=50 + w.min_rest_between_assignments_minutes)
         self.assertEqual(w.state, FREE)
 
+    def test_candidate_excluded_if_projected_to_exceed_duty_limit(self):
+        """Closes gap 3 (section 3i): a candidate whose
+        ProjectedShiftTotalDose would reach their own duty limit before
+        the intended assignment ends must be excluded -- not merely
+        deprioritized -- when intended_assignment_minutes_by_room is
+        supplied."""
+        roster = _roster_by_id()
+        ids = sorted(roster)
+        over_limit, under_limit = roster[ids[0]], roster[ids[1]]
+        over_limit.cumulative_dose_mSv = over_limit.max_dose_per_shift_mSv - 0.001
+        over_limit.last_valid_rate_uSv_h = 1000.0  # large increment over 60 min
+        under_limit.last_valid_rate_uSv_h = 0.0
+        requests = [RotationRequest(room="Room A", outgoing_worker_id="X",
+                                     candidate_order=[ids[0], ids[1]])]
+        outcomes = batch_resolve(
+            requests, roster, t_decide=0, t_effective_by_room={"Room A": 20},
+            intended_assignment_minutes_by_room={"Room A": 60},
+        )
+        self.assertEqual(outcomes[0].status, "RESERVED")
+        self.assertEqual(outcomes[0].reserved_worker_id, ids[1])
+
+    def test_candidate_with_no_trusted_reading_not_excluded_by_duty_limit(self):
+        """Undefined (no trusted reading yet) must never be treated as
+        'over limit' -- the candidate remains eligible."""
+        roster = _roster_by_id()
+        w = next(iter(roster.values()))
+        self.assertIsNone(w.last_valid_rate_uSv_h)
+        requests = [RotationRequest(room="Room A", outgoing_worker_id="X",
+                                     candidate_order=[w.worker_id])]
+        outcomes = batch_resolve(
+            requests, roster, t_decide=0, t_effective_by_room={"Room A": 20},
+            intended_assignment_minutes_by_room={"Room A": 60},
+        )
+        self.assertEqual(outcomes[0].status, "RESERVED")
+
+    def test_duty_limit_check_skipped_when_not_provided(self):
+        """Backward compatibility: omitting
+        intended_assignment_minutes_by_room entirely must behave exactly
+        as before this check existed, even for a worker who would fail
+        it."""
+        roster = _roster_by_id()
+        w = next(iter(roster.values()))
+        w.cumulative_dose_mSv = w.max_dose_per_shift_mSv
+        w.last_valid_rate_uSv_h = 10000.0
+        requests = [RotationRequest(room="Room A", outgoing_worker_id="X",
+                                     candidate_order=[w.worker_id])]
+        outcomes = batch_resolve(requests, roster, t_decide=0, t_effective_by_room={"Room A": 20})
+        self.assertEqual(outcomes[0].status, "RESERVED")
+
     def test_release_reservation_goes_free_or_resting(self):
         roster = _roster_by_id()
         w = next(iter(roster.values()))
