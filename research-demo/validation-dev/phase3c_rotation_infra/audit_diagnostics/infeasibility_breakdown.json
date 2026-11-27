@@ -1,0 +1,68 @@
+{
+  "per_candidate_reason": {
+    "eligible": 24,
+    "duty_limit_max_rotations_reached": 7,
+    "not_free_assigned": 164
+  },
+  "per_trigger_root_cause": {
+    "no_credentialed_candidate_at_all": 845,
+    "had_eligible_candidate": 20,
+    "all_blocked:duty_limit_max_rotations_reached": 7,
+    "all_blocked:not_free_assigned": 133
+  },
+  "root_cause_by_archetype": {
+    "normal": {
+      "no_credentialed_candidate_at_all": 43,
+      "had_eligible_candidate": 2
+    },
+    "gradual_increase": {
+      "no_credentialed_candidate_at_all": 150,
+      "had_eligible_candidate": 2
+    },
+    "sudden_increase": {
+      "no_credentialed_candidate_at_all": 74,
+      "had_eligible_candidate": 1
+    },
+    "transient_spike": {
+      "had_eligible_candidate": 4,
+      "all_blocked:duty_limit_max_rotations_reached": 7,
+      "no_credentialed_candidate_at_all": 35
+    },
+    "area_relocation": {
+      "no_credentialed_candidate_at_all": 52
+    },
+    "multi_worker_mixed": {
+      "no_credentialed_candidate_at_all": 104,
+      "all_blocked:not_free_assigned": 42,
+      "had_eligible_candidate": 1
+    },
+    "fault_missing": {
+      "no_credentialed_candidate_at_all": 70,
+      "had_eligible_candidate": 1
+    },
+    "fault_invalid": {
+      "no_credentialed_candidate_at_all": 30
+    },
+    "fault_frozen": {
+      "had_eligible_candidate": 1,
+      "no_credentialed_candidate_at_all": 49
+    },
+    "fault_delayed": {
+      "no_credentialed_candidate_at_all": 16,
+      "had_eligible_candidate": 1
+    },
+    "fault_during_event": {
+      "no_credentialed_candidate_at_all": 128,
+      "had_eligible_candidate": 2
+    },
+    "multi_worker_faults": {
+      "had_eligible_candidate": 2,
+      "all_blocked:not_free_assigned": 91,
+      "no_credentialed_candidate_at_all": 40
+    },
+    "concurrent_alert_and_fault": {
+      "no_credentialed_candidate_at_all": 54,
+      "had_eligible_candidate": 3
+    }
+  }
+}

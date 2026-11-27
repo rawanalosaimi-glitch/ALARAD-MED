@@ -33,7 +33,7 @@ same exposure layer per seed, as designed).
 
 ## 3. Per-policy descriptive results (max individual dose, n=390 runs each)
 
-| Policy | Mean max individual dose (mSv) | Bootstrap 95% CI | Rotations completed | Infeasible attempts | Runs with escalation |
+| Policy | Mean max individual dose (mSv) | Bootstrap 95% CI | Rotations completed | Infeasible attempts | Runs with ≥2 consecutive infeasible attempts* |
 |---|---|---|---|---|---|
 | No rotation | 0.03877 | [0.03520, 0.04245] | 0 | 0 | 0 |
 | Fixed-interval | 0.03820 | [0.03470, 0.04187] | 21 | 112 | 0 |
@@ -41,21 +41,43 @@ same exposure layer per seed, as designed).
 | Ablation D | 0.03820 | [0.03470, 0.04187] | 21 | 112 | 0 |
 | CGDTR | 0.03767 | [0.03423, 0.04121] | 20 | 985 | 72 |
 
-No aborted or held-to-shift-end attempts occurred in any policy across
-the full campaign (`n_aborted=0`, and all held attempts resolved before
-shift end).
+**Correction (post-hoc audit, see `PHASE3C_AUDIT_REPORT.md`):** no
+ABORTED events occurred in any policy (`n_aborted=0`), but the original
+wording here ("all held attempts resolved before shift end") was
+inaccurate -- **zero HELD attempts occurred at all**, in any policy, in
+any of the 1,950 policy-run evaluations (`n_held=0` everywhere, verified
+directly against `analysis_summary.json` and a raw-data re-scan). The
+HELD -> simulated-RSO-acknowledgement code path
+(`simulation.py` lines ~164-193) is unit-tested via a scripted scenario
+(`test_simulation.py::TestHeldAndEscalation`) but was never organically
+triggered by this campaign's actual conditions.
 
-**Notable finding, stated plainly:** CGDTR and reference-rule produced
+**Notable finding, stated plainly, and now verified by direct
+instrumentation (`phase3c_rotation_infra/audit_diagnostics/`, see the
+audit report for the exact method):** CGDTR and reference-rule produced
 **byte-identical** per-run results throughout the campaign (every paired
-difference in max individual dose is exactly 0.0; see section 5). Under
-this campaign's illustrative roster/credential configuration, whenever
-the dose-threshold trigger fires, there is essentially never more than
-one eligible, differently-ranked candidate available -- so CGDTR's
-lowest-accumulated-dose selection rule and reference-rule's plain
-worker-ID selection rule select the same worker every time. The
-selection-rule effect this campaign was designed to isolate did not
-materialize at this illustrative roster size; see section 6
-(ablation decomposition) and section 9 (limitations).
+difference in max individual dose is exactly 0.0; see section 5) --
+**confirmed to be a property of this campaign's roster/credential
+configuration, not an implementation defect.** Across all 1,005
+dose-threshold trigger events in the campaign: 845 (84.1%) had *zero*
+credentialed candidates at all; after the full eligibility filter
+(state, duty limits, availability), 985 (98.0%) had *zero* eligible
+candidates and 16 (1.6%) had exactly one -- leaving only **4 of 1,005
+trigger events (0.4%) with two or more simultaneously eligible
+candidates**, the only condition under which the two selection rules
+could possibly diverge. In **all 4** of those events, the eligible
+candidates' accumulated doses were tied at exactly 0.0 mSv (neither had
+yet accrued any dose this shift), so CGDTR's lowest-dose sort collapsed
+to its own ascending-worker-ID tie-break -- the same rule reference-rule
+uses directly -- so even these 4 rare opportunities were structurally
+incapable of producing a different winner. `rank_candidates`'s two
+branches are independently correct and do produce different orderings
+when given a mixed-dose, multi-candidate input (verified by
+`test_policies.py`'s dedicated unit tests); the campaign itself simply
+never presented such an input. **This is an underpowered experimental
+design for the selection-rule question specifically, not a selection-
+logic defect** -- see section 6 (ablation decomposition), section 9
+(limitations), and `PHASE3C_AUDIT_REPORT.md` issues 1-2 for full detail.
 
 **Trigger-rule effects dominate.** The dose-threshold trigger
 (CGDTR/reference-rule) attempted a rotation far more often than the
@@ -75,9 +97,39 @@ eligible, idle, credentialed replacement on hand at the moment it fires.
 This is a property of this round's illustrative parameter choices, not
 a general claim about dose-threshold triggering.
 
+**Infeasibility root-cause breakdown (CGDTR, all 1,005 trigger events,
+from `phase3c_rotation_infra/audit_diagnostics/audit_infeasibility_reasons.py`,
+a read-only replay instrument added during the post-hoc audit -- the
+committed `rotation_events` log itself only stores the single generic
+reason string `"no_eligible_candidate_free_through_interval"` and
+cannot answer this breakdown on its own):**
+
+| Root cause | Count | % of all triggers |
+|---|---|---|
+| No credentialed candidate at all (nobody else credentialed for that room+procedure) | 845 | 84.1% |
+| Credentialed candidate(s) existed, but all were occupying another room (`not_free_assigned`) | 133 | 13.2% |
+| All credentialed candidates blocked specifically by the max-rotations-per-shift duty limit | 7 | 0.7% |
+| Had at least one eligible candidate -> completed | 20 | 2.0% |
+
+The dominant driver (84%) is **credential scarcity** (small illustrative
+roster x moderate credential-coverage probability x the compound
+room-AND-procedure-class credentialing requirement), not scheduling
+conflicts or duty limits. The `max_rotations_per_shift` duty-limit
+sub-check did fire for real in this campaign (7 times, concentrated in
+the `transient_spike` archetype) -- confirmed working as specified on
+live data, not only in unit tests. Two other sub-checks never fired at
+all in the real campaign: the projected-dose duty-limit sub-check
+(`projected_shift_total_dose_mSv >= max_dose_per_shift_mSv`, the
+Phase 3C-A gap-3 closure) and the availability-window check -- the
+latter is structurally unexercisable in this campaign by construction,
+since `generate_roster` always grants every worker full-shift
+availability (`availability_windows=[(0, shift_minutes)]`). Both remain
+validated only by `test_assignment.py`'s dedicated unit tests, not by
+this campaign's own data.
+
 ## 4. Per-archetype trigger/completion breakdown (CGDTR)
 
-| Archetype | n runs | Completed | Infeasible | Runs with escalation |
+| Archetype | n runs | Completed | Infeasible | Runs with ≥2 consecutive infeasible attempts* |
 |---|---|---|---|---|
 | area_relocation | 30 | 0 | 52 | 3 |
 | concurrent_alert_and_fault | 30 | 3 | 54 | 5 |
@@ -93,10 +145,26 @@ a general claim about dose-threshold triggering.
 | sudden_increase | 30 | 1 | 74 | 5 |
 | transient_spike | 30 | 4 | 42 | 5 |
 
-Escalation (the sensor-fault-persistence channel, `escalation.py`) was
-observed in every archetype, confirming the escalation mechanism is
-exercised by realistic campaign conditions, not merely by scripted unit
-tests.
+*Not the sensor-fault-persistence channel -- see the correction immediately below.
+
+**Correction (post-hoc audit):** the "runs with escalation" column
+above was mislabeled in the original version of this document as "the
+sensor-fault-persistence channel (`escalation.py`)." **That is
+incorrect.** `escalation.py::evaluate_escalation` -- the actual
+sensor-fault-persistence state machine task 5 implemented and
+unit-tested (`test_escalation.py`, 8 tests including one real-engine-
+integration test) -- is imported by `simulation.py` but **never called
+anywhere in the live orchestrator** (confirmed by inspecting
+`simulation.py`'s source directly: the import exists, no call site
+does). The counts shown above are actually
+`simulation.py`'s own, separate, simpler per-room counter for "2 or
+more consecutive INFEASIBLE rotation *attempts*" (the module's own
+documented simplification #5 -- a dose-concern/scheduling-infeasibility
+signal, with no connection to sensor faults at all). **The real
+sensor-fault-persistence escalation channel was never exercised by this
+or any other run in the campaign** -- it remains validated only in
+isolation, by scripted/engineered unit-test scenarios, never by live
+campaign data. See `PHASE3C_AUDIT_REPORT.md` issue 5 for full detail.
 
 ## 5. Paired comparisons (Wilcoxon signed-rank, Holm-Bonferroni corrected, n=390 pairs, family of 14 tests)
 
@@ -121,6 +189,38 @@ This is a genuine negative/null finding for the specific comparison the
 project was most interested in (does the more sophisticated dose-aware
 trigger+selection beat a simple timer?), reported as found, not
 reframed.
+
+**Disclosure added by post-hoc audit -- effective (nonzero) pair counts
+and the conditional effect size.** `scipy.stats.wilcoxon`'s default
+`zero_method='wilcox'` drops zero-difference pairs before computing the
+test statistic (standard, not a defect), but the `n_pairs` field this
+project's own `stats_common.py::wilcoxon_paired` reports is the raw
+pair count (390), not the effective count the test actually used. The
+table above was not previously annotated with this breakdown:
+
+| Comparison | n = 390 pairs | Zero-difference pairs | Nonzero pairs | Direction of the nonzero pairs | Mean diff. over the nonzero pairs only |
+|---|---|---|---|---|---|
+| CGDTR vs. no-rotation | 390 | 372 (95.4%) | 18 (4.6%) | all 18 favor CGDTR | −0.0239 mSv |
+| CGDTR vs. fixed-interval | 390 | 365 (93.6%) | 25 (6.4%) | 14 favor CGDTR, 11 favor fixed-interval | n/a (mixed direction) |
+| CGDTR vs. Ablation D | 390 | 365 (93.6%) | 25 (6.4%) | 14 favor CGDTR, 11 favor Ablation D | n/a (mixed direction) |
+| CGDTR vs. reference-rule | 390 | 390 (100%) | 0 (0%) | -- | -- |
+
+The CGDTR-vs-no-rotation p-value (1.96e-4) is a real, legitimate signal
+-- it reflects all 18 nonzero pairs agreeing in direction, which is
+exactly why the Wilcoxon statistic is 0 and the p-value is small despite
+an effective sample of only 18 -- but the headline mean difference
+reported above (−0.001104 mSv, a **2.85%** relative reduction against
+no-rotation's own mean of 0.03877 mSv) is a **population average
+diluted by the 372 runs where nothing differed at all**. Read as "the
+average expected benefit of deploying CGDTR across this campaign's full
+scenario mix," 2.85% is the correct number. Read as "how large is the
+effect when CGDTR's rotation actually changes the outcome," the correct
+number is the conditional mean over the 18 affected runs: −0.0239 mSv,
+a ≈29.7% relative reduction against no-rotation's own mean restricted
+to those same 18 runs (0.0806 mSv) -- not the full-campaign average
+used for the population-level 2.85% figure. Both numbers are correct; neither should be quoted alone
+without the other and without the 4.6% affected-run rate that produces
+the gap between them. See `PHASE3C_AUDIT_REPORT.md` issue 4.
 
 ## 6. 2x2 ablation decomposition (trigger-rule effect vs. selection-rule effect)
 

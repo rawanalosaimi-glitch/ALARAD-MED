@@ -1,0 +1,58 @@
+[
+  {
+    "room": "Cath Lab 3",
+    "t": 266,
+    "eligible": [
+      "W01",
+      "W02"
+    ],
+    "doses": {
+      "W01": 0.0,
+      "W02": 0.0
+    },
+    "cgdtr_top": "W01",
+    "ref_top": "W01"
+  },
+  {
+    "room": "CT Suite",
+    "t": 594,
+    "eligible": [
+      "W01",
+      "W02"
+    ],
+    "doses": {
+      "W01": 0.0,
+      "W02": 0.0
+    },
+    "cgdtr_top": "W01",
+    "ref_top": "W01"
+  },
+  {
+    "room": "Fluoroscopy Suite",
+    "t": 290,
+    "eligible": [
+      "W01",
+      "W02"
+    ],
+    "doses": {
+      "W01": 0.0,
+      "W02": 0.0
+    },
+    "cgdtr_top": "W01",
+    "ref_top": "W01"
+  },
+  {
+    "room": "Fluoroscopy Suite",
+    "t": 684,
+    "eligible": [
+      "W03",
+      "W04"
+    ],
+    "doses": {
+      "W03": 0.0,
+      "W04": 0.0
+    },
+    "cgdtr_top": "W03",
+    "ref_top": "W03"
+  }
+]
