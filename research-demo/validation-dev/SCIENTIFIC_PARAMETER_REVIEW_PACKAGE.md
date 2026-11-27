@@ -60,12 +60,13 @@ their decision in the review table (§8).
 
 ---
 
-## 2. Priority parameters — rows 14–17, 19, and 20
+## 2. Priority parameters — rows 14–17, 19, 20, and 21–24
 
-These six were only discovered to need review during this project's own
+These ten were only discovered to need review during this project's own
 internal integration/documentation work (`PHASE2B_INTEGRATION_AUDIT.md`
 for rows 14–17; this review package's own preparation for row 19; Phase
-3A's own implementation for row 20): the
+3A's own implementation for row 20; Phase 3C-A's own implementation for
+rows 21–24): the
 research software was already depending on them before anyone had
 flagged them as scientific assumptions. They are prioritized here because
 resolving them first is the most direct path to being able to interpret
@@ -245,6 +246,151 @@ any future result scientifically.
   (sweeping a range such as 0.1–0.9) be required before this baseline's
   comparison numbers are used for anything beyond illustration?*
 
+### Row 21 — Phase 3C-A synthetic staffing roster-generation parameters
+
+- **Exact current values:** `extra_workers_beyond_concurrent_rooms = 1`;
+  `credential_coverage_probability_range = [0.4, 0.7]`
+  (`phase3c_rotation_infra/config/phase3c_config.json`, block
+  `roster_generation`).
+- **Units/purpose:** a count (extra spare workers beyond the number of
+  concurrently-occupied rooms) and a dimensionless probability range
+  (the chance a given synthetic worker is credentialed for a given
+  room/procedure class), both used only to generate a synthetic shift
+  roster — `phase3c_rotation_infra/staffing.py::generate_roster`.
+- **Source:** new code written for Phase 3C-A, not the frozen engine.
+  Marked `PROVISIONAL` with an explicit `source` field in its own config
+  file, reading: *"Synthetic assumption for this research prototype,
+  chosen only so eligible replacements exist sometimes (not always, not
+  never) during testing; not derived from real staffing data."*
+- **Selection method, stated exactly:** illustrative round numbers,
+  **not** fit to any real staffing/credentialing data, chosen only so
+  the worker-exclusivity and infeasibility code paths
+  (`phase3c_rotation_infra/assignment.py`) are exercisable in tests.
+- **Scientific assumption encoded:** that roughly 40–70% random
+  credential coverage per room/procedure, with one spare worker beyond
+  concurrent room count, is a reasonable illustrative stand-in for a
+  real staffing/credentialing pattern.
+- **Role:** this is the complete generative model behind the Phase 3C-A
+  infrastructure's worker roster — no real or previously-synthesized
+  staffing dataset existed anywhere in this project before this.
+- **Illustrative, not evidence-supported. Unapproved for any clinical
+  or operational use.**
+- **Sensitivity requirement:** a sweep of the coverage-probability range
+  and the extra-worker count, to check how sensitive any future
+  rotation-evaluation result is to this roster-generation choice, has
+  not been run.
+- **Review question:** *Are these illustrative roster-size and
+  credential-coverage assumptions a reasonable stand-in for testing
+  purposes, or do you have facility staffing/credentialing data that
+  should replace them before any rotation-evaluation result is
+  reported?*
+
+### Row 22 — Phase 3C-A synthetic per-worker duty-limit parameters
+
+- **Exact current values:** `max_dose_per_shift_mSv_range = [1.0, 3.0]`;
+  `min_rest_between_assignments_minutes_range = [10, 20]`;
+  `max_rotations_per_shift_range = [1, 3]`
+  (`phase3c_rotation_infra/config/phase3c_config.json`, block
+  `duty_limits`).
+- **Units/purpose:** mSv (a per-worker, per-shift dose ceiling for
+  scheduling purposes), minutes (minimum rest between assignments), and
+  a count (rotation-burden cap) — `phase3c_rotation_infra/staffing.py`.
+- **Source:** new code written for Phase 3C-A, not the frozen engine.
+  Marked `PROVISIONAL` with an explicit `source` field in its own config
+  file, reading: *"Synthetic assumption for this research prototype;
+  not derived from real staffing policy, clinical guidance, or
+  regulatory dose limits."*
+- **Selection method, stated exactly:** illustrative round numbers, not
+  fit to any real staffing/scheduling policy or clinical dose-management
+  practice.
+- **Scientific assumption encoded:** that these ranges are reasonable
+  illustrative stand-ins for real per-worker shift duty limits.
+- **Role, and an explicit distinction that matters for this round's
+  trigger correction:** `max_dose_per_shift_mSv` is **this project's own
+  staffing/scheduling limit** — it is now also the threshold owner for
+  the revised CGDTR trigger's duty-limit clause
+  (`PHASE3B_ROTATION_ALGORITHM_DESIGN.md`, Revision 3, section 3a
+  clause (c)). **It must never be confused with the frozen engine's own
+  radiation alert thresholds (row 15, `CONFIG.doseElevated`/
+  `doseCritical`)** — the two are different quantities with different
+  owners (this project's synthetic staffing config vs. the frozen
+  engine's own, separately-registered configuration), compared for
+  different reasons (duty-limit/scheduling concern vs. radiation-safety
+  classification).
+- **Illustrative, not evidence-supported. Unapproved for any clinical
+  or operational use.**
+- **Sensitivity requirement:** none of these three ranges has been
+  swept; `max_dose_per_shift_mSv` in particular now gates a trigger
+  clause, so its sensitivity matters beyond roster generation alone.
+- **Review question:** *Are these illustrative duty-limit ranges
+  reasonable for testing purposes, and — separately — is it appropriate
+  for a staffing/scheduling limit like this to drive part of a
+  rotation-recommendation trigger at all, alongside the frozen engine's
+  own radiation-safety thresholds?*
+
+### Row 23 — Phase 3C-A synthetic procedure-boundary spacing
+
+- **Exact current value:** `boundary_spacing_minutes_range = [15, 30]`
+  (`phase3c_rotation_infra/config/phase3c_config.json`, block
+  `procedure_boundaries`).
+- **Units/purpose:** minutes — the spacing used to synthetically
+  generate a room-track's procedure-boundary schedule for testing
+  (`phase3c_rotation_infra/exposure_layer.py::generate_room_boundaries`).
+- **Source:** new code written for Phase 3C-A, not the frozen engine.
+  Marked `PROVISIONAL` with an explicit `source` field, reading:
+  *"Synthetic assumption for this research prototype; not derived from
+  real procedure-duration data."*
+- **Selection method, stated exactly:** an illustrative round-number
+  range, used only to build a testable slot schedule.
+- **Scientific assumption encoded:** that procedures of roughly 15–30
+  minutes each are a reasonable illustrative stand-in for how often a
+  real procedure boundary (a legitimate point for a rotation to take
+  effect) occurs.
+- **Role:** this directly determines how often `T_effective`
+  (`PHASE3B_ROTATION_ALGORITHM_DESIGN.md` section 3d) can land, and
+  therefore how quickly a handoff can actually complete.
+- **Illustrative, not evidence-supported. Unapproved for any clinical
+  or operational use.**
+- **Sensitivity requirement:** not yet swept against handoff-duration
+  (row 9) or infeasibility/abort rates.
+- **Review question:** *Is a 15–30 minute illustrative procedure-
+  boundary spacing a reasonable stand-in for testing purposes, or do you
+  have real procedure-duration data by room/procedure type that should
+  replace it?*
+
+### Row 24 — Phase 3C-A sensor-fault escalation threshold
+
+- **Exact current value:** `escalate_after_consecutive_fault_minutes =
+  10` (`phase3c_rotation_infra/config/phase3c_config.json`, block
+  `escalation`).
+- **Units/purpose:** minutes — the number of consecutive sensor-fault-
+  flagged minutes (reusing the real engine's own `sensorStep` states via
+  `phase2a_adapter.dq_adapter`, never reimplemented) before this
+  project's own escalation log raises a simulated concern
+  (`phase3c_rotation_infra/escalation.py::evaluate_escalation`).
+- **Source:** new code written for Phase 3C-A, not the frozen engine.
+  Marked `PROVISIONAL` with an explicit `source` field, reading:
+  *"Synthetic assumption for this research prototype; not derived from
+  real alerting/paging policy. This threshold governs only the
+  simulated, in-framework escalation log in this module — it is never
+  connected to a real notification system."*
+- **Selection method, stated exactly:** an illustrative round number,
+  not derived from any real alerting/paging policy.
+- **Scientific assumption encoded:** that 10 consecutive minutes of a
+  flagged sensor state is a reasonable point at which a real system
+  should notify a human — untested.
+- **Role:** this is independent of, and never interacts with, any dose
+  value or dose-trigger clause (`PHASE3B_ROTATION_ALGORITHM_DESIGN.md`
+  Revision 3, section 3a's explicit decoupling) — it governs only the
+  sensor-fault escalation channel.
+- **Illustrative, not evidence-supported. Unapproved for any clinical
+  or operational use, and explicitly not connected to any real
+  notification system.**
+- **Sensitivity requirement:** not yet swept.
+- **Review question:** *Is 10 consecutive flagged minutes a reasonable
+  illustrative point to simulate an escalation for testing purposes, or
+  do you have real alerting-policy input that should replace it?*
+
 ---
 
 ## 3. Remaining registry parameters — rows 1–13, 18
@@ -263,7 +409,7 @@ Documented more briefly, since these were already written up in
 | 6 | Baseline-3 moving-average characterization | 5-minute window, 2.0× threshold | This project's own Phase 2A config | Illustrative; **explicitly not labeled "conventional practice"** pending a citation | Is a 5-minute moving average at 2.0× a reasonable second reference point? Do you know of a citation that would justify calling this "conventional practice"? |
 | 7 | Forecast horizon beyond the 3 samples `linearForecast` actually produces | Previously an unexamined placeholder "15 minutes"; **now empirically confirmed that the real function hardcodes exactly 3 future samples regardless of input length** (verified for input lengths 3/4/7/10; `PHASE3A_LIMITATIONS.md` §1) | Methodology document, revised following Phase 3A | Not a value to pick — a question of whether/how any longer horizon could ever be reached | Should a longer horizon ever be built, and if so, by what technique (recursively feeding the existing 3-step output back in — uncharacterized, and not something the frozen engine does — or a different model)? **Note:** Phase 3A has already evaluated the three horizons `linearForecast` actually produces (1/2/3 minutes ahead) against ground truth — see `PHASE3A_SMOKE_TEST_REPORT.md`. This row is only about any *longer* horizon, which remains both unbuilt and, on current evidence, not achievable by calling the existing function differently. |
 | 8 | Worker eligibility/credentialing model | Does not exist | Methodology document only | N/A — nothing built yet | What data would a real eligibility check need (credentials, current dose, open incidents)? |
-| 9 | Minimum handoff/briefing duration | Not chosen; **no rotation recommender exists** | Methodology document only | N/A | What is a realistic minimum handoff time before a rotation takes effect? |
+| 9 | Minimum handoff/briefing duration | **Revised following Phase 3C-A**: an illustrative value of 10 minutes now exists in code (`phase3c_rotation_infra/config/phase3c_config.json`, block `handoff`) purely to test the timeline/scheduling machinery — still unapproved; no rotation recommender (CGDTR) exists yet | `PHASE3B_ROTATION_ALGORITHM_DESIGN.md` section 3d; `phase3c_rotation_infra/scheduling.py` | Illustrative, unapproved | What is a realistic minimum handoff time before a rotation takes effect? |
 | 10 | Rotation scoring weights | Not chosen; **no rotation recommender exists** | Methodology document only | N/A | Once built, how should dose reduction, fairness, latency, and rotation count be weighted against each other? |
 | 11 | Measurement noise realism | ±5% uniform noise on flat baseline readings | Inherited from the frozen engine, reused by Phase 1 | Illustrative, unverified against real dosimeter noise | Is ±5% a reasonable noise magnitude for a wearable dosimeter, or should it be a different distribution/magnitude? |
 | 12 | Inverse-square area-monitor model | Fixed exponent = 2.0 (engine), separately a true exponent = 1.7 is used in one test scenario to deliberately create a measured-vs-modeled gap | Inherited from the frozen engine, self-disclosed in-engine as a limited approximation | Illustrative | Is the fixed exponent-2 inverse-square model acceptable for this prototype's area-monitor logic, given its self-disclosed limitation? |
@@ -304,10 +450,11 @@ beyond the 3 samples the real function produces.
 
 | Status | Rows |
 |---|---|
-| **Illustrative placeholder (no evidence at all)** | 1, 2, 3, 4, 5, 6, 14, 15, 17, 19, 20 |
+| **Illustrative placeholder (no evidence at all)** | 1, 2, 3, 4, 5, 6, 14, 15, 17, 19, 20, 21, 22, 23, 24 |
 | **Inherited from the frozen engine, explicitly unverified against reality** | 11 |
 | **Inherited from the frozen engine, self-disclosed as a limited approximation** | 12 |
-| **Not yet applicable (feature does not exist yet)** | 7, 8, 9, 10, 18 |
+| **Not yet applicable (feature does not exist yet)** | 8, 10, 18 |
+| **Illustrative value now exists for infrastructure testing only; feature (CGDTR) still does not exist** | 9 |
 | **Conceptual/methodological, not a numeric value** | 16 |
 | **Reproducibility/engineering, not a scientific value** | 13 |
 
@@ -340,6 +487,10 @@ That is the central fact this review package exists to start changing.
 | 18 | ✓ (future) | — | ✓ (future) | — | — |
 | 19 | ✓ (data-quality) | — | — | — | — |
 | 20 | — | — | — | ✓ (baseline comparator) | — |
+| 21 | — | — | — | — | ✓ (staffing/eligibility infra) |
+| 22 | — | ✓ (duty-limit, not radiation threshold) | — | — | ✓ (staffing/eligibility infra; also the revised trigger's clause (c)) |
+| 23 | — | — | — | — | ✓ (scheduling infra) |
+| 24 | ✓ (sensor-fault escalation only, independent of dose) | — | — | — | — |
 
 ---
 
@@ -369,7 +520,7 @@ against the current official ICRP and NRRC texts — nothing below should
 be read as this project vouching for either one**, and no further
 citation has been added or invented anywhere in this package.
 
-**No other parameter in this registry (rows 1–20) has any citation
+**No other parameter in this registry (rows 1–24) has any citation
 behind it at all.** Where a Review Question above asks whether a
 manufacturer specification, regulatory alarm-setpoint guidance, or
 published noise/failure-rate/communication-reliability data exists, that
@@ -417,6 +568,15 @@ complete:**
 - Any use of the exponential-smoothing baseline's (row 20) comparison
   numbers as more than illustrative, before a sensitivity analysis on
   `alpha` is performed.
+- Any claim that Phase 3C-A's synthetic staffing/duty-limit/boundary-
+  spacing/escalation parameters (rows 21–24) represent real staffing,
+  scheduling, or alerting policy — all four are illustrative,
+  **unapproved for any clinical or operational use**, and introduced
+  only to make the rotation-simulation infrastructure testable.
+- Any implementation of CGDTR's trigger clause (c) (the duty-limit
+  check, `PHASE3B_ROTATION_ALGORITHM_DESIGN.md` Revision 3) using row
+  22's illustrative `max_dose_per_shift_mSv` range as if it reflected a
+  real or approved staffing policy.
 - Any claim that a reviewer's approval of a provisional value, however
   thorough, by itself establishes external validity or regulatory
   compliance (see the note at the top of this document) — those would
@@ -437,6 +597,10 @@ with a comment, and today's date. Leave blank if deferring.*
 | 17 | Immediate-alert dose bypass | 0.35 mSv, on by default | | | |
 | 19 | Sensor-health state-machine timing | stale 2 min; disconnected 5 min; frozen 6 readings; recover 2 samples | | | |
 | 20 | Exponential-smoothing baseline alpha | 0.5, illustrative round number | | | |
+| 21 | Staffing roster-generation parameters | 1 extra worker; 0.4–0.7 credential coverage | | | |
+| 22 | Per-worker duty-limit parameters | 1.0–3.0 mSv/shift; 10–20 min rest; 1–3 rotation cap | | | |
+| 23 | Procedure-boundary spacing | 15–30 min, illustrative | | | |
+| 24 | Sensor-fault escalation threshold | 10 consecutive flagged minutes | | | |
 | 1 | Procedure-class baselines/multipliers | 3.0–8.0 µSv/h, various ×ranges | | | |
 | 2 | Shift-length set | 60/240/480/720 min | | | |
 | 3 | Event magnitude/duration ranges | ×2.0–6.0, 1–20 min | | | |
@@ -445,7 +609,7 @@ with a comment, and today's date. Leave blank if deferring.*
 | 6 | Baseline-3 moving-average + label | 5 min window, 2.0×, not "conventional" | | | |
 | 7 | Forecast horizon beyond 3 samples | 3-sample limit confirmed; any longer horizon unbuilt | | | |
 | 8 | Worker eligibility model | does not exist | | | |
-| 9 | Handoff/briefing duration | not chosen, unbuilt | | | |
+| 9 | Handoff/briefing duration | 10 min illustrative value in code; not approved; CGDTR unbuilt | | | |
 | 10 | Rotation scoring weights | not chosen, unbuilt | | | |
 | 11 | Measurement noise realism | ±5% uniform | | | |
 | 12 | Inverse-square area model | exponent 2.0 (engine), 1.7 (one test case) | | | |
@@ -456,17 +620,22 @@ with a comment, and today's date. Leave blank if deferring.*
 
 ## 9. Explicit statement of what this package does and does not do
 
-- **Does:** collect every registered scientific parameter (20, as of
+- **Does:** collect every registered scientific parameter (24, as of
   this revision), in plain language, with exact values, sources, and
   review questions, so a qualified reviewer can act without reading
   code; distinguish what the frozen engine already contains
   (`linearForecast`, now evaluated at smoke scale against two baselines,
-  including the new row-20 exponential-smoothing baseline) from what has
-  not been built (a new forecaster, any rotation algorithm, any horizon
-  beyond `linearForecast`'s own 3-sample limit); and state plainly that
-  approving a value for this synthetic study is not the same claim as
-  evidence of real-world representativeness, and that expert approval
-  alone does not establish external validity or regulatory compliance.
+  including the row-20 exponential-smoothing baseline) from what has not
+  been built (a new forecaster, CGDTR or any rotation algorithm, any
+  horizon beyond `linearForecast`'s own 3-sample limit); distinguish the
+  frozen engine's own radiation-safety thresholds (row 15) from this
+  project's own, separately-owned synthetic staffing/duty-limit/
+  scheduling/escalation parameters (rows 21–24), which **must never be
+  presented as approved, clinical, or regulatory values**; and state
+  plainly that approving a value for this synthetic study is not the
+  same claim as evidence of real-world representativeness, and that
+  expert approval alone does not establish external validity or
+  regulatory compliance.
 - **Does not:** change any parameter value; modify the frozen release;
   implement forecasting or rotation; run the statistical campaign; claim
   any expert has approved anything; invent or add any citation beyond

@@ -51,11 +51,25 @@ separately-scoped review.
    any data. At smoke scale (8 seeds) this baseline scored *better* than
    `linearForecast` itself — see the note below before reading that as a
    finding about either method.
+7. **Four new rotation-infrastructure parameters** (rows 21–24), new
+   this round: a synthetic staffing-roster model, per-worker duty
+   limits (a dose-per-shift ceiling, rest time, and a rotation-count
+   cap), synthetic procedure-boundary spacing, and a sensor-fault
+   escalation threshold. All four are illustrative round numbers built
+   only to make a not-yet-decision-making rotation-simulation
+   infrastructure testable — **none is approved for any clinical or
+   operational use**, and the duty-limit dose ceiling in particular
+   must not be confused with item #2's radiation alert thresholds: they
+   are different quantities, owned by different parts of this project,
+   compared for different reasons (see the note below on the trigger
+   correction).
 
-**Thirteen more items** (procedure-class baselines, event/fault timing
-ranges, two comparison-alarm setpoints, a noise model, an area-monitor
-geometry approximation, and three not-yet-built forecasting/rotation
-parameters) are listed in full, with exact values, in the main package.
+**Fourteen more items** (procedure-class baselines, shift lengths,
+event/fault timing ranges, two comparison-alarm setpoints, a noise
+model, an area-monitor geometry approximation, the Chromium version gap,
+scenario-dynamics realism, and four forecast-horizon/rotation items that
+remain either unbuilt or only partly tested in code) are listed in full,
+with exact values, in the main package.
 
 **What is already blocked, independent of your review:** no *new*
 forecasting model and no rotation algorithm have been built, and both
@@ -74,6 +88,19 @@ minutes) — a longer horizon is not a parameter to adjust but an
 unbuilt, not-yet-designed capability. No large-scale statistical
 evaluation has been run or will be run before this review is further
 along.
+
+**On the trigger correction, stated once so it is not missed:** a
+design document for a future rotation-recommendation trigger had
+assumed the software's own alert thresholds (item #2) compare against
+"dose accrued so far this shift, plus a projection" — a closer read of
+the actual code found this is **not** what the software does: it
+compares only a fresh, single-reading 30-minute projection, with no
+memory of dose accrued earlier in the shift at all. This has been
+corrected in the design document (`PHASE3B_ROTATION_ALGORITHM_DESIGN.md`,
+Revision 3) before any trigger was built — **no rotation-triggering
+code exists yet**, so nothing built on the wrong assumption; the
+correction was caught at the design stage, which is the reason this
+summary mentions it at all.
 
 **What your review unblocks:** the project's planned statistical
 evaluation campaign (many simulated seeds, compared against the real

@@ -158,3 +158,46 @@ comes out. Nothing below has been decided. Row numbers refer to
     question: is a 3-minute-ahead horizon itself sufficient for an RSO's
     early-warning decisions, or is a longer horizon operationally
     necessary regardless of how it would be built?
+
+16. **Resolved as a verified semantic finding; still open as a design
+    question: should a genuinely accrued-plus-projected dose quantity
+    ever be built for rotation triggering, as new, adapter-only logic —
+    separate from reusing the frozen engine's existing
+    `CONFIG.doseElevated`/`doseCritical`?** (Row 15; new §3a of
+    `PHASE3B_ROTATION_ALGORITHM_DESIGN.md`, Revision 3.) This item
+    previously did not exist because the mismatch it describes had not
+    yet been found. A read-only audit
+    (`PHASE3C_A_DOSE_THRESHOLD_SEMANTIC_AUDIT.md`) verified that the
+    frozen engine's own thresholds compare only a fresh, memoryless,
+    single-reading 30-minute projection — never an accrued-so-far total.
+    The revised CGDTR trigger (Revision 3) now reuses that real quantity
+    correctly (clause (b)) and adds a *separate*, newly-defined
+    "projected shift total" quantity as new, adapter-only logic
+    (analogous in kind to Phase 3A's `forecast_cumulative_dose`, also
+    new and adapter-only) for the duty-limit clause (c), rather than
+    conflating the two. **What remains genuinely open** is whether this
+    new quantity should exist at all for rotation-triggering purposes,
+    or whether rotation should rely only on the engine's own,
+    already-registered clauses (a)/(b) and leave duty-limit management
+    to a separate mechanism entirely.
+
+17. **Is it scientifically and operationally appropriate for one
+    rotation trigger to combine clauses owned by two different parts of
+    this project** — the frozen engine's own radiation-safety
+    thresholds (row 15, clauses (a)/(b) of the revised trigger) and this
+    project's own synthetic staffing/duty-limit parameter (row 22,
+    clause (c)) — **or should they be kept as two entirely separate,
+    separately-reported triggers** (a radiation-safety rotation
+    suggestion vs. a duty-limit/scheduling rotation requirement)? Not
+    decided by `PHASE3B_ROTATION_ALGORITHM_DESIGN.md` Revision 3, which
+    only made the two clauses' different ownership explicit rather than
+    choosing between keeping them combined or separating them.
+
+18. **What real-world data sources, if any, exist for rows 21–24**
+    (Phase 3C-A's synthetic staffing-roster, duty-limit, procedure-
+    boundary-spacing, and sensor-fault-escalation parameters)? Every one
+    of these is currently an illustrative round number with "no
+    evidence" as its status, in the same style as item 6 above for rows
+    1/3/4/5/11/12/14/15/19 — this project has not searched for
+    applicable facility staffing/scheduling policy, procedure-duration
+    data, or alerting-policy precedent for any of them.

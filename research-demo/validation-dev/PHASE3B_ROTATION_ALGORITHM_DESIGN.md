@@ -60,6 +60,40 @@ fairness, or collective-dose result is reported anywhere.
 
 ---
 
+## Revision 3 — change log (this round; Revisions 1-2 preserved below, not deleted)
+
+**Trigger:** a read-only, pre-coding audit performed for Phase 3C-A
+(`PHASE3C_A_DOSE_THRESHOLD_SEMANTIC_AUDIT.md`) found that this
+document's Revision 2 §3a had misdescribed how the frozen engine's own
+`CONFIG.doseElevated`/`doseCritical` are actually computed — they
+compare a fresh, memoryless, single-reading 30-minute projection, never
+an accrued-plus-projected total. This revision corrects that, and
+completes the related work this round's instructions asked for.
+**Nothing in Revisions 1-2 is deleted** — §3a's correction keeps both
+prior versions quoted in full, explicitly marked **superseded**,
+immediately alongside the corrected text.
+
+| # | Task (as given in this round's instructions) | Addressed in |
+|---|---|---|
+| 1 | Correct §3a per the verified frozen-engine semantics; distinguish the engine's 30-minute projected dose from accumulated shift dose and any separately-defined projected shift total; preserve the frozen implementation | §3a (superseded and replaced) |
+| 2 | Specify the revised CGDTR trigger with separately-named quantities, exact units/horizons/threshold ownership; sensor-validity handling per clause; escalation decoupling | §3a (same replacement) |
+| 3 | Review the Phase 3C-A implementation against the corrected specification | `PHASE3C_A_REVIEW_AGAINST_REVISION_3.md` (new, standalone — reviews a different package's code, not this document's own text) |
+| 4 | Address the remaining eligibility gap: live per-minute accumulated-dose updates, projected duty-limit checks for an incoming worker, preserving existing constraints | new §3i |
+| 5 | Update the scientific parameter registry and reviewer package with Phase 3C-A's new provisional parameters | `ICAIRE_Simulation_Validation_Methodology.md` (Revision 6, rows 21-24, row 9 updated), `SCIENTIFIC_PARAMETER_REVIEW_PACKAGE.md`, `SCIENTIFIC_PARAMETER_REVIEW_SUMMARY.md`, `UNRESOLVED_SCIENTIFIC_DECISIONS.md` (all updated in this same round, not this document) |
+| 6 | Update the Phase 3C-B readiness checklist; specify tests for the corrected trigger math and live duty-limit enforcement | `PHASE3C_B_READINESS_CHECKLIST.md` (new); §9a extended below with the same new tests, for readers who only read this document |
+
+**Restrictions, unchanged from Revisions 1-2:** documentation only; no
+CGDTR trigger code and no five-policy comparison are implemented this
+round either (the trigger is specified more precisely, not built); no
+statistical campaign was run; no simulator, forecasting, or frozen-
+release file was touched (the frozen engine's `evaluateExposure()` was
+read again, not modified, to re-verify §3a's correction); nothing is
+deployed or merged; no dose-reduction, fairness, or collective-dose
+result, and no clinical or regulatory validation claim, is made
+anywhere in this revision.
+
+---
+
 ## 0. What this document adds, in one paragraph
 
 `ROTATION_RECOMMENDER_DESIGN_SPEC.md` specified *what any future
@@ -214,100 +248,182 @@ worker `W`:
 - `R`'s own `incident_state` (open/clear) if the engine's incident
   concept is room-scoped at that moment.
 
-### 3a. Trigger condition — dose-trigger mathematics, precisely specified (Revision 2; supersedes Revision 1's version below, addresses Issue 3)
+### 3a. Trigger condition — dose-trigger mathematics, corrected per the verified frozen-engine semantics (Revision 3; supersedes Revision 2's version below, addresses this round's tasks 1-2)
 
-**All dose comparisons in this subsection are normalized to mSv before
-being compared to any threshold.** A dose *rate* (µSv/h) is never
-compared directly against an mSv threshold — it is first converted via
-the existing rule `Dose (mSv) = Rate (µSv/h) × Duration (h) / 1000`
-(`ICAIRE_Simulation_Validation_Methodology.md` §1), applied over the
-exact horizon defined below.
+**What Revision 2 got wrong, stated plainly:** Revision 2's §3a (quoted
+in full below) asserted that `CONFIG.doseElevated`/`doseCritical` are
+compared against an "already-accrued cumulative dose plus a projected
+increment." A read-only audit of the frozen engine's actual
+`evaluateExposure()` (line 1950-1991), performed before any Phase 3C-A
+code was written
+(`PHASE3C_A_DOSE_THRESHOLD_SEMANTIC_AUDIT.md`), found this is **not**
+what the engine does. The engine's own code:
+```js
+const cumulativeDose = (workerRate * (dur/60)) / 1000;      // uSv/h x h = uSv ; /1000 = mSv
+if(deviation < CONFIG.devElevated && cumulativeDose < CONFIG.doseElevated){ riskClass='low'; ... }
+else if(deviation < CONFIG.devCritical && cumulativeDose < CONFIG.doseCritical){ riskClass='med'; ... }
+```
+computes `cumulativeDose` **fresh, from a single current-minute
+reading, every call** — `dur` fixed at 30 minutes at every real call
+site (`SimLab.runWorker`, line 2947/2951; the detection adapter's own
+call site, line 3426) — with **no addition of any previously-accrued
+dose anywhere**. The variable's name is a misnomer in the frozen
+engine's own source (not something this project may "fix," since the
+release is frozen) — but this design document must not repeat that
+misnomer's implication. This subsection corrects that, re-verified
+again directly against the frozen source while writing this revision
+(`evaluateExposure()` unchanged, SHA-256
+`92e897dd0ff1738f083df829b53f7f46377e042b7019bb9776232792261182ee`
+re-confirmed).
 
-**Two distinct dose quantities, not to be confused with each other
-(Revision 1 used "projected dose" for both without distinguishing
-them):**
-- **Additional projected dose** `ΔD_proj(W, t)`: the *increment* `W` is
-  projected to accrue over the horizon `H(t)` defined below, computed
-  from `W`'s own last valid, non-stale observed dose rate (see the
-  input-validity rule below) held constant over that horizon — reusing
-  the engine's own existing "current rate held constant" convention
-  (§1's "projected task dose"), not a new projection method. In mSv:
-  `ΔD_proj(W, t) = rate_last_valid_uSv_h(W) × H(t)_hours / 1000`.
-- **Projected cumulative dose** `D_cum_proj(W, t)`: `W`'s *already-
-  accrued* cumulative dose through `t` (the existing, unprojected
-  running total, §1) **plus** `ΔD_proj(W, t)`. This is the quantity
-  actually compared against the engine's own `CONFIG.doseElevated`/
-  `doseCritical` thresholds (rows 14/15) — those thresholds are
-  themselves defined in the registry as projected-dose-*over-a-horizon*
-  thresholds (row 15: "elevated projected dose ≥ 0.15 mSv ... over a
-  fixed 30-minute horizon"), i.e. they are projected-*cumulative*, not
-  increment-only, thresholds. Comparing the increment alone against them
-  would be a unit/definition mismatch, not merely a stricter or looser
-  check.
+**Three separately-named quantities, with exact units, time horizons,
+and threshold ownership — not to be confused with each other or with
+the engine's own misleadingly-named variable:**
 
-**Time horizon `H(t)`, defined exactly:** `H(t) = min(30 minutes,
-remaining scheduled minutes of the upcoming AssignmentSlot that W would
-continue into if not rotated)` — reusing the engine's own 30-minute
-convention (§1) as the cap, and the upcoming slot's own scheduled
-remaining duration (§2b) as the other bound, rather than either value
-alone. If `H(t) = 0` (no upcoming slot — e.g., this boundary is the
-shift's last), no projected-dose trigger clause applies at this decision
-point; only the already-accrued clause below can fire.
+| Quantity | Definition | Units | Horizon | Threshold used against | Threshold owner |
+|---|---|---|---|---|---|
+| **`EngineProjectedTaskDose(W, t)`** | The frozen engine's own real quantity (its source calls it `cumulativeDose`, a misnomer repeated nowhere in this document from here on): `rate_single_reading_uSv_h(W, t) × (dur_minutes/60) / 1000`, recomputed fresh from `W`'s current-minute reading alone — **no memory of any earlier minute** | mSv | fixed 30 minutes (`dur`, every real call site) | `CONFIG.doseElevated` / `doseCritical` | **The frozen engine** (registry row 15) — reused via `evaluateExposure()`/`AlaradSafety`, never re-derived |
+| **`WorkerAccumulatedShiftDose(W, t)`** | This project's own genuine running total: `Σ` of `Dose(mSv) = Rate(uSv/h) × Duration(h) / 1000` over every minute from shift start through `t` (`ICAIRE_Simulation_Validation_Methodology.md` §1's existing accumulation rule; already implemented, correctly, as `phase3c_rotation_infra.dose_attribution.cumulative_dose_per_worker`) | mSv | from shift start to `t` (grows every minute) | `rotation_threshold_fraction × reference_level` | **This project** (new provisional parameter, §9d) |
+| **`ProjectedShiftTotalDose(W, t, h)`** | A **new, adapter-only** derived quantity (analogous in kind to Phase 3A's `forecast_cumulative_dose` — also new, adapter-only, never an engine capability): `WorkerAccumulatedShiftDose(W, t) + rate_last_valid_uSv_h(W) × h_hours / 1000` — "if `W` continued at their last valid rate for `h` more hours, what would their total shift dose become" | mSv | caller-chosen `h` (e.g., the remaining scheduled minutes of the upcoming `AssignmentSlot`, §2b) | `W.max_dose_per_shift_mSv` (the worker's own duty-limit profile field, §2a) | **This project's own staffing/scheduling model** (registry row 22) — **never** `CONFIG.doseElevated`/`doseCritical`, which belong to `EngineProjectedTaskDose` alone |
 
-**Trigger condition (Revision 2), propose a rotation for `W` out of `R`
-if and only if:**
-- `W`'s **already-accrued** cumulative dose through `t` (no projection
-  involved) ≥ `rotation_threshold_fraction × reference_level`
-  (mSv-normalized; mechanizing `ROTATION_RECOMMENDER_DESIGN_SPEC.md`
-  §4.3's reference rule exactly — `rotation_threshold_fraction` is an
-  open parameter, §9d), **or**
-- `W`'s **projected cumulative dose** `D_cum_proj(W, t)` (as defined
-  above, mSv-normalized, over horizon `H(t)`) crosses `CONFIG.doseElevated`
-  or `doseCritical` (registry row 15, reused as-is, not a new threshold).
+**The revised CGDTR trigger: propose a rotation for `W` out of `R` if
+and only if any of these three, separately-owned clauses holds:**
+- **(a) Accrued-dose clause (this project's own; unchanged in substance
+  from Revision 2, renamed for clarity):**
+  `WorkerAccumulatedShiftDose(W, t) ≥ rotation_threshold_fraction ×
+  reference_level` — mechanizing `ROTATION_RECOMMENDER_DESIGN_SPEC.md`
+  §4.3's reference rule exactly; `rotation_threshold_fraction` is an
+  open parameter (§9d).
+- **(b) Engine radiation-safety clause (now correctly scoped to the
+  engine's real quantity):** `EngineProjectedTaskDose(W, t) ≥
+  CONFIG.doseElevated` (or `doseCritical` for the critical variant) —
+  equivalently, `W`'s current reading is already classified `elevated`
+  or `critical` by the engine's own `evaluateExposure()`, reused
+  directly rather than re-derived. Registry row 15, reused as-is, not a
+  new threshold.
+- **(c) Duty-limit clause (new in Revision 3; this project's own
+  staffing/scheduling concern, closing the "projected duty-limit check"
+  gap this round's task 4 names):** `ProjectedShiftTotalDose(W, t, h) ≥
+  W.max_dose_per_shift_mSv`, with `h` = the remaining scheduled minutes
+  of the upcoming `AssignmentSlot` `W` would continue into if not
+  rotated. Registry row 22, reused from `phase3c_rotation_infra.staffing`
+  — **never** the engine's own thresholds.
 
-If neither holds, the algorithm's output at this decision point is **no
-rotation**, by design, not by exception-handling (§4's "ordinary case").
+If none holds, the algorithm's output at this decision point is **no
+rotation**, by design (§4's "ordinary case").
 
-**Input-validity rule (new in Revision 2, closes a gap Revision 1 did
-not specify):** `rate_last_valid_uSv_h(W)` must be a reading that passes
-the engine's own `SimLab.pure.validReading` check **and** is not
-currently `STALE`, `DISCONNECTED`, `SUSPECTED_FROZEN`, or otherwise in
-the engine's own `UNAVAIL` set (`AlaradSafety.SENSOR_P`, registry row
-19) at decision time `t`. **If `W`'s most recent reading fails this
-check, the projected-cumulative-dose trigger clause above is evaluated
-as *not met* for this decision point** — a stale or invalid reading is
-never substituted into the projection as if it were current, and the
-trigger does not silently fall back to an older, possibly-stale value
-either. (The already-accrued clause is unaffected, since it uses the
-existing running total, not a live reading.) This is a deliberate
-fail-safe default, not an oversight: see §3h for what happens when a
-dose concern independently persists through a period of sensor
-invalidity — that is an escalation question, not a trigger-math
-question, and the two must not be conflated.
+**Why these three must not be collapsed into one quantity or one
+threshold:** clause (a) is a scheduling heuristic this project invented
+(a declared fraction of a reference level); clause (b) is a direct,
+unmodified reuse of the frozen engine's own radiation-safety
+classification; clause (c) is a staffing/duty-limit concern with its
+own, separately-owned threshold. Collapsing any two of these into "one
+dose number" would hide which kind of concern actually fired, and whose
+threshold is responsible — exactly the ambiguity Revision 2's error
+introduced by merging (b) and what is now (c) into a single, wrongly-
+attributed "projected cumulative dose."
+
+**Input-validity rule, now stated per clause (extends Revision 2's
+single fail-safe rule to all three clauses individually, since they now
+draw on different quantities):**
+- **Clause (a)** uses `WorkerAccumulatedShiftDose`, built only from
+  past minutes that already contributed dose under the existing
+  "invalid/missing readings contribute no dose" rule
+  (`ICAIRE_Simulation_Validation_Methodology.md` §1;
+  `phase1_simulator.dose.accumulate_observed_dose`'s existing
+  unmonitored-minute convention, reused). A stale, disconnected, or
+  otherwise unavailable reading *right now* does not retroactively
+  change this running total — it simply means the current minute itself
+  contributes nothing new, exactly as it already would for any invalid
+  reading. No special-casing beyond what already exists is needed.
+- **Clause (b)** calls the engine's real `evaluateExposure()` with the
+  current reading. If that reading is invalid, the engine's own
+  `validateExposureInput` already rejects it (`riskClass:'unknown'`,
+  `'MONITORING UNAVAILABLE — INPUT REJECTED'`, line 1953-1955) — **this
+  clause is evaluated as not met whenever the engine itself reports
+  invalid input**, or whenever `W`'s sensor state (`AlaradSafety.SENSOR_P`
+  / `sensorStep`, reused via `phase2a_adapter.dq_adapter`, registry row
+  19) is `STALE`, `DISCONNECTED`, `SUSPECTED_FROZEN`, or otherwise in
+  the engine's own `UNAVAIL` set. Never substituted with a stale value,
+  never silently skipped as "assume safe."
+- **Clause (c)** uses `rate_last_valid_uSv_h(W)` — the same fail-safe as
+  Revision 2 specified: if no valid reading exists yet, or the most
+  recent one is stale/disconnected/invalid, clause (c) is evaluated as
+  not met for this decision point, never substituting an old value as
+  if it were current.
+
+**Sensor faults are escalated independently of all three clauses, not
+interpreted as a dose-threshold crossing (closes this round's task 2's
+last requirement):** when a clause above is suppressed by its fail-safe
+rule because of sensor invalidity, that suppression is **not** itself
+what raises concern — a persistent sensor fault is independently
+detected and escalated by `phase3c_rotation_infra.escalation`'s own
+state machine (§3h), driven purely by sensor-*state* persistence (the
+real engine's `sensorStep`, reused, never by any dose value). The two
+channels never interact: a dose clause being suppressed does not raise
+an escalation, and an escalation being raised does not imply any dose
+clause fired. A worker whose sensor is persistently faulty is therefore
+still caught — by §3h, not by a dose clause pretending the fault didn't
+happen.
 
 **Explicit caveat, restated here because this subsection is where a
 reader is most likely to misread it:** `CONFIG.doseElevated`/
-`doseCritical` (registry row 15) are **self-disclosed PROTOTYPE,
-illustrative thresholds — not regulatory dose limits**
-(`ICAIRE_Simulation_Validation_Methodology.md` §9 row 15's own text).
-Crossing them triggers a *rotation proposal* in this design, nothing
-more; it must never be reported or read as "the worker exceeded a
-regulatory dose limit."
+`doseCritical` (registry row 15) and `W.max_dose_per_shift_mSv`
+(registry row 22) are both **illustrative, provisional, and
+unapproved** — the former self-disclosed by the frozen engine as
+"PROTOTYPE warning thresholds... NOT regulatory limits," the latter a
+synthetic staffing assumption this project introduced. **Neither is, or
+may be presented as, a regulatory dose limit.** Crossing any of the
+three clauses above triggers a *rotation proposal* in this design,
+nothing more.
 
-**Revision 1's original §3a (superseded by the above, kept here for
-traceability):**
-> Propose a rotation for `W` out of `R` **if and only if**:
-> - `W`'s cumulative dose so far ≥ `rotation_threshold_fraction ×
->   reference_level` (mechanizing `ROTATION_RECOMMENDER_DESIGN_SPEC.md`
->   §4.3's reference rule exactly — `rotation_threshold_fraction` is an
->   open parameter, §10), **or**
-> - `W`'s projected dose (as defined above) crosses the engine's own
->   `CONFIG.doseElevated` or `doseCritical` threshold (registry row 15,
->   reused as-is, not a new threshold).
+**Revision 2's version of this subsection (superseded by the above;
+this block itself already contains Revision 1's original text, quoted
+inline within it, preserved for traceability across all three
+revisions):**
+> **All dose comparisons in this subsection are normalized to mSv
+> before being compared to any threshold.** A dose *rate* (µSv/h) is
+> never compared directly against an mSv threshold — it is first
+> converted via the existing rule `Dose (mSv) = Rate (µSv/h) ×
+> Duration (h) / 1000` (`ICAIRE_Simulation_Validation_Methodology.md`
+> §1), applied over the exact horizon defined below.
 >
-> If neither holds, the algorithm's output at this decision point is
-> **no rotation**, by design, not by exception-handling (§4's "ordinary
-> case").
+> **Two distinct dose quantities, not to be confused with each other
+> (Revision 1 used "projected dose" for both without distinguishing
+> them):**
+> - **Additional projected dose** `ΔD_proj(W, t)`: the *increment* `W`
+>   is projected to accrue over the horizon `H(t)` defined below,
+>   computed from `W`'s own last valid, non-stale observed dose rate
+>   (see the input-validity rule below) held constant over that horizon
+>   — reusing the engine's own existing "current rate held constant"
+>   convention (§1's "projected task dose"), not a new projection
+>   method. In mSv: `ΔD_proj(W, t) = rate_last_valid_uSv_h(W) × H(t)_hours
+>   / 1000`.
+> - **Projected cumulative dose** `D_cum_proj(W, t)`: `W`'s *already-
+>   accrued* cumulative dose through `t` (the existing, unprojected
+>   running total, §1) **plus** `ΔD_proj(W, t)`. **[This is the claim
+>   Revision 3 found incorrect — the engine never adds an accrued
+>   component; see above.]** This is the quantity actually compared
+>   against the engine's own `CONFIG.doseElevated`/`doseCritical`
+>   thresholds (rows 14/15)...
+>
+> **Trigger condition (Revision 2), propose a rotation for `W` out of
+> `R` if and only if:**
+> - `W`'s **already-accrued** cumulative dose through `t` (no
+>   projection involved) ≥ `rotation_threshold_fraction × reference_level`
+>   ..., **or**
+> - `W`'s **projected cumulative dose** `D_cum_proj(W, t)` ... crosses
+>   `CONFIG.doseElevated` or `doseCritical` (registry row 15, reused
+>   as-is, not a new threshold). **[Also superseded — see clauses (b)
+>   and (c) above, which separate what this one clause had merged.]**
+>
+> **Revision 1's original §3a (superseded by Revision 2, kept for
+> traceability):**
+> > Propose a rotation for `W` out of `R` **if and only if**: `W`'s
+> > cumulative dose so far ≥ `rotation_threshold_fraction × reference_level`,
+> > **or** `W`'s projected dose crosses the engine's own
+> > `CONFIG.doseElevated` or `doseCritical` threshold. If neither holds,
+> > the algorithm's output at this decision point is **no rotation**.
 
 ### 3b. Eligibility filter (reuses design-spec §2.1 exactly)
 
@@ -544,12 +660,94 @@ RAISED --(shift ends while still unacknowledged)------------------> RESOLVED
   `RAISED`→`ACKNOWLEDGED` as the software having independently resolved
   anything.
 
-**Audit log fields (minimum set):** `timestamp`, `worker_id`, `room`,
-`already_accrued_dose_mSv`, `projected_cumulative_dose_mSv`,
-`horizon_minutes` (§3a's `H(t)`), `infeasibility_reason` (§4's case
-number), `escalation_state`, `acknowledged_by` (placeholder field;
-simulated in this research framework, not a real identity system),
+**Audit log fields (minimum set; updated in Revision 3 to name the
+three separate dose quantities from §3a explicitly, rather than one
+ambiguous "projected cumulative dose" field):** `timestamp`,
+`worker_id`, `room`, `triggering_clause` (`"a"`/`"b"`/`"c"`, §3a),
+`worker_accumulated_shift_dose_mSv` (clause (a)/(c)),
+`engine_projected_task_dose_mSv` (clause (b); the engine's own
+`cumulativeDose`, renamed here per §3a's correction, `dur=30` minutes
+fixed), `projected_shift_total_dose_mSv` and its `horizon_hours`
+(clause (c) only, §3a), `infeasibility_reason` (§4's case number),
+`escalation_state`, `acknowledged_by` (placeholder field; simulated in
+this research framework, not a real identity system),
 `resolution_reason`.
+
+### 3i. Live per-minute accumulated-dose updates and projected duty-limit checks for an incoming worker (new in Revision 3, addresses this round's task 4)
+
+**The gap this closes:** Phase 3C-A's `assignment.py` (its own
+docstring says so explicitly) does not wire `max_dose_per_shift_mSv`
+into the live eligibility filter, because the infrastructure phase had
+no live, per-minute dose figure to check against during batch
+reservation — dose accounting was computed only after the fact, over a
+full exposure+assignment layer. This subsection specifies how a future
+phase closes that gap, **without loosening or bypassing any existing
+constraint** (§3b's credentialing/availability/rest checks, §3g's
+exclusivity/reservation mechanics, or §2.2's procedure-continuity rule)
+— it only adds a new, additional check alongside them.
+
+**Live per-minute accumulated-dose update (extends, does not replace,
+`dose_attribution.py`):** at every minute `t` (not only at decision
+points), for every worker `W` currently `ASSIGNED` to a slot,
+`WorkerAccumulatedShiftDose(W, t)` (§3a) is updated by the same existing
+rule already implemented in
+`phase3c_rotation_infra.dose_attribution.cumulative_dose_per_worker` —
+this subsection does not define a new formula, it specifies that the
+update must happen **live, incrementally, per minute**, so a decision
+point has an always-current figure to read, rather than requiring a
+full-shift replay at every check. A worker not currently `ASSIGNED`
+(§2a's `FREE`/`RESERVED`/`RESTING` states) does not accrue dose for
+minutes they are not occupying a slot — unchanged from §5a's existing
+attribution rule.
+
+**Projected duty-limit check for an incoming (candidate) worker, across
+the full intended assignment interval — not just at the instant of
+selection:** before a candidate is marked `RESERVED` in §3g's batch pass
+(step 3), an additional check is evaluated using
+`ProjectedShiftTotalDose` (§3a): would this candidate, if assigned from
+`T_effective` through the **end of their intended assignment** (the
+remaining scheduled minutes of the target `AssignmentSlot`, or — if the
+slot itself might extend further via its own later boundaries — a
+caller-supplied assignment-interval length, never left undefined),
+reach `W.max_dose_per_shift_mSv`? If so, that candidate is excluded from
+this room's candidate list at this batch pass, **exactly as an
+unavailable or rotation-capped candidate already is** (§3g step 6) —
+this is a new exclusion reason added to the same list, not a new
+mechanism:
+
+```
+candidate excluded if ANY of:
+  - not FREE (sec 3g)                                   [unchanged]
+  - RESTING at t_decide (sec 3g)                         [unchanged]
+  - at rotation-burden cap (sec 3c/3g)                   [unchanged]
+  - availability_window does not cover [t_decide, t_effective] (sec 3g)  [unchanged]
+  - NEW: ProjectedShiftTotalDose(candidate, t_effective, intended_assignment_hours)
+         >= candidate.max_dose_per_shift_mSv
+```
+
+**Why this is a projection over the *intended assignment interval*, not
+a single-minute check:** a candidate who is currently well under their
+duty limit could still be a poor choice if the intended assignment is
+long enough to push them over it partway through — checking only "are
+they under the limit right now" would let that happen and then require
+a *second* rotation shortly after the first, which is itself a cost
+(§3's scoring criterion 4, "number of rotations," and the escalation
+machinery in §3h would otherwise have to catch the resulting persistent
+concern after the fact rather than this check preventing it up front).
+
+**All of §3b's other eligibility conditions, §3g's exclusivity/
+reservation mechanics, and §2.2's procedure-continuity rule remain
+exactly as specified — this subsection adds one more exclusion
+condition to the same candidate-filtering step, nowhere else.** No
+constraint is relaxed, reordered, or made conditional on this addition.
+
+**What is not specified here, and remains open (see §10):** the exact
+length of "intended assignment interval" when a target slot's own
+future boundaries are not yet fixed (e.g., if a room's schedule beyond
+the immediately upcoming slot has not yet been generated) — a
+conservative choice (the single upcoming slot's own length, never a
+longer, more speculative projection) is the default this subsection
+assumes, but is not mandated as the only acceptable choice.
 
 ---
 
@@ -672,12 +870,15 @@ a starting assignment) and produce an assignment layer as output.
    incident acknowledgement apply equally to every policy, not only the
    candidate).
 3. **Reference-rule baseline** (§4.3, `ROTATION_RECOMMENDER_DESIGN_SPEC.md`
-   §6a reused): rotate out whenever projected cumulative dose crosses a
-   declared fraction of the reference level — i.e., CGDTR's §3a trigger
-   **without** CGDTR's §3c lowest-dose selection rule; replacement
-   selection for this baseline is the first eligible candidate in
-   roster order (deliberately simpler than CGDTR's ranking, to isolate
-   what CGDTR's ranking step itself contributes).
+   §6a reused): triggers on the **same three clauses as CGDTR, unchanged**
+   (§3a (a)/(b)/(c), corrected in Revision 3) — **without** CGDTR's §3c
+   lowest-dose selection rule; replacement selection for this baseline is
+   the first eligible candidate in roster order (deliberately simpler
+   than CGDTR's ranking, to isolate what CGDTR's ranking step itself
+   contributes). Sharing the identical, corrected trigger with the
+   candidate — rather than each baseline inventing its own trigger
+   description — is what makes the §6a ablation design's selection-effect
+   estimate meaningful.
 4. **Candidate (CGDTR, §3):** trigger (§3a) + eligibility (§3b) +
    ranked selection (§3c) + handoff/incident mechanics (§3d/§3e), as
    specified above.
@@ -995,16 +1196,45 @@ none implemented):**
 - `test_candidate_forward_looking_eligibility_through_T_effective` —
   §3g step 6; a candidate whose availability window ends before
   `T_effective` must be excluded, not merely deprioritized.
-- `test_trigger_distinguishes_additional_from_projected_cumulative_dose` —
-  §3a; construct a case where the increment alone would (not) cross
-  `doseElevated` but the projected-cumulative sum would (not), confirm
-  the correct quantity drives the trigger.
-- `test_stale_sensor_reading_never_used_as_trigger_input` — §3a's
-  input-validity rule; confirm a `STALE`/`DISCONNECTED`/`INVALID` last
-  reading causes the projected-cumulative-dose clause to evaluate as
-  not-met, never substituted.
+- `test_clause_b_uses_engine_projected_task_dose_not_accrued_total` —
+  **revised in Revision 3** (superseded a now-incorrect test named
+  `test_trigger_distinguishes_additional_from_projected_cumulative_dose`,
+  built on Revision 2's mistaken quantity): §3a clause (b); construct a
+  case where `WorkerAccumulatedShiftDose` is high but
+  `EngineProjectedTaskDose` (the single-reading, memoryless projection)
+  is low, and confirm clause (b) does **not** fire — proving the engine's
+  real, accrued-free semantics are what clause (b) actually checks, not
+  a combined total.
+- `test_clause_c_uses_projected_shift_total_against_duty_limit` — new in
+  Revision 3; §3a clause (c); confirm `ProjectedShiftTotalDose`
+  (accrued + projected increment, this project's own new quantity) is
+  compared only against `W.max_dose_per_shift_mSv`, never against
+  `CONFIG.doseElevated`/`doseCritical`.
+- `test_stale_sensor_reading_never_used_as_trigger_input` — **revised in
+  Revision 3** to check all three clauses individually per §3a's
+  per-clause input-validity rule: a `STALE`/`DISCONNECTED`/`INVALID`
+  last reading causes clauses (b) and (c) to evaluate as not-met, never
+  substituted, while clause (a) is unaffected (it reads only the
+  existing running total).
 - `test_dose_values_normalized_to_mSv_before_threshold_comparison` —
-  §3a; a unit-consistency check across both trigger clauses.
+  §3a; a unit-consistency check across all three trigger clauses.
+- `test_sensor_fault_escalation_independent_of_all_three_dose_clauses` —
+  new in Revision 3; §3a's escalation-decoupling statement; confirm a
+  persistent sensor fault raises escalation (§3h) via
+  `phase3c_rotation_infra.escalation` regardless of whether any dose
+  clause ever fires, and confirm no dose clause firing or being
+  suppressed itself writes to the escalation state machine.
+- `test_incoming_worker_excluded_if_projected_to_exceed_duty_limit_across_assignment_interval` —
+  new in Revision 3; §3i; confirm a candidate who is currently under
+  `max_dose_per_shift_mSv` but would be projected to exceed it before
+  the end of the intended assignment interval is excluded from the
+  batch-pass candidate list (§3g step 3), not merely deprioritized.
+- `test_live_accumulated_dose_update_matches_full_replay` — new in
+  Revision 3; §3i; confirm the live, per-minute
+  `WorkerAccumulatedShiftDose` update produces the same final value as
+  a full-shift replay via `dose_attribution.cumulative_dose_per_worker`
+  — the incremental update must not drift from the existing, already-
+  tested batch computation.
 - `test_ablation_d_shares_identical_eligibility_handoff_and_escalation_mechanics` —
   §6b's shared-conditions guarantee, extended to five policies.
 - `test_persistent_infeasible_dose_concern_escalates_and_reraises` —
@@ -1098,30 +1328,48 @@ to silently change previously-approved methodology. They are listed here
 so they are not lost, and would be the natural next additions to that
 table in a future, explicitly-approved revision:
 
-1. `rotation_threshold_fraction` (§3a) — related to, but more specific
-   than, registry row 10's general "scoring weights/thresholds."
-2. Credentialed-rooms/procedure-classes coverage-probability range (§2c
-   step 2) — a new sub-parameter of registry row 8 (the eligibility
-   model itself).
-3. `max_dose_per_shift_mSv`, `min_rest_between_assignments_minutes`,
-   `max_rotations_per_shift` illustrative ranges (§2a) — new
-   sub-parameters of row 8.
+1. `rotation_threshold_fraction` (§3a clause (a)) — related to, but more
+   specific than, registry row 10's general "scoring weights/
+   thresholds." **Still not a numbered registry row** — no implemented
+   value exists yet, unlike items 2-3 below.
+2. ~~Credentialed-rooms/procedure-classes coverage-probability range
+   (§2c step 2)~~ — **resolved as registered in Revision 6**
+   (`ICAIRE_Simulation_Validation_Methodology.md`, registry row 21).
+3. ~~`max_dose_per_shift_mSv`, `min_rest_between_assignments_minutes`,
+   `max_rotations_per_shift` illustrative ranges (§2a)~~ — **resolved
+   as registered in Revision 6** (registry row 22). `max_dose_per_shift_mSv`
+   is now additionally load-bearing for §3a clause (c) and §3i, not only
+   the staffing model — review of row 22 is therefore a prerequisite for
+   more than roster generation alone (see §10's updated review items).
 4. Fixed-interval baseline's `N` (§6.2) — analogous in kind to row 9
    (handoff duration) but a distinct parameter belonging to a specific
-   baseline, not the candidate.
+   baseline, not the candidate. **Still not a numbered registry row.**
 5. Whether handoff dead-time or avoided-delay mechanisms (§7b) should
    ever be added to the model, and if so, with what parameters — a
    design question, not a value, in the same style as row 16's
-   conceptual (not numeric) registry entry.
+   conceptual (not numeric) registry entry. **Still open.**
+6. **(New in Revision 3.)** The procedure-boundary spacing and sensor-
+   fault escalation threshold Phase 3C-A actually implemented are now
+   registered as rows 23 and 24 respectively (Revision 6) — listed here
+   only so this document's own cross-reference list stays accurate; see
+   §3h and §3i for where they are used.
+7. **(New in Revision 3, a design question, not a value.)** The exact
+   length of "intended assignment interval" for §3i's duty-limit
+   projection, when a target slot's own future boundaries are not yet
+   fixed — §3i's own text flags a conservative default but does not
+   mandate it as the only acceptable choice.
 
-**Revision 2 note:** the five issues addressed by this revision are
-structural/logical corrections (exact timing, exclusivity, input-
+**Revision 2 note (unchanged):** the five issues Revision 2 addressed
+were structural/logical corrections (exact timing, exclusivity, input-
 validity, ablation design, escalation handling), not new tunable
-constants — **Revision 2 introduces no new numeric provisional
-parameters** beyond the five already listed above from Revision 1. The
-one Revision-2-specific question needing explicit sign-off, rather than
-a value, is listed as a conceptual item in §10 below (the stale-input
-fail-safe default).
+constants. **Revision 3 note:** this revision's own changes (the
+corrected trigger, §3i's duty-limit check) are also structural/logical
+corrections and a specification of how to use already-registered
+parameters (rows 21-24) — they introduce no *additional* numeric
+parameter beyond what Phase 3C-A had already implemented and this round
+registered. The Revision-2-specific stale-input question remains listed
+as a conceptual item in §10 below, now joined by this revision's own new
+conceptual items (§10a).
 
 ### 9e. What is explicitly NOT claimed by this section
 
@@ -1129,9 +1377,10 @@ No test above has been run; no sensitivity analysis above has been
 performed; no parameter above has a chosen value. §9a's tests are
 proposed in enough detail to write directly against a future
 implementation; nothing has been asserted about what any of them would
-show. **This remains true for every Revision 2 addition**: no new test,
-metric, or sensitivity analysis above has been run; the ablation design
-and escalation mechanism are specified, not executed.
+show. **This remains true for every Revision 2 and Revision 3
+addition**: no new test, metric, or sensitivity analysis above has been
+run; the ablation design, escalation mechanism, corrected trigger, and
+§3i duty-limit check are specified, not executed.
 
 ---
 
@@ -1143,12 +1392,16 @@ restating (not replacing) the open rows already in
 
 - **Already registered and pending review** (unchanged by this
   document): registry rows 8 (eligibility/credentialing model), 9
-  (handoff duration), 10 (scoring weights), 14/15/17/19/20 (all
-  upstream of any dose/threshold calculation rotation would use).
-- **New items this document's design surfaces, listed in §9d**:
-  `rotation_threshold_fraction`'s value; credential-coverage
-  realism; the three duty-limit/rest/rotation-cap values in §2a; the
-  fixed-interval baseline's `N`.
+  (handoff duration — now with an illustrative value in code, still
+  unapproved), 10 (scoring weights), 14/15/17/19/20 (all upstream of any
+  dose/threshold calculation rotation would use), and — new as of
+  Revision 6 — rows 21/22/23/24 (Phase 3C-A's own staffing, duty-limit,
+  boundary-spacing, and escalation parameters; row 22 is additionally
+  now load-bearing for §3a clause (c) and §3i).
+- **Still-unregistered items this document's design surfaces, listed in
+  §9d**: `rotation_threshold_fraction`'s value (item 1); the fixed-
+  interval baseline's `N` (item 4); §3i's "intended assignment interval"
+  length convention (item 7).
 - **Conceptual questions, not numeric values** (reusing row 16's
   "conceptual, not a value to approve" framing):
   1. Is the simplified "collective dose" definition in §7a.3 — a sum
@@ -1177,11 +1430,15 @@ restating (not replacing) the open rows already in
 ### 10a. Revision 2 review items (new)
 
 1. Is the §3a input-validity fail-safe default (treat a stale/invalid
-   last sensor reading as "the projected-cumulative-dose trigger clause
-   is not met," rather than falling back to an older value or a
-   conservative worst-case estimate) the right default — or should a
-   persistent sensor fault itself be escalated (§3h) even absent a dose
-   trigger?
+   last sensor reading as "this clause is not met," per clause, rather
+   than falling back to an older value or a conservative worst-case
+   estimate) the right default — or should a persistent sensor fault
+   itself be escalated (§3h) even absent a dose trigger? **(Revision 3
+   confirms the answer to the second half is already "yes" — §3a's
+   escalation-decoupling statement means this already happens via §3h,
+   independent of any dose clause; what remains open is only whether
+   the fail-safe default itself, for clauses (b)/(c), is the right
+   choice.)**
 2. Is Ablation D (§6a) — deliberately not a realistic baseline — worth
    actually implementing and running, given the added implementation
    cost, or is the trigger/selection decomposition better obtained
@@ -1198,6 +1455,32 @@ restating (not replacing) the open rows already in
 5. Is "unacknowledged at shift end" (§3h, §8a-ext) an acceptable
    terminal state, or should it instead block the shift from being
    recorded as closed until reviewed?
+
+### 10b. Revision 3 review items (new)
+
+1. Is it scientifically and operationally appropriate for CGDTR's
+   trigger to combine clauses owned by two different parts of this
+   project — the frozen engine's own radiation-safety thresholds
+   (clause (b), registry row 15) and this project's own synthetic
+   duty-limit parameter (clause (c), registry row 22) — into one
+   trigger, or should they be kept as two entirely separate,
+   separately-reported triggers? (Also recorded as
+   `UNRESOLVED_SCIENTIFIC_DECISIONS.md` item 17, so it is not lost
+   between documents.)
+2. Should a genuinely accrued-plus-projected dose quantity
+   (`ProjectedShiftTotalDose`, §3a) exist at all for rotation-triggering
+   purposes, given it is new, adapter-only logic rather than a reused
+   engine capability — or should rotation rely only on clauses (a)/(b)
+   and leave duty-limit management to an entirely separate mechanism?
+   (Also `UNRESOLVED_SCIENTIFIC_DECISIONS.md` item 16.)
+3. Is the conservative default for §3i's "intended assignment interval"
+   (the single upcoming slot's own length, never a longer speculative
+   projection) the right default, or should a future design commit to a
+   longer or shorter convention once real scheduling data exists?
+4. Row 22's `max_dose_per_shift_mSv` now gates a live trigger clause
+   (c) and a live exclusion check (§3i), not only roster generation —
+   does this change how urgently row 22 needs expert review relative to
+   the other Phase 3C-A rows (23/24), which remain infrastructure-only?
 
 ---
 
@@ -1233,3 +1516,12 @@ restating (not replacing) the open rows already in
   documentation-only mode, with every correction's superseded Revision
   1 text kept inline for traceability (per the Revision 2 change log at
   the top of this document) rather than silently rewritten.
+- **Revision 3 also does not change any of the above restrictions**: it
+  corrects §3a's dose-trigger semantics per a verified, read-only audit
+  of the frozen engine, adds §3i's duty-limit specification, and
+  updates §9/§10 accordingly — still no CGDTR code, no five-policy
+  comparison, no statistical campaign, no frozen-release modification,
+  and no dose-reduction/clinical/regulatory claim anywhere. Every
+  corrected passage keeps its superseded Revision 1 and/or Revision 2
+  text inline (per the Revision 3 change log at the top of this
+  document), preserving traceability across all three revisions.
