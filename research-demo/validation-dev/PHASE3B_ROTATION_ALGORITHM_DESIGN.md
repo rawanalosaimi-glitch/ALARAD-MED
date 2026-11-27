@@ -30,6 +30,36 @@ and is not touched by anything specified below.
 
 ---
 
+## Revision 2 — change log (this round; Revision 1 preserved below, not deleted)
+
+**Trigger:** Phase 3B design review found Revision 1 "promising but
+requiring Revision 2 before implementation approval," on five specific
+issues. **Nothing in Revision 1 is deleted by this revision** — every
+corrected subsection keeps Revision 1's original text, explicitly marked
+**superseded**, immediately alongside the Revision 2 text that replaces
+it, so the change is traceable. Additions (new subsections, new fields,
+new tests) are marked **new in Revision 2** rather than superseding
+anything.
+
+| # | Issue (as given in the review) | Addressed in |
+|---|---|---|
+| 1 | Timing conflict between procedure-boundary decisions, handoff duration, and swap completion; swap must never take effect mid-procedure without an authorized emergency override | §3d (superseded and replaced) |
+| 2 | Exclusive worker assignments; atomic reservation and conflict resolution for simultaneous requests | §2a (extended), §3b (extended), new §3g |
+| 3 | Dose-trigger mathematics: additional vs. projected cumulative dose, mSv normalization, time horizon, stale/invalid-input handling, provisional-vs-regulatory threshold caveat | §3a (superseded and replaced) |
+| 4 | Ablation comparisons isolating trigger-rule effect from replacement-selection effect; identical conditions across policies | §6 (extended with a 2×2 ablation design and a new ablation-only policy) |
+| 5 | Safe failure and escalation when a dose concern persists but no valid rotation is possible; RSO notification, acknowledgement, audit logging, human authority | new §3h |
+| — | Recheck collective-dose invariant under the above | §7b (rechecked, not contradicted) |
+| — | Simultaneous rotations, interrupted handoffs, shift-end boundaries | §3d, §3g, §8 (state machine extended) |
+| — | New unit tests, metrics, sensitivity items | §9 (extended) |
+| — | New RSO/Medical-Physicist review items | §10 (extended) |
+
+**Restrictions, unchanged from Revision 1:** no code was written or run
+to prepare this revision; no simulator, forecasting, or frozen-release
+file was touched; no statistical campaign was run; no dose-reduction,
+fairness, or collective-dose result is reported anywhere.
+
+---
+
 ## 0. What this document adds, in one paragraph
 
 `ROTATION_RECOMMENDER_DESIGN_SPEC.md` specified *what any future
@@ -111,6 +141,7 @@ until reviewed, never presented as derived from real staffing data.
 | `max_rotations_per_shift` | int | `2` | The rotation-burden fairness cap this document's algorithm enforces directly (§3, step 6); also referenced by `ROTATION_RECOMMENDER_DESIGN_SPEC.md` §2.4's "no worker disproportionately rotated" constraint. New provisional parameter (§10). |
 | `availability_windows` | list of `(start_minute, end_minute)` | `[(0, 480)]` | When the worker is on shift at all, independent of assignment. A worker can be off-shift for part of the simulated window (e.g., a half-shift overlap) without that being a fault or incident. |
 | `incident_state` | `"clear"` \| `"open"` | `"clear"` | Reuses the existing S7–S13 incident-state concept (`Ground_Truth_Scenarios_S1-S13.md`), not a new state machine. |
+| `state` | `"FREE"` \| `"ASSIGNED"` \| `"RESERVED"` \| `"RESTING"` | `"FREE"` | **New in Revision 2 (addresses Issue 2).** The exclusivity state machine (§3g, §8a-ext): `ASSIGNED` = currently occupying a slot; `RESERVED` = selected as an incoming replacement for a `PENDING` rotation elsewhere, locked until that rotation resolves; `RESTING` = within `min_rest_between_assignments_minutes` of their last rotation-out. Supersedes treating "availability" as a single `availability_windows` check alone — Revision 1 did not distinguish these cases, which is exactly the gap that made simultaneous-request conflicts possible. |
 
 ### 2b. `AssignmentSlot` (new; the unit §5's counterfactual method operates over)
 
@@ -183,19 +214,100 @@ worker `W`:
 - `R`'s own `incident_state` (open/clear) if the engine's incident
   concept is room-scoped at that moment.
 
-### 3a. Trigger condition
+### 3a. Trigger condition — dose-trigger mathematics, precisely specified (Revision 2; supersedes Revision 1's version below, addresses Issue 3)
 
-Propose a rotation for `W` out of `R` **if and only if**:
-- `W`'s cumulative dose so far ≥ `rotation_threshold_fraction ×
-  reference_level` (mechanizing `ROTATION_RECOMMENDER_DESIGN_SPEC.md`
+**All dose comparisons in this subsection are normalized to mSv before
+being compared to any threshold.** A dose *rate* (µSv/h) is never
+compared directly against an mSv threshold — it is first converted via
+the existing rule `Dose (mSv) = Rate (µSv/h) × Duration (h) / 1000`
+(`ICAIRE_Simulation_Validation_Methodology.md` §1), applied over the
+exact horizon defined below.
+
+**Two distinct dose quantities, not to be confused with each other
+(Revision 1 used "projected dose" for both without distinguishing
+them):**
+- **Additional projected dose** `ΔD_proj(W, t)`: the *increment* `W` is
+  projected to accrue over the horizon `H(t)` defined below, computed
+  from `W`'s own last valid, non-stale observed dose rate (see the
+  input-validity rule below) held constant over that horizon — reusing
+  the engine's own existing "current rate held constant" convention
+  (§1's "projected task dose"), not a new projection method. In mSv:
+  `ΔD_proj(W, t) = rate_last_valid_uSv_h(W) × H(t)_hours / 1000`.
+- **Projected cumulative dose** `D_cum_proj(W, t)`: `W`'s *already-
+  accrued* cumulative dose through `t` (the existing, unprojected
+  running total, §1) **plus** `ΔD_proj(W, t)`. This is the quantity
+  actually compared against the engine's own `CONFIG.doseElevated`/
+  `doseCritical` thresholds (rows 14/15) — those thresholds are
+  themselves defined in the registry as projected-dose-*over-a-horizon*
+  thresholds (row 15: "elevated projected dose ≥ 0.15 mSv ... over a
+  fixed 30-minute horizon"), i.e. they are projected-*cumulative*, not
+  increment-only, thresholds. Comparing the increment alone against them
+  would be a unit/definition mismatch, not merely a stricter or looser
+  check.
+
+**Time horizon `H(t)`, defined exactly:** `H(t) = min(30 minutes,
+remaining scheduled minutes of the upcoming AssignmentSlot that W would
+continue into if not rotated)` — reusing the engine's own 30-minute
+convention (§1) as the cap, and the upcoming slot's own scheduled
+remaining duration (§2b) as the other bound, rather than either value
+alone. If `H(t) = 0` (no upcoming slot — e.g., this boundary is the
+shift's last), no projected-dose trigger clause applies at this decision
+point; only the already-accrued clause below can fire.
+
+**Trigger condition (Revision 2), propose a rotation for `W` out of `R`
+if and only if:**
+- `W`'s **already-accrued** cumulative dose through `t` (no projection
+  involved) ≥ `rotation_threshold_fraction × reference_level`
+  (mSv-normalized; mechanizing `ROTATION_RECOMMENDER_DESIGN_SPEC.md`
   §4.3's reference rule exactly — `rotation_threshold_fraction` is an
-  open parameter, §10), **or**
-- `W`'s projected dose (as defined above) crosses the engine's own
-  `CONFIG.doseElevated` or `doseCritical` threshold (registry row 15,
-  reused as-is, not a new threshold).
+  open parameter, §9d), **or**
+- `W`'s **projected cumulative dose** `D_cum_proj(W, t)` (as defined
+  above, mSv-normalized, over horizon `H(t)`) crosses `CONFIG.doseElevated`
+  or `doseCritical` (registry row 15, reused as-is, not a new threshold).
 
 If neither holds, the algorithm's output at this decision point is **no
 rotation**, by design, not by exception-handling (§4's "ordinary case").
+
+**Input-validity rule (new in Revision 2, closes a gap Revision 1 did
+not specify):** `rate_last_valid_uSv_h(W)` must be a reading that passes
+the engine's own `SimLab.pure.validReading` check **and** is not
+currently `STALE`, `DISCONNECTED`, `SUSPECTED_FROZEN`, or otherwise in
+the engine's own `UNAVAIL` set (`AlaradSafety.SENSOR_P`, registry row
+19) at decision time `t`. **If `W`'s most recent reading fails this
+check, the projected-cumulative-dose trigger clause above is evaluated
+as *not met* for this decision point** — a stale or invalid reading is
+never substituted into the projection as if it were current, and the
+trigger does not silently fall back to an older, possibly-stale value
+either. (The already-accrued clause is unaffected, since it uses the
+existing running total, not a live reading.) This is a deliberate
+fail-safe default, not an oversight: see §3h for what happens when a
+dose concern independently persists through a period of sensor
+invalidity — that is an escalation question, not a trigger-math
+question, and the two must not be conflated.
+
+**Explicit caveat, restated here because this subsection is where a
+reader is most likely to misread it:** `CONFIG.doseElevated`/
+`doseCritical` (registry row 15) are **self-disclosed PROTOTYPE,
+illustrative thresholds — not regulatory dose limits**
+(`ICAIRE_Simulation_Validation_Methodology.md` §9 row 15's own text).
+Crossing them triggers a *rotation proposal* in this design, nothing
+more; it must never be reported or read as "the worker exceeded a
+regulatory dose limit."
+
+**Revision 1's original §3a (superseded by the above, kept here for
+traceability):**
+> Propose a rotation for `W` out of `R` **if and only if**:
+> - `W`'s cumulative dose so far ≥ `rotation_threshold_fraction ×
+>   reference_level` (mechanizing `ROTATION_RECOMMENDER_DESIGN_SPEC.md`
+>   §4.3's reference rule exactly — `rotation_threshold_fraction` is an
+>   open parameter, §10), **or**
+> - `W`'s projected dose (as defined above) crosses the engine's own
+>   `CONFIG.doseElevated` or `doseCritical` threshold (registry row 15,
+>   reused as-is, not a new threshold).
+>
+> If neither holds, the algorithm's output at this decision point is
+> **no rotation**, by design, not by exception-handling (§4's "ordinary
+> case").
 
 ### 3b. Eligibility filter (reuses design-spec §2.1 exactly)
 
@@ -205,6 +317,17 @@ already at or within a declared margin of their own
 `max_dose_per_shift_mSv`, (c) `incident_state == "clear"`, (d) within an
 `availability_window` covering the decision point, and (e) not within
 `min_rest_between_assignments_minutes` of their last rotation-out.
+**(a)–(e) are unchanged from Revision 1.**
+
+**New in Revision 2 (addresses Issue 2 — exclusive assignments), added
+to the same candidate-set filter:** (f) currently `state == "FREE"`
+(§2a) — not `ASSIGNED` to another occupied slot, not `RESERVED` for
+another room's pending rotation, and not `RESTING`; and (g) projected to
+remain `FREE`-eligible through the **entire** prospective handoff-and-
+assignment interval `[t, T_effective]` (§3d), not merely free at the
+instant of selection — enforced by the conservative, batch-level
+procedure in §3g, which also resolves what happens when two rooms'
+candidate sets overlap at the same decision point.
 
 ### 3c. Selection rule (deterministic tie-breaking, stated exactly)
 
@@ -217,16 +340,79 @@ fairness bound (`ROTATION_RECOMMENDER_DESIGN_SPEC.md` §2.4), to be
 exceeded. If every candidate fails this check, output is **no rotation**
 (§4, case 5).
 
-### 3d. Procedure-continuity and handoff mechanics
+### 3d. Procedure-continuity, handoff timing, and swap-effective-time — explicit event timeline (Revision 2; supersedes Revision 1's version below, addresses Issue 1)
 
-The proposed swap is queued, not executed immediately: it becomes
-`PENDING` at the decision point and `COMPLETED` only after
-`min_handoff_duration_minutes` (registry row 9, still open) elapses with
-no disqualifying event (§8's state machine). The outgoing worker `W`
-continues to accrue dose normally during the `PENDING` window — a
-handoff is not modeled as removing `W` from the room before the
-replacement is actually in place, consistent with "a rotation is never
-instantaneous" (`ROTATION_RECOMMENDER_DESIGN_SPEC.md` §2.3).
+Revision 1 specified that a swap becomes `PENDING` at a decision
+boundary and `COMPLETED` once `min_handoff_duration_minutes` elapses,
+but did not specify what happens if that elapsed time runs past the
+*next* procedure boundary — which could let the actual worker-for-worker
+swap take effect in the middle of the next procedure, violating the
+procedure-continuity constraint (`ROTATION_RECOMMENDER_DESIGN_SPEC.md`
+§2.2) that a swap may only take effect *at* a boundary. Revision 2
+closes this gap with an explicit timeline:
+
+```
+T_decide    = the procedure boundary B_k at which the trigger (§3a) fires
+              and PROPOSED -> PENDING.
+T_ready     = T_decide + min_handoff_duration_minutes
+              (earliest the handoff COULD be physically done)
+T_effective = the smallest scheduled procedure boundary B_j (j >= k) such
+              that B_j >= T_ready -- i.e. the next boundary at or after
+              T_ready, NEVER an arbitrary mid-procedure minute.
+```
+
+The swap executes **atomically at `T_effective`, and only at
+`T_effective`**: the outgoing worker `W` occupies and accrues dose
+normally through the last minute before `T_effective`; the incoming
+worker occupies and accrues from `T_effective` onward. **`T_effective`
+is, by construction, always a procedure boundary — the swap can never
+take effect mid-procedure.**
+
+**The one sanctioned exception:** an explicit, RSO-reviewed emergency-
+override flag (`ROTATION_RECOMMENDER_DESIGN_SPEC.md` §2.2) may set
+`T_effective = t` immediately, bypassing boundary alignment — this is
+the *only* path by which a swap may take effect mid-procedure, must be
+logged as an override (not an ordinary completion), and remains subject
+to RSO review per the existing constraint; **nothing in this design
+grants the algorithm itself authority to invoke this exception** (see
+§3h).
+
+**Shift-end boundary (new in Revision 2, addressing the "Also" item on
+shift-end boundaries):** the scheduled shift end (`shift_minutes`) is
+itself always treated as a procedure boundary `B_last`, whether or not a
+procedure happens to end exactly there. If `T_ready > B_last` (not
+enough boundaries remain before shift end for the handoff to complete),
+the rotation is **infeasible** — this is Revision 1's §4 case 6, now
+precisely defined as "no `B_j ≥ T_ready` exists with `B_j ≤ B_last`,"
+rather than left as an informal "not enough time" check.
+
+**Interrupted handoffs (new in Revision 2, addressing the "Also" item):**
+if, at any point in `[T_decide, T_effective)`, the incoming worker's
+eligibility (§3b) changes (e.g., their `incident_state` opens, or a
+conflicting reservation claims them first per §3g), the rotation
+transitions `PENDING → ABORTED` (§8), the reservation is released,
+`T_effective` is discarded, and `W` continues in `R` unchanged —
+**never** a partial or forced swap. The trigger (§3a) is re-evaluated
+fresh at the next boundary from then-current state, exactly as an
+ordinary non-triggered boundary would be.
+
+The outgoing worker `W` continues to accrue dose normally throughout
+`[T_decide, T_effective)` — a handoff is not modeled as removing `W`
+from the room before the replacement is actually in place, consistent
+with "a rotation is never instantaneous"
+(`ROTATION_RECOMMENDER_DESIGN_SPEC.md` §2.3) — this part of Revision 1's
+intent is preserved, only the completion timing is corrected.
+
+**Revision 1's original §3d (superseded by the above, kept here for
+traceability):**
+> The proposed swap is queued, not executed immediately: it becomes
+> `PENDING` at the decision point and `COMPLETED` only after
+> `min_handoff_duration_minutes` (registry row 9, still open) elapses
+> with no disqualifying event (§8's state machine). The outgoing worker
+> `W` continues to accrue dose normally during the `PENDING` window — a
+> handoff is not modeled as removing `W` from the room before the
+> replacement is actually in place, consistent with "a rotation is
+> never instantaneous" (`ROTATION_RECOMMENDER_DESIGN_SPEC.md` §2.3).
 
 ### 3e. Incident acknowledgement
 
@@ -251,6 +437,119 @@ projection and threshold convention (rows 14/15), not `linearForecast` —
 a deliberate design choice, not an oversight, and one a future candidate
 design could revisit once Phase 3A's forecasting-readiness checklist
 items are resolved (`PHASE3A_FORECASTING_READINESS_CHECKLIST.md` §2).
+
+### 3g. Atomic reservation and simultaneous-request conflict resolution (new in Revision 2, addresses Issue 2)
+
+**The gap Revision 1 did not specify:** if two rooms both trigger a
+rotation at the *same* boundary `B_k`, and their ranked candidate lists
+(§3c) both put the *same* worker first, nothing in Revision 1 prevented
+both rooms from independently "selecting" that worker — an exclusivity
+violation (the same worker reserved, or assigned, to two slots at once).
+
+**Resolution — a single deterministic batch pass per boundary, not two
+independent selections racing each other:**
+
+1. At boundary `B_k`, collect **every** room whose trigger (§3a) fires
+   at this boundary into one batch — evaluated against one consistent
+   snapshot of roster state (every worker's dose, `state`,
+   `incident_state` as of the instant `B_k` begins).
+2. Process the rooms in the batch in a **fixed, deterministic order**:
+   ascending room name (an arbitrary but fully deterministic tie-break,
+   exactly as `worker_id` ties are broken in §3c — not a priority
+   judgment about which room matters more).
+3. For each room in that order: build its ranked eligible-candidate
+   list (§3b/§3c) **excluding any worker already marked `RESERVED`
+   earlier in this same batch pass**; select the first-ranked still-
+   `FREE` candidate; immediately set that candidate's `state =
+   RESERVED` (for this room's pending rotation) **before** moving to
+   the next room in the batch.
+4. If a room's candidate list is exhausted (every remaining candidate
+   already `RESERVED` by an earlier room in this batch, or otherwise
+   ineligible), that room's rotation is **infeasible at this boundary**
+   (§4 case 3/4) — not an error, and not retried within the same batch;
+   it may re-trigger fresh at the next boundary.
+5. A worker's `RESERVED` state persists until their reserving rotation
+   reaches `COMPLETED` (state becomes `ASSIGNED` to the new slot) or
+   `ABORTED`/never-reached-`T_effective` (state releases back to
+   `FREE`, or to `RESTING` if `min_rest_between_assignments_minutes`
+   applies from their *previous* rotation-out, whichever is more
+   restrictive).
+6. **Forward-looking eligibility (closes the "unavailable during the
+   entire handoff and assignment interval" requirement):** because
+   `T_effective` (§3d) can be later than `T_decide`, a candidate's
+   eligibility must hold not just at selection time but through the
+   full `[T_decide, T_effective]` interval and into their prospective
+   occupancy of the new slot. This is enforced conservatively: a
+   candidate already `RESERVED` elsewhere, or whose own
+   `availability_window` does not cover `[T_decide, T_effective]` in
+   full, or who would reach `min_rest_between_assignments_minutes`'s
+   boundary mid-interval, is excluded from the candidate list at step 3
+   — not merely deprioritized.
+
+**No two rooms can ever reserve the same worker in the same batch**, by
+construction of step 3's immediate `RESERVED` marking — this is a
+property of the batch algorithm, not an assumption to be separately
+verified at runtime, though §9a adds a test that checks it directly
+anyway (never trust a structural argument alone, per this project's own
+established discipline of checking rather than asserting).
+
+### 3h. Safe failure and escalation when a dose concern persists but no rotation is possible (new in Revision 2, addresses Issue 5)
+
+**The gap Revision 1 did not specify:** §4's cases 3/4 ("no eligible
+candidate" / "every candidate breaches a bound") were logged as
+`INFEASIBLE` and left there. If the underlying dose concern that caused
+the trigger (§3a) is still true at the *next* boundary, Revision 1 had
+no mechanism to distinguish "this keeps happening and nobody has looked
+at it" from an ordinary, resolved one-off infeasibility.
+
+**Escalation state (new, tracked per worker-room pair, independent of
+the rotation `PROPOSED`/`PENDING`/etc. states in §8):**
+
+```
+NONE --(trigger fires AND rotation is infeasible/aborted at this
+         boundary, Sec 4 cases 3/4/7)--------------------------> RAISED
+RAISED --(still triggered AND still infeasible at the next boundary,
+          unacknowledged)----------------------------------------> RAISED
+          (re-raised, not silently cleared)
+RAISED --(an explicit, simulated RSO-acknowledgement flag is set)--> ACKNOWLEDGED
+ACKNOWLEDGED --(a feasible rotation subsequently becomes available and
+               COMPLETEs, OR the trigger condition itself stops holding,
+               OR shift ends)------------------------------------> RESOLVED
+RAISED --(shift ends while still unacknowledged)------------------> RESOLVED
+          (logged as "unacknowledged at shift end" -- a distinct,
+          flagged outcome, not treated the same as an acknowledged
+          resolution)
+```
+
+**What `RAISED` does, and explicitly does not do:**
+- **Does:** generate an audit-log entry (timestamp, `worker_id`, `room`,
+  both dose quantities from §3a in mSv, the specific infeasibility
+  reason from §4, and the escalation state) and a simulated RSO-
+  notification event (a logged event in this research framework — **not
+  a real paging/alerting integration**, which is out of scope for this
+  design). Re-raises at every subsequent boundary the condition
+  persists, so a long-unacknowledged concern is visible in the audit
+  trail, never silently dropped.
+- **Does not:** relax any eligibility, duty-limit, or rotation-burden
+  constraint (§3b/§3c) to force a rotation through; invoke the
+  emergency-override exception (§3d) on its own authority — that
+  remains an RSO-initiated action per the existing constraint
+  (`ROTATION_RECOMMENDER_DESIGN_SPEC.md` §2.2); or claim to have
+  "handled," "resolved," or "mitigated" the underlying radiation-safety
+  concern by raising it. **Final decision authority for what to do
+  about a persistent, no-feasible-rotation dose concern rests with the
+  RSO/human operator, never with this algorithm** — this design's sole
+  responsibility in this situation is accurate, persistent detection and
+  logging, stated explicitly so a future reader cannot read
+  `RAISED`→`ACKNOWLEDGED` as the software having independently resolved
+  anything.
+
+**Audit log fields (minimum set):** `timestamp`, `worker_id`, `room`,
+`already_accrued_dose_mSv`, `projected_cumulative_dose_mSv`,
+`horizon_minutes` (§3a's `H(t)`), `infeasibility_reason` (§4's case
+number), `escalation_state`, `acknowledged_by` (placeholder field;
+simulated in this research framework, not a real identity system),
+`resolution_reason`.
 
 ---
 
@@ -286,6 +585,16 @@ items are resolved (`PHASE3A_FORECASTING_READINESS_CHECKLIST.md` §2).
   6. Remaining shift time is shorter than `min_handoff_duration_minutes`
      — a rotation cannot be safely completed before shift end, so none
      is proposed for that boundary.
+
+**Revision 2 refinement (does not contradict the list above; makes case
+6 precise and adds case 7):** case 6's "remaining shift time shorter
+than handoff duration" is now defined exactly via §3d's `T_ready`/
+`B_last` test — infeasible if no boundary `B_j` with `B_j ≥ T_ready`
+exists at or before shift end. **Case 7 (new):** an interrupted handoff
+(§3d) that transitions `PENDING → ABORTED` before reaching `T_effective`
+also results in no rotation at this boundary — distinct from case 3/4
+(never attempted) because this one *was* attempted and correctly
+stopped (§8b's `ABORTED` category).
 
 ---
 
@@ -373,11 +682,56 @@ a starting assignment) and produce an assignment layer as output.
    ranked selection (§3c) + handoff/incident mechanics (§3d/§3e), as
    specified above.
 
-**All four share identically**: the eligibility filter (§3b), the
-handoff state machine (§8), and the incident-acknowledgement rule (§3e)
-— so that any measured difference between policies reflects the
-*trigger-and-selection* logic being compared, not an inconsistency in
-how constraints are enforced across policies.
+**Revision 1's "all four share identically" guarantee (superseded by
+the extended version below, kept here for traceability):**
+> All four share identically: the eligibility filter (§3b), the handoff
+> state machine (§8), and the incident-acknowledgement rule (§3e) — so
+> that any measured difference between policies reflects the
+> *trigger-and-selection* logic being compared, not an inconsistency in
+> how constraints are enforced across policies.
+
+### 6a. Revision 2 addition — explicit ablation design (addresses Issue 4)
+
+Revision 1's three baselines happened to already vary the candidate's
+two independent design choices — the **trigger rule** (dose-threshold,
+§3a, vs. fixed wall-clock interval, item 2 above) and the **replacement-
+selection rule** (lowest-current-dose ranking, §3c, vs. first-eligible-
+in-roster-order, item 3 above) — but did not make this a deliberate,
+complete design, and left one combination unexamined. Revision 2 makes
+this explicit as a 2×2 ablation:
+
+| | Selection = lowest-dose-ranked (§3c) | Selection = first-eligible-in-roster-order (item 3) |
+|---|---|---|
+| **Trigger = dose-threshold (§3a)** | Candidate (CGDTR, §3) | Reference-rule baseline (item 3, unchanged) |
+| **Trigger = fixed-interval (item 2)** | Fixed-interval baseline (item 2, unchanged) | **Ablation D (new in Revision 2)** |
+
+**Ablation D — fixed-interval trigger, first-eligible-in-roster-order
+selection:** rotate at the same fixed interval `N` as the fixed-interval
+baseline (item 2), but replace using the first eligible candidate in
+roster order (item 3's selection rule) rather than the lowest-dose-
+ranked one. **This policy is not proposed as a plausible real-world
+baseline** — unlike the other three, no facility would plausibly adopt
+"rotate on a timer, then pick whoever's first alphabetically" — its sole
+purpose is completing the 2×2 so that the trigger-rule's effect and the
+selection-rule's effect can each be estimated as a **paired difference,
+held on the same seeds** (§5b):
+`selection-effect ≈ average of [(Candidate − Reference-rule), (Fixed-interval − Ablation D)]`;
+`trigger-effect ≈ average of [(Candidate − Fixed-interval), (Reference-rule − Ablation D)]`.
+Reported alongside, not instead of, the four policies' own individual
+scores (§9b).
+
+### 6b. Shared-conditions guarantee, elevated and made explicit (Revision 2; extends, not contradicts, Revision 1's version above)
+
+All **five** policies now being compared (no-rotation, fixed-interval,
+reference-rule, Ablation D, candidate) share, identically: the
+eligibility filter (§3b, including the Revision 2 exclusivity
+additions), the handoff timeline and state machine (§3d, §8), the
+incident-acknowledgement rule (§3e), the escalation mechanism (§3h),
+and — per §5b — the exposure layer and staffing roster for a given
+seed. **Only the trigger-and-selection logic differs between policies
+being compared.** This is checked directly by
+`test_all_four_policies_share_identical_eligibility_and_handoff_checks`,
+extended in Revision 2 to cover all five (§9a).
 
 ---
 
@@ -447,6 +801,21 @@ redistribution:
   baseline mechanics, and would need its own explicit specification if
   pursued later.
 
+**Rechecked for Revision 2 (addresses the "Also" item asking this
+invariant be rechecked):** none of Revision 2's additions introduce
+dead-time or change total occupied time. `T_effective` (§3d) always
+lands exactly on a scheduled boundary with zero gap — the outgoing
+worker occupies through the last minute before `T_effective`, the
+incoming worker from `T_effective` onward, with no unoccupied minute
+between them; the `RESERVED` state (§3g) is a scheduling lock with no
+exposure consequence of its own; and the escalation mechanism (§3h)
+only logs and notifies — it does not change who occupies a slot or for
+how long. **The invariant above therefore still holds under Revision
+2's refined timing and exclusivity rules, by the same construction
+argument as before** — restated, not newly demonstrated, since (per
+this round's restriction, unchanged from Revision 1) no simulation has
+been run to confirm it numerically for either revision.
+
 ### 7c. The required reporting discipline (satisfies task 7 directly)
 
 Any future evaluation report comparing rotation policies **must**:
@@ -483,6 +852,40 @@ PENDING --(an eligibility condition changes mid-handoff,
            e.g. the incoming worker's incident_state opens)-> ABORTED (logged, re-evaluate at next boundary)
 ```
 
+### 8a-ext. State machine extensions (new in Revision 2; extends, does not contradict, §8a above)
+
+Revision 1's diagram above remains correct as far as it goes; Revision
+2 adds the worker-exclusivity state (§3g) and the escalation state
+(§3h), which interact with it as follows:
+
+```
+(worker) FREE --(selected as replacement in a batch pass, Sec 3g)--> RESERVED
+RESERVED --(reserving rotation reaches COMPLETED)----------------> ASSIGNED (to the new slot)
+RESERVED --(reserving rotation ABORTED or never reaches
+            T_effective)-------------------------------------------> FREE, or RESTING if min_rest applies
+ASSIGNED --(rotated out, reservation cycle ends)-------------------> RESTING
+RESTING --(min_rest_between_assignments_minutes elapses)----------> FREE
+
+(escalation, per worker-room pair)
+NONE --(trigger fires AND infeasible/aborted, Sec 4 cases 3/4/7)----> RAISED
+RAISED --(still triggered and infeasible at next boundary,
+          unacknowledged)-------------------------------------------> RAISED
+RAISED --(RSO-acknowledgement flag set)------------------------------> ACKNOWLEDGED
+ACKNOWLEDGED --(feasible rotation COMPLETEs, or trigger stops
+                holding, or shift ends)------------------------------> RESOLVED
+RAISED --(shift ends, unacknowledged)---------------------------------> RESOLVED
+          (flagged "unacknowledged at shift end")
+```
+
+**Interaction rule:** the rotation state machine (§8a) and the worker-
+exclusivity state (§3g) are updated together, atomically, within the
+same batch pass (§3g step 3) — a rotation never reaches `PENDING`
+without its candidate simultaneously becoming `RESERVED` in the same
+step, and never leaves `PENDING` (to `COMPLETED` or `ABORTED`) without
+that worker's state being updated in the same step. They are specified
+as two views of one consistent update, not two independently-timed
+mechanisms that could drift out of sync.
+
 ### 8b. Distinguishing a violation from an infeasibility from an abort
 
 - **Infeasible** (never attempted): the trigger fired but no valid
@@ -506,6 +909,11 @@ PENDING --(an eligibility condition changes mid-handoff,
   case 2) that is queued to the next boundary. Tracked separately from
   infeasible/aborted/violation so a long queue of repeatedly-deferred
   recommendations is itself visible, not silently absorbed.
+- **Escalated** (new in Revision 2; a fifth category, tracked across
+  boundaries per worker-room pair, not per individual rotation attempt)
+  — see §3h. Distinct from the four above because it is not a property
+  of one attempt, but of whether a *persisting* dose concern with no
+  feasible rotation has been seen and acknowledged by a human.
 
 Every terminal state (`INFEASIBLE`, `COMPLETED`, `HELD`→`ABORTED`,
 `ABORTED`) must be logged with its reason code — none may be silently
@@ -560,6 +968,58 @@ reported, never silently treated as zero or success" discipline
   §6's closing paragraph; confirm no policy has its own, looser
   constraint enforcement.
 
+**New in Revision 2 (one group of tests per issue, named and described;
+none implemented):**
+
+- `test_swap_effective_time_always_lands_on_a_boundary` — §3d; for any
+  `T_decide`/`min_handoff_duration_minutes` combination, confirm the
+  computed `T_effective` is always a member of the slot's boundary set.
+- `test_swap_never_executes_mid_procedure_without_override_flag` — §3d;
+  confirm the atomic swap-application step rejects being asked to apply
+  a swap at a non-boundary minute unless the emergency-override flag is
+  set.
+- `test_handoff_spanning_multiple_boundaries_lands_on_first_valid_one` —
+  §3d; a case where `T_ready` falls between `B_k+1` and `B_k+2`, confirm
+  `T_effective = B_k+2`, not `B_k+1`.
+- `test_rotation_infeasible_when_no_boundary_remains_before_shift_end` —
+  §3d/§4's refined case 6.
+- `test_two_simultaneous_triggers_never_reserve_the_same_worker` — §3g;
+  construct two rooms both ranking the same top candidate, confirm the
+  deterministic batch resolution reserves them to different rooms or
+  marks the second infeasible, never double-reserves.
+- `test_batch_resolution_order_is_deterministic_by_room_name` — §3g step
+  2; run twice on identical input, confirm identical outcome both times.
+- `test_reserved_worker_excluded_from_other_candidate_lists` — §3g;
+  confirm a `RESERVED` worker never appears as an eligible candidate for
+  a different room's rotation until released.
+- `test_candidate_forward_looking_eligibility_through_T_effective` —
+  §3g step 6; a candidate whose availability window ends before
+  `T_effective` must be excluded, not merely deprioritized.
+- `test_trigger_distinguishes_additional_from_projected_cumulative_dose` —
+  §3a; construct a case where the increment alone would (not) cross
+  `doseElevated` but the projected-cumulative sum would (not), confirm
+  the correct quantity drives the trigger.
+- `test_stale_sensor_reading_never_used_as_trigger_input` — §3a's
+  input-validity rule; confirm a `STALE`/`DISCONNECTED`/`INVALID` last
+  reading causes the projected-cumulative-dose clause to evaluate as
+  not-met, never substituted.
+- `test_dose_values_normalized_to_mSv_before_threshold_comparison` —
+  §3a; a unit-consistency check across both trigger clauses.
+- `test_ablation_d_shares_identical_eligibility_handoff_and_escalation_mechanics` —
+  §6b's shared-conditions guarantee, extended to five policies.
+- `test_persistent_infeasible_dose_concern_escalates_and_reraises` —
+  §3h; confirm `RAISED` persists and re-raises across boundaries until
+  acknowledged or resolved, never silently cleared.
+- `test_escalation_never_bypasses_eligibility_or_forces_a_rotation` —
+  §3h; confirm no code path lets an `ACKNOWLEDGED` escalation itself
+  relax §3b/§3c checks.
+- `test_unacknowledged_escalation_at_shift_end_is_flagged_distinctly` —
+  §3h's `RAISED → RESOLVED` ("unacknowledged at shift end") transition.
+- `test_collective_dose_invariant_holds_under_revision_2_timing_and_reservation` —
+  extends the Revision 1 invariant test (`test_collective_dose_invariant_under_rotation_absent_dead_time`
+  above) to the new timeline/reservation mechanics (§7b's Revision 2
+  recheck).
+
 ### 9b. Evaluation metrics (consolidates and extends
 `ROTATION_RECOMMENDER_DESIGN_SPEC.md` §5; nothing below replaces that
 section, it is restated together with the task-6/7 additions for one
@@ -581,6 +1041,26 @@ place to read them)
   signed-rank, Holm–Bonferroni correction, run-level unit of
   independence per §7a).
 
+**New in Revision 2:**
+- With Ablation D added (§6a), the comparison family grows to **five**
+  policies — the Holm–Bonferroni correction (above) must be applied
+  across the larger family of pairwise comparisons this creates, not
+  the four-policy family size Revision 1 implied; the trigger-effect and
+  selection-effect paired differences (§6a) are additional comparisons
+  within that same corrected family, not a separate, uncorrected
+  analysis.
+- **Escalation metrics** (§3h), each reported on its own, not folded
+  into the violation/infeasible/aborted/deferred rates: rate of `RAISED`
+  events per shift, rate of "unacknowledged at shift end" outcomes, and
+  mean time from `RAISED` to `ACKNOWLEDGED` (acknowledgement latency).
+- **Reservation-conflict rate** (§3g step 4): how often the batch
+  resolution actually had to drop a room to infeasible because its
+  candidates were already `RESERVED` elsewhere — a diagnostic metric for
+  interpreting results (e.g., a large, broadly-credentialed roster should
+  show this rarely binding; a short-staffed one should show it binding
+  often, which could itself explain differences between policies rather
+  than the trigger/selection logic being compared).
+
 ### 9c. Sensitivity analyses to run once implemented (none run now)
 
 - `rotation_threshold_fraction` (§3a) swept across a declared range —
@@ -598,6 +1078,16 @@ place to read them)
   more realistic (short-staffed) regime?
 - `max_rotations_per_shift` cap swept — does a tighter fairness-burden
   cap change which policy wins on the dose-reduction criterion?
+
+**New in Revision 2:**
+- Batch-processing tie-break order (§3g step 2: ascending room name)
+  swept against an alternative fixed rule (e.g., descending outgoing-
+  worker dose) — does this arbitrary tie-break materially affect
+  results? If it does, that is itself a finding requiring disclosure,
+  not something to be silently accepted as "arbitrary, so harmless."
+- Roster size / credential-breadth interaction with the reservation-
+  conflict rate (§9b) — extends the existing credential-breadth
+  sensitivity item above to the new exclusivity mechanism specifically.
 
 ### 9d. New unresolved scientific parameters (not yet numbered registry rows; cross-referenced to existing rows, not silently merged into them)
 
@@ -624,13 +1114,24 @@ table in a future, explicitly-approved revision:
    design question, not a value, in the same style as row 16's
    conceptual (not numeric) registry entry.
 
+**Revision 2 note:** the five issues addressed by this revision are
+structural/logical corrections (exact timing, exclusivity, input-
+validity, ablation design, escalation handling), not new tunable
+constants — **Revision 2 introduces no new numeric provisional
+parameters** beyond the five already listed above from Revision 1. The
+one Revision-2-specific question needing explicit sign-off, rather than
+a value, is listed as a conceptual item in §10 below (the stale-input
+fail-safe default).
+
 ### 9e. What is explicitly NOT claimed by this section
 
 No test above has been run; no sensitivity analysis above has been
 performed; no parameter above has a chosen value. §9a's tests are
 proposed in enough detail to write directly against a future
 implementation; nothing has been asserted about what any of them would
-show.
+show. **This remains true for every Revision 2 addition**: no new test,
+metric, or sensitivity analysis above has been run; the ablation design
+and escalation mechanism are specified, not executed.
 
 ---
 
@@ -673,6 +1174,31 @@ restating (not replacing) the open rows already in
      sufficiently severe trigger be allowed to interrupt a procedure
      under some circumstance this document does not specify?
 
+### 10a. Revision 2 review items (new)
+
+1. Is the §3a input-validity fail-safe default (treat a stale/invalid
+   last sensor reading as "the projected-cumulative-dose trigger clause
+   is not met," rather than falling back to an older value or a
+   conservative worst-case estimate) the right default — or should a
+   persistent sensor fault itself be escalated (§3h) even absent a dose
+   trigger?
+2. Is Ablation D (§6a) — deliberately not a realistic baseline — worth
+   actually implementing and running, given the added implementation
+   cost, or is the trigger/selection decomposition better obtained
+   analytically from the existing three baselines plus the candidate?
+3. Is "ascending room name" (§3g step 2) an acceptable arbitrary tie-
+   break for simultaneous-trigger batch resolution, or should room
+   processing order reflect something clinically meaningful (e.g.,
+   currently-highest-risk room first)?
+4. Is re-raising an unacknowledged escalation (§3h) at *every* boundary
+   the right cadence, or would that create alert fatigue in a real
+   deployment — a question this synthetic design does not answer, but
+   relevant to whether this mechanism, as specified, is a reasonable
+   basis for a future real system?
+5. Is "unacknowledged at shift end" (§3h, §8a-ext) an acceptable
+   terminal state, or should it instead block the shift from being
+   recorded as closed until reviewed?
+
 ---
 
 ## 11. Explicit statement of what this document does and does not do
@@ -702,3 +1228,8 @@ restating (not replacing) the open rows already in
   one non-substantive forward-pointer note described at the top of this
   document); deploy or merge anything; claim clinical validity or
   regulatory compliance anywhere.
+- **Revision 2 does not change any of the above restrictions**: it
+  corrects and extends the design specified in Revision 1, in the same
+  documentation-only mode, with every correction's superseded Revision
+  1 text kept inline for traceability (per the Revision 2 change log at
+  the top of this document) rather than silently rewritten.
