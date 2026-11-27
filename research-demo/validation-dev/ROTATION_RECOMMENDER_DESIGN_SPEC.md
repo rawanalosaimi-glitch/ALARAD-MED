@@ -19,6 +19,19 @@ release** (`ICAIRE_Simulation_Validation_Methodology.md` §0 — the four
 "AI Recommendation" entries are static, hand-written example text, not
 engine output) **and none is implemented by this document.**
 
+**Update (Phase 3B, companion document — non-substantive pointer only,
+nothing above this note has been changed):** following provisional
+review of this document, the candidate algorithm, synthetic staffing
+model, counterfactual-simulation method, and expanded evaluation design
+this document deferred to "future work" (§7, §8's open items) have since
+been specified in
+`PHASE3B_ROTATION_ALGORITHM_DESIGN.md`. That document is a companion to
+this one, not a replacement — it reuses every constraint, objective, and
+baseline definition here verbatim (§2–§4 above) rather than restating
+them differently, and adds the detail needed for independent
+implementation. This document's own content, below this note, is
+otherwise unchanged from its original Phase 3A-follow-up version.
+
 ---
 
 ## 0. The central caveat this entire document is written around
