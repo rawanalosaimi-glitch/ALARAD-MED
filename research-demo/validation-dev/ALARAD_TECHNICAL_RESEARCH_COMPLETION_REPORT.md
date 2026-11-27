@@ -1,5 +1,15 @@
 # ALARAD Technical Research Completion Report
 
+**Supplementary round note (added later, not altering anything below):**
+a formal audit (`PHASE3C_AUDIT_REPORT.md`) and a final supplementary
+validation round (`ALARAD_FINAL_SUPPLEMENTARY_VALIDATION_REPORT.md`)
+followed this report. They found and fixed two real implementation
+defects (zero effect on the campaign numbers reported below, verified
+by exact arithmetic) and found, but deliberately did not fix, one more
+(a sensor delayed-reading handling gap) -- see those documents for
+detail. Every number in this report remains exactly as originally
+reported; nothing below has been altered.
+
 **Scope: the "Complete Remaining Technical Research Work" task (12
 sections) on branch `research/icaire-v123-validation`.** This report
 states, exactly, what was completed, what was verified, what remains a

@@ -41,6 +41,13 @@ RESOLVED = "RESOLVED"
 
 @dataclass
 class EscalationRecord:
+    """`state`/`raised_at`/`acknowledged_at`/`resolved_at`/
+    `resolution_reason` reflect only the MOST RECENT escalation episode
+    -- a worker can have more than one independent episode within a
+    single shift (fault, resolve, fault again), and these scalar fields
+    are overwritten by each new episode. `audit_log` is the append-only,
+    never-overwritten record of every episode's events; read it, not the
+    scalar fields, for a complete per-shift history."""
     worker_id: str
     state: str = NONE
     raised_at: Optional[int] = None
@@ -92,7 +99,17 @@ def evaluate_escalation(worker_id: str, sensor_states: List[str],
                 rec.log("resolved", reason=reason, at_minute=t)
                 continue
 
-        if rec.state == NONE and consecutive >= escalate_after_minutes:
+        # Bug found during the final supplementary validation round
+        # (Experiment B, "repeated faults" sub-case): this used to read
+        # `rec.state == NONE` only, which meant a worker whose FIRST
+        # fault episode resolved could never raise a SECOND, independent
+        # episode later in the same shift -- once RESOLVED, this guard
+        # would never again be true. `raised_at`/`resolved_at`/
+        # `resolution_reason` remain single (latest-episode) fields by
+        # design (see the dataclass docstring); `audit_log` is the
+        # append-only record of every episode, and already correctly
+        # captured each one once this guard was fixed.
+        if rec.state in (NONE, RESOLVED) and consecutive >= escalate_after_minutes:
             rec.state = RAISED
             rec.raised_at = t
             rec.log("raised", at_minute=t, consecutive_fault_minutes=consecutive)

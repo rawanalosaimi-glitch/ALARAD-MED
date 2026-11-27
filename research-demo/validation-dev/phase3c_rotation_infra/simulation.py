@@ -93,6 +93,7 @@ class SimulationResult:
     n_infeasible: int = 0
     n_aborted: int = 0
     n_held: int = 0
+    n_unresolved_at_shift_end: int = 0
     n_violations: int = 0
     escalated_rooms: Dict[str, int] = field(default_factory=dict)  # room -> consecutive infeasible count at escalation
     trigger_clause_counts: Dict[str, int] = field(default_factory=dict)  # "a"/"b"/"c"/"interval" -> count
@@ -268,6 +269,41 @@ def run_policy_on_run(bridge: EngineBridge, campaign_run: Dict[str, Any],
             attempt_tagged = attempt
             attempt_tagged.__dict__["clause"] = outcome.clause
             pending_attempts[r] = attempt_tagged
+
+    # Bug found during the final supplementary validation round (see
+    # ALARAD_SUPPLEMENTARY_CAMPAIGN_RESULTS.md, Experiment A sub-case A8):
+    # `scheduling.compute_t_effective` legitimately allows t_effective ==
+    # shift_minutes (its own docstring: "shift end is itself always
+    # treated as a procedure boundary"), so `start_attempt` can leave an
+    # attempt PENDING with t_effective == shift_minutes. The main loop
+    # above only ever iterates t in range(shift_minutes) -- it never
+    # reaches minute shift_minutes -- so such an attempt was previously
+    # silently dropped from every counter (not completed, not infeasible,
+    # not aborted, not held). The same drop applies to a HELD attempt
+    # whose incident simply never clears before shift end -- it too would
+    # sit in `pending_attempts` forever, uncounted. Fixed by resolving any
+    # leftover attempt (PENDING or HELD) explicitly here, in its own
+    # category: completing a t_effective==shift_minutes attempt would
+    # misrepresent a swap with zero actual occupancy minutes as a real
+    # rotation, so both cases are counted separately, never silently
+    # folded into n_completed/n_infeasible/n_held. Reservations are
+    # released (not left dangling) for roster-state hygiene.
+    for r in rooms_order:
+        attempt = pending_attempts.get(r)
+        if attempt is None:
+            continue
+        result.n_unresolved_at_shift_end += 1
+        reason = ("t_effective_equals_shift_minutes_never_reached_by_main_loop"
+                  if attempt.status == scheduling_mod.PENDING
+                  else "held_incident_never_cleared_before_shift_end")
+        if attempt.reserved_worker_id is not None:
+            assignment_mod.release_reservation(roster[attempt.reserved_worker_id], to_resting=False)
+        result.rotation_events.append(RotationEventLog(
+            room=r, outgoing=attempt.outgoing_worker_id, incoming=attempt.reserved_worker_id,
+            t_decide=attempt.t_decide, t_effective=attempt.t_effective,
+            status="UNRESOLVED_AT_SHIFT_END", reason=reason,
+            clause=getattr(attempt, "clause", None)))
+        del pending_attempts[r]
 
     # final roll-up
     result.assignment_by_room = assignment_by_room

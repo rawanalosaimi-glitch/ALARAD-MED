@@ -1,5 +1,13 @@
 # Research Handoff — ALARAD/ICAIRE Rotation and Forecasting Evaluation
 
+**Supplementary round note (added later, not altering anything below):**
+`ALARAD_MANUSCRIPT_RESULTS_HANDOFF.md` supplements this document with
+a later, targeted supplementary validation round that directly tested
+the candidate-selection, sensor-fault, and duty-limit/escalation
+mechanisms this document's own section 5 (CGDTR vs. reference-rule)
+flags as inconclusive rather than negative. Read both; this document's
+own claims below are unchanged.
+
 **For: the manuscript-writing team. Purpose: a concise, honest summary
 of what was implemented, what was actually tested and run, and what
 the results do and do not demonstrate — written so a drafting pass can

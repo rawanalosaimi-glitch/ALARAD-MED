@@ -48,6 +48,33 @@ class TestEscalationPureLogic(unittest.TestCase):
         self.assertEqual(rec.resolution_reason, "unacknowledged_at_shift_end")
         self.assertIsNone(rec.acknowledged_at)
 
+    def test_second_independent_fault_episode_raises_again_after_first_resolves(self):
+        """Regression test for a real bug found during the final
+        supplementary validation round (Experiment B, "repeated faults"
+        sub-case): the raise condition used to read `rec.state == NONE`
+        only, so once a worker's first fault episode resolved, a second,
+        wholly independent fault episode later in the same shift could
+        never raise -- the record was stuck unable to leave RESOLVED.
+        Two 10-minute STALE episodes, separated by 15 healthy minutes,
+        must each raise and resolve on their own; the scalar fields
+        reflect the LATEST (second) episode, and audit_log must contain
+        both raised/resolved pairs."""
+        states = (["STALE"] * 10 + ["OK"] * 15 + ["STALE"] * 10 + ["OK"] * 5)
+        rec = evaluate_escalation("W1", states, shift_minutes=len(states),
+                                   escalate_after_minutes=10)
+        self.assertEqual(rec.state, RESOLVED)
+        raised_events = [e for e in rec.audit_log if e["event"] == "raised"]
+        resolved_events = [e for e in rec.audit_log if e["event"] == "resolved"]
+        self.assertEqual(len(raised_events), 2)
+        self.assertEqual(len(resolved_events), 2)
+        self.assertEqual(raised_events[0]["at_minute"], 9)
+        self.assertEqual(resolved_events[0]["at_minute"], 10)
+        self.assertEqual(raised_events[1]["at_minute"], 34)
+        self.assertEqual(resolved_events[1]["at_minute"], 35)
+        # scalar fields reflect the latest (second) episode only
+        self.assertEqual(rec.raised_at, 34)
+        self.assertEqual(rec.resolved_at, 35)
+
     def test_escalation_never_mentions_dose_values(self):
         """Structural guarantee, checked directly: evaluate_escalation's
         signature and audit log carry no dose-related field at all."""
@@ -75,8 +102,16 @@ class TestEscalationAgainstRealEngine(unittest.TestCase):
 
     def test_real_missing_sensor_sequence_raises_escalation(self):
         # 15 consecutive missing readings -> engine states step through
-        # STALE then DISCONNECTED, both in DQ_FLAGGED_STATES.
-        observations = [None] * 15 + [{"ts": t, "value": 50.0} for t in range(15, 25)]
+        # STALE then DISCONNECTED, both in DQ_FLAGGED_STATES. Post-
+        # recovery values are deliberately varied (not a single constant
+        # repeated value) so the engine's own separate repeat-value
+        # ("frozen") detector does not raise an unrelated SECOND episode
+        # here -- this test is specifically about the missing-data
+        # episode; test_second_independent_fault_episode_raises_again_
+        # after_first_resolves (TestEscalationPureLogic) is where a
+        # second, independent episode is deliberately constructed and
+        # checked.
+        observations = [None] * 15 + [{"ts": t, "value": 50.0 + 0.1 * (t % 3)} for t in range(15, 25)]
         with EngineBridge() as bridge:
             steps = run_sensor_state_machine(bridge, observations)
         sensor_states = [s["state"] for s in steps]

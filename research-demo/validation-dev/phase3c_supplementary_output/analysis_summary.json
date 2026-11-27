@@ -1,0 +1,904 @@
+{
+  "collective_dose_invariant": {
+    "n_checked": 1500,
+    "max_abs_diff_mSv": 8.881784197001252e-16,
+    "violations": []
+  },
+  "selection_divergence": {
+    "per_case": {
+      "A1": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": 0.0,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": true
+      },
+      "A10": {
+        "n_seeds": 30,
+        "n_diverged": 0,
+        "divergence_rate": 0.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": null,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": false
+      },
+      "A2": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": 0.0,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": true
+      },
+      "A3": {
+        "n_seeds": 30,
+        "n_diverged": 0,
+        "divergence_rate": 0.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": null,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": false
+      },
+      "A4": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": 0.0,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": true
+      },
+      "A5": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": 0.0,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": true
+      },
+      "A6": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": 0.0,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": true
+      },
+      "A7": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": 0.0,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": true
+      },
+      "A8": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": -0.0749396282604703,
+        "population_mean_diff_ci": [
+          -0.07493962826047032,
+          -0.07504840314910831,
+          -0.07482586074812077
+        ],
+        "conditional_mean_diff_mSv": -0.0749396282604703,
+        "wilcoxon": {
+          "statistic": 0.0,
+          "p_value": 1.862645149230957e-09,
+          "n_pairs": 30,
+          "note": null
+        },
+        "expect_diverge": null
+      },
+      "A9": {
+        "n_seeds": 30,
+        "n_diverged": 30,
+        "divergence_rate": 1.0,
+        "population_mean_diff_mSv": 0.0,
+        "population_mean_diff_ci": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "conditional_mean_diff_mSv": 0.0,
+        "wilcoxon": {
+          "statistic": null,
+          "p_value": null,
+          "n_pairs": 30,
+          "note": "undefined: no pairs or all differences are zero"
+        },
+        "expect_diverge": true
+      }
+    },
+    "pooled_diverge_expected_family": {
+      "cases": [
+        "A1",
+        "A2",
+        "A4",
+        "A5",
+        "A6",
+        "A7",
+        "A9"
+      ],
+      "n_pairs_population": 210,
+      "population_average_mean_diff_mSv": 0.0,
+      "population_average_ci": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "population_average_wilcoxon": {
+        "statistic": null,
+        "p_value": null,
+        "n_pairs": 210,
+        "note": "undefined: no pairs or all differences are zero"
+      },
+      "n_pairs_conditional_on_divergence": 210,
+      "conditional_mean_diff_mSv": 0.0,
+      "conditional_ci": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "holm_bonferroni_per_case": {
+    "A1": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A10": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A2": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A3": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A4": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A5": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A6": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A7": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    },
+    "A8": {
+      "p_value": 1.862645149230957e-09,
+      "adjusted_alpha": 0.005,
+      "significant": true
+    },
+    "A9": {
+      "p_value": null,
+      "adjusted_alpha": null,
+      "significant": false
+    }
+  },
+  "fairness_and_outcomes": {
+    "A1": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.30006618518020095,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.005630764002282124,
+        "mean_collective_dose_mSv": 0.30006618518020095,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 1.8852599420599644e-08,
+        "mean_collective_dose_mSv": 0.30006618518020095,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.005630764002282124,
+        "mean_collective_dose_mSv": 0.30006618518020095,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 1.8852599420599644e-08,
+        "mean_collective_dose_mSv": 0.30006618518020095,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A2": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.2999050772864415,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.0056230289210351,
+        "mean_collective_dose_mSv": 0.2999050772864415,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 1.8883247619659205e-08,
+        "mean_collective_dose_mSv": 0.2999050772864415,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.0056230289210351,
+        "mean_collective_dose_mSv": 0.2999050772864415,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 1.8883247619659205e-08,
+        "mean_collective_dose_mSv": 0.2999050772864415,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A3": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.30003979665895153,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.005625598719937937,
+        "mean_collective_dose_mSv": 0.30003979665895153,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 1.3924137213929588e-08,
+        "mean_collective_dose_mSv": 0.30003979665895153,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.005625598719937937,
+        "mean_collective_dose_mSv": 0.30003979665895153,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 1.3924137213929588e-08,
+        "mean_collective_dose_mSv": 0.30003979665895153,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A4": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.3000889869092625,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.005622654625915629,
+        "mean_collective_dose_mSv": 0.3000889869092625,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 2.6742890579432473e-08,
+        "mean_collective_dose_mSv": 0.3000889869092625,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.005622654625915629,
+        "mean_collective_dose_mSv": 0.3000889869092625,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 2.6742890579432473e-08,
+        "mean_collective_dose_mSv": 0.3000889869092625,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A5": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.299982672675561,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.0056275762470708295,
+        "mean_collective_dose_mSv": 0.299982672675561,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 2.395712047946156e-08,
+        "mean_collective_dose_mSv": 0.29998267267556095,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.0056275762470708295,
+        "mean_collective_dose_mSv": 0.299982672675561,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 2.395712047946156e-08,
+        "mean_collective_dose_mSv": 0.29998267267556095,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A6": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.299951126493951,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.005626354720072062,
+        "mean_collective_dose_mSv": 0.299951126493951,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 1.7557586130781415e-08,
+        "mean_collective_dose_mSv": 0.299951126493951,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.005626354720072062,
+        "mean_collective_dose_mSv": 0.299951126493951,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 1.7557586130781415e-08,
+        "mean_collective_dose_mSv": 0.299951126493951,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A7": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.2998825143761488,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.005620186974872705,
+        "mean_collective_dose_mSv": 0.29988251437614877,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 2.5671018197210828e-08,
+        "mean_collective_dose_mSv": 0.29988251437614877,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.005620186974872705,
+        "mean_collective_dose_mSv": 0.29988251437614877,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 2.5671018197210828e-08,
+        "mean_collective_dose_mSv": 0.29988251437614877,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A8": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.5999893248000637,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.0028167934576353447,
+        "mean_collective_dose_mSv": 0.5999893248000638,
+        "total_completed": 90,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 0.00499448693733761,
+        "mean_collective_dose_mSv": 0.5999893248000638,
+        "total_completed": 120,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.00562953142138659,
+        "mean_collective_dose_mSv": 0.5999893248000638,
+        "total_completed": 90,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 0.0028133865142288424,
+        "mean_collective_dose_mSv": 0.5999893248000638,
+        "total_completed": 120,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A9": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.3000869957415212,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.005615163388497578,
+        "mean_collective_dose_mSv": 0.3000869957415212,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 2.0525590317367936e-08,
+        "mean_collective_dose_mSv": 0.3000869957415212,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.005615163388497578,
+        "mean_collective_dose_mSv": 0.3000869957415212,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 2.0525590317367936e-08,
+        "mean_collective_dose_mSv": 0.3000869957415212,
+        "total_completed": 30,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 30
+      }
+    },
+    "A10": {
+      "no_rotation": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.3001074712610723,
+        "total_completed": 0,
+        "total_infeasible": 0,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "fixed_interval": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.3001074712610723,
+        "total_completed": 0,
+        "total_infeasible": 30,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "reference_rule": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.3001074712610723,
+        "total_completed": 0,
+        "total_infeasible": 90,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "ablation_d": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.3001074712610723,
+        "total_completed": 0,
+        "total_infeasible": 30,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      },
+      "cgdtr": {
+        "mean_fairness_variance": 0.0,
+        "mean_collective_dose_mSv": 0.3001074712610723,
+        "total_completed": 0,
+        "total_infeasible": 90,
+        "total_held": 0,
+        "total_unresolved_at_shift_end": 0
+      }
+    }
+  },
+  "experiment_b_escalation_coverage": {
+    "B1": {
+      "n_runs": 30,
+      "n_raised": 30,
+      "n_resolved": 30,
+      "states_seen": [
+        "DISCONNECTED",
+        "HEALTHY",
+        "RECOVERING",
+        "STALE"
+      ]
+    },
+    "B2": {
+      "n_runs": 30,
+      "n_raised": 30,
+      "n_resolved": 30,
+      "states_seen": [
+        "HEALTHY",
+        "INVALID",
+        "RECOVERING"
+      ]
+    },
+    "B3": {
+      "n_runs": 30,
+      "n_raised": 30,
+      "n_resolved": 30,
+      "states_seen": [
+        "HEALTHY",
+        "SUSPECTED_FROZEN"
+      ]
+    },
+    "B4": {
+      "n_runs": 30,
+      "n_raised": 0,
+      "n_resolved": 0,
+      "states_seen": [
+        "HEALTHY"
+      ]
+    },
+    "B5": {
+      "n_runs": 30,
+      "n_raised": 30,
+      "n_resolved": 30,
+      "states_seen": [
+        "DISCONNECTED",
+        "HEALTHY",
+        "RECOVERING",
+        "STALE"
+      ]
+    },
+    "B6": {
+      "n_runs": 30,
+      "n_raised": 30,
+      "n_resolved": 30,
+      "states_seen": [
+        "HEALTHY",
+        "INVALID",
+        "RECOVERING"
+      ]
+    },
+    "B7": {
+      "n_runs": 30,
+      "n_raised": 30,
+      "n_resolved": 30,
+      "states_seen": [
+        "HEALTHY",
+        "INVALID",
+        "RECOVERING"
+      ]
+    },
+    "B8": {
+      "n_runs": 60,
+      "n_raised": 60,
+      "n_resolved": 60,
+      "states_seen": [
+        "DISCONNECTED",
+        "HEALTHY",
+        "RECOVERING",
+        "STALE"
+      ]
+    }
+  },
+  "experiment_c_coverage_matrix": {
+    "C1": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 30
+      },
+      "n_completed": 30,
+      "n_infeasible": 0,
+      "n_held": 0,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C10": {
+      "status": "NOT_IMPLEMENTED",
+      "detail": "scheduling.py has no ACK-REJECTED state or transition; RotationAttempt.status is one of PROPOSED/PENDING/HELD/COMPLETED/ABORTED/INFEASIBLE and recompute_after_acknowledgement only distinguishes fault-cleared vs. still-open, never a rejection."
+    },
+    "C11": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 120
+      },
+      "n_completed": 0,
+      "n_infeasible": 120,
+      "n_held": 0,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C12": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 120
+      },
+      "n_completed": 30,
+      "n_infeasible": 90,
+      "n_held": 0,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C2": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "b": 60
+      },
+      "n_completed": 30,
+      "n_infeasible": 30,
+      "n_held": 0,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C3": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "c": 30
+      },
+      "n_completed": 0,
+      "n_infeasible": 0,
+      "n_held": 0,
+      "n_unresolved_at_shift_end": 30
+    },
+    "C4": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 90
+      },
+      "n_completed": 0,
+      "n_infeasible": 60,
+      "n_held": 0,
+      "n_unresolved_at_shift_end": 30
+    },
+    "C5": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 90
+      },
+      "n_completed": 0,
+      "n_infeasible": 90,
+      "n_held": 0,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C6": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 30
+      },
+      "n_completed": 30,
+      "n_infeasible": 0,
+      "n_held": 30,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C7": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 30
+      },
+      "n_completed": 30,
+      "n_infeasible": 0,
+      "n_held": 30,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C8": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 30
+      },
+      "n_completed": 30,
+      "n_infeasible": 0,
+      "n_held": 30,
+      "n_unresolved_at_shift_end": 0
+    },
+    "C9": {
+      "n_seeds": 30,
+      "clause_counts": {
+        "a": 30
+      },
+      "n_completed": 0,
+      "n_infeasible": 0,
+      "n_held": 30,
+      "n_unresolved_at_shift_end": 30
+    }
+  }
+}

@@ -195,11 +195,36 @@ class TestHeldAndEscalation(unittest.TestCase):
 
     def test_audit_trail_records_every_rotation_attempt_outcome(self):
         """Every logged event has an explicit status -- INFEASIBLE,
-        COMPLETED, or (via HELD-then-resolved) one of those two -- never
-        an unset/unknown outcome."""
+        COMPLETED, (via HELD-then-resolved) one of those two, or
+        UNRESOLVED_AT_SHIFT_END (an attempt still pending when the shift
+        ends, see test_unresolved_attempt_at_shift_end_is_counted_not_dropped
+        below) -- never an unset/unknown outcome."""
         self.assertGreater(len(self.result.rotation_events), 0)
         for event in self.result.rotation_events:
-            self.assertIn(event.status, ("COMPLETED", "INFEASIBLE"))
+            self.assertIn(event.status, ("COMPLETED", "INFEASIBLE", "UNRESOLVED_AT_SHIFT_END"))
+
+    def test_unresolved_attempt_at_shift_end_is_counted_not_dropped(self):
+        """Regression test for a real bug found during the final
+        supplementary validation round: `scheduling.compute_t_effective`
+        legitimately allows t_effective == shift_minutes (shift end is
+        itself a valid boundary, per its own docstring), but the main
+        per-minute loop only iterates t in range(shift_minutes) and so
+        never reaches that minute to resolve the attempt -- before the
+        fix, such an attempt (and any HELD attempt whose incident never
+        cleared) was silently dropped from every counter: not completed,
+        not infeasible, not held, not aborted. This stress scenario's own
+        high rotation rate was already latently exercising this path
+        (see test_audit_trail_records_every_rotation_attempt_outcome's
+        now-updated assertion); this test makes the count explicit and
+        checks it is never silently absorbed elsewhere."""
+        total_logged = (self.result.n_completed + self.result.n_infeasible
+                         + self.result.n_unresolved_at_shift_end)
+        self.assertEqual(total_logged, len(self.result.rotation_events))
+        for event in self.result.rotation_events:
+            if event.status == "UNRESOLVED_AT_SHIFT_END":
+                self.assertIn(event.reason, (
+                    "t_effective_equals_shift_minutes_never_reached_by_main_loop",
+                    "held_incident_never_cleared_before_shift_end"))
 
 
 if __name__ == "__main__":

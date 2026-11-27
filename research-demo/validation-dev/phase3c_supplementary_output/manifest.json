@@ -1,0 +1,31 @@
+{
+  "started_at": 1795822476.3901238,
+  "seeds_per_case": 30,
+  "seed_bases": {
+    "A": 910000,
+    "B": 920000,
+    "C": 930000
+  },
+  "git_revision": "beb8b4b5109469f01f5d7d74ba7d853f8f8ec54b",
+  "python_version": "3.11.18",
+  "config_snapshot_file": "config_snapshot.json",
+  "experiments": {
+    "A": {
+      "n_rows": 300,
+      "elapsed_s": 557.694121837616,
+      "file": "experiment_a_raw.json"
+    },
+    "B": {
+      "n_rows": 241,
+      "elapsed_s": 72.30474948883057,
+      "file": "experiment_b_raw.json"
+    },
+    "C": {
+      "n_rows": 331,
+      "elapsed_s": 142.17845392227173,
+      "file": "experiment_c_raw.json"
+    }
+  },
+  "finished_at": 1795823250.1638033,
+  "total_elapsed_s": 773.7736794948578
+}
