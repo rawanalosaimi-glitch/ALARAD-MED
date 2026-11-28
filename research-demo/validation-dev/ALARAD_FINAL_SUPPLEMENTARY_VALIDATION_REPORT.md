@@ -88,8 +88,14 @@ correct in the main campaign's own audit).
 
 ## 3. Execution
 
-All three experiments ran to completion in one pass: 872 total rows, 0
-run failures (`phase3c_supplementary_output/manifest.json`). Raw,
+All three experiments ran to completion in one pass: **870 independent
+simulation replicates (29 scenarios × 30 seeds), 0 run failures**, plus
+2 additional non-replicate records (one illustrative diagnostic
+comparison, one capability-check result) — 872 rows total in the raw
+output files. See `ALARAD_FINAL_STATISTICAL_AUDIT.md` task 1 for the
+full reconciliation; this corrects an earlier, undifferentiated "872
+total rows" statement that did not distinguish the two record kinds.
+(`phase3c_supplementary_output/manifest.json`). Raw,
 machine-readable per-run data (scenario, seed, policy, worker state,
 exposure, dose history, trigger history, candidate list, selection
 decision, state transitions, fault/escalation events, dose outcomes)

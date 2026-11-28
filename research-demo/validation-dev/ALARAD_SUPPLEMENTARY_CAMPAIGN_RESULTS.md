@@ -12,17 +12,31 @@ unchanged and intact (verified in `ALARAD_FINAL_SCIENTIFIC_READINESS_REVIEW.md`)
 
 ## 1. Scope achieved
 
-| Experiment | Sub-cases run | Seeds/case | Total rows | Wall time |
-|---|---|---|---|---|
-| A — multi-candidate selection | 10 | 30 | 300 | 557.7 s |
-| B — sensor faults & escalation | 8 (+1 direct-path comparison) | 30 | 241 | 72.3 s |
-| C — duty limits / HELD / RSO ack | 11 run + 1 reported NOT_IMPLEMENTED | 30 | 331 | 142.2 s |
+**Corrected per `ALARAD_FINAL_STATISTICAL_AUDIT.md` task 1 (the original
+wording below undercounted neither runs nor failures, but stated the
+872 total without distinguishing independent simulation replicates
+from two non-simulated diagnostic/status records — corrected here):**
 
-0 run failures across all 872 rows. Seed bases: A=910000, B=920000,
-C=930000 — disjoint from every other seed block in this project
-(design set 20260601-13; Phase 3A smoke 3001-3008; Phase 3A campaign
-90000+; Phase 3C-B campaign 700000+; sensitivity 850000+). 30 seeds per
-case matches this project's own established minimum
+| Experiment | Scenarios with a seed loop | Seeds/scenario | Independent simulation replicates | Additional non-replicate rows | Total rows in raw file | Wall time |
+|---|---|---|---|---|---|---|
+| A — multi-candidate selection | 10 | 30 | 300 | 0 | 300 | 557.7 s |
+| B — sensor faults & escalation | 8 | 30 | 240 | 1 (`B4_direct_path_comparison`, reuses seed 920000 — illustrative, not an independent replicate) | 241 | 72.3 s |
+| C — duty limits / HELD / RSO ack | 11 (C10 has none, by design) | 30 | 330 | 1 (`C10`, status-only record, no simulation run at all) | 331 | 142.2 s |
+| **Total** | **29** | **30** | **870** | **2** | **872** | 772.2 s |
+
+**0 run failures across all 870 independent simulation replicates.**
+The 2 additional rows are not failures, exclusions, or skips of a
+planned replicate — they are deliberate, single, non-repeated records:
+one illustrative diagnostic comparison (B4) and one capability-check
+result (C10, reporting that no such state exists in `scheduling.py`
+rather than simulating one). See
+`ALARAD_FINAL_STATISTICAL_AUDIT.md` section 1 for the full
+scenario-by-scenario reconciliation table and the exact reasoning for
+every count. Seed bases: A=910000, B=920000, C=930000 — disjoint from
+every other seed block in this project (design set 20260601-13; Phase
+3A smoke 3001-3008; Phase 3A campaign 90000+; Phase 3C-B campaign
+700000+; sensitivity 850000+). 30 seeds per scenario (where a seed loop
+exists at all) matches this project's own established minimum
 (`ICAIRE_Simulation_Validation_Methodology.md` section 7/8) — reused,
 not re-derived, as the precision rationale for this round.
 
@@ -129,6 +143,41 @@ consistent across all 30 seeds (divergence rate 1.0).
    effects directly should prime doses through simulated occupancy
    (as A8 does), not through a directly-set initial field, if it
    intends to report `dose_attribution`-based metrics.
+
+**Confirmatory sensitivity check (per `ALARAD_FINAL_STATISTICAL_AUDIT.md`
+task 3; computed directly from the already-stored raw data and each
+scenario's own fixed, pre-registered preset doses — no re-simulation,
+no change to the primary endpoint or to any historical result):** for
+each of the 7 scenarios, we recomputed "preset starting dose of the
+selected worker + `dose_attribution`'s own reported shift-accrual for
+that worker" and took the same CGDTR-minus-reference-rule difference.
+
+| Case | Primary endpoint (shift-accrual only, as reported in section 2b) | Sensitivity check (preset + shift-accrual) | Matches the scenario's own designed preset gap? |
+|---|---|---|---|
+| A1 | 0.0 mSv | **−0.02 mSv** | Yes (W02 preset 0.01 vs. W01 preset 0.03) |
+| A2 | 0.0 mSv | **−0.03 mSv** | Yes (W02 preset 0.01 vs. W01 preset 0.04) |
+| A4 | 0.0 mSv | **−0.01 mSv** | Yes (W03 preset 0.02 vs. W01 preset 0.03) |
+| A5 | 0.0 mSv | **−0.01 mSv** | Yes (W03 preset 0.02 vs. W01 preset 0.03) |
+| A6 | 0.0 mSv | **−0.01 mSv** | Yes (W03 preset 0.02 vs. W01 preset 0.03) |
+| A7 | 0.0 mSv | **−0.01 mSv** | Yes (W03 preset 0.02 vs. W01 preset 0.03) |
+| A9 | 0.0 mSv | **−0.02 mSv** | Yes (W02 preset 0.01 vs. W01 preset 0.03) |
+
+**Every one of the 7 sensitivity-check values exactly reproduces that
+scenario's own known, designed preset-dose gap, to the mSv.** This is
+the direct, quantitative answer to "whether the six zero-effect
+scenarios genuinely demonstrate no outcome difference or whether the
+current metric is insensitive to the controlled initial-dose
+conditions" (`ALARAD_FINAL_STATISTICAL_AUDIT.md` task 3): **the metric
+is insensitive, not the algorithm.** The primary endpoint, computed
+exactly as the methodology defines it
+(`PHASE3B_ROTATION_ALGORITHM_DESIGN.md` line 286: "`WorkerAccumulatedShiftDose`...
+from shift start through `t`"), is correct and unchanged — it simply
+excludes, by design, any dose attributed to before the simulated shift
+began, which is exactly where this round's own preset-dose
+trigger-forcing technique placed its controlling variable for 6 of 7
+scenarios. A8, built on dose accrued through real simulated occupancy
+rather than a preset, needed no such sensitivity check because its
+primary-endpoint value already reflects the real difference directly.
 
 Figure: `figures_supplementary/max_individual_dose_comparison.png`
 (shows the 0.0 values for 6/7 cases and A9's own near-zero result
